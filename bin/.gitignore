@@ -1,0 +1,8 @@
+swm-sched
+swm-sched-tests
+*.so
+*.a
+*.exe
+*.dll
+*.pdb
+*.ilk

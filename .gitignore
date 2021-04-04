@@ -1,0 +1,8 @@
+*.swp
+deps/swm
+CMakeFiles
+Testing
+CMakeCache.txt
+CTestTestfile.cmake
+Makefile
+cmake_install.cmake
