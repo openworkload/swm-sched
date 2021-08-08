@@ -10,7 +10,7 @@ endif()
 # Defining the root project (solution)
 project(swm-sched CXX)
 set(TESTS_DIR              ${PROJECT_SOURCE_DIR}/tests/unit)
-set(WM_DIR                 ${PROJECT_SOURCE_DIR}/deps/swm/c_src/lib)
+set(WM_DIR                 ${PROJECT_SOURCE_DIR}/deps/swm-core/c_src/lib)
 set(SCHED_LIB_DIR          ${PROJECT_SOURCE_DIR}/src/sched-lib)
 set(SCHED_EXE_DIR          ${PROJECT_SOURCE_DIR}/src/sched-exe)
 set(SCHED_TST_DIR          ${TESTS_DIR})
@@ -89,8 +89,7 @@ endif()
 # Implementation of sscanf(), sprintf(), etc for VS 2015+ (VC++ 12.0+ toolsets).
 if(MSVC AND MSVC_VERSION GREATER 1700)
     add_library(vs_legacy STATIC IMPORTED)
-    set_target_properties(vs_legacy PROPERTIES IMPORTED_LOCATION
-                          legacy_stdio_definitions.lib)
+    set_target_properties(vs_legacy PROPERTIES IMPORTED_LOCATION legacy_stdio_definitions.lib)
 endif()
 
 
@@ -99,154 +98,146 @@ endif()
 # Not an issue for Linux.
 if (MSVC AND GTEST_FOUND)
     add_library(gtest STATIC IMPORTED)
-    set_target_properties(gtest PROPERTIES IMPORTED_LOCATION_DEBUG
-                          $ENV{GTEST_ROOT}/lib/gtestd.lib)
-    set_target_properties(gtest PROPERTIES IMPORTED_LOCATION_RELEASE
-                          $ENV{GTEST_ROOT}/lib/gtest.lib)
+    set_target_properties(gtest PROPERTIES IMPORTED_LOCATION_DEBUG $ENV{GTEST_ROOT}/lib/gtestd.lib)
+    set_target_properties(gtest PROPERTIES IMPORTED_LOCATION_RELEASE $ENV{GTEST_ROOT}/lib/gtest.lib)
     add_library(gtest_main STATIC IMPORTED)
-    set_target_properties(gtest_main PROPERTIES IMPORTED_LOCATION_DEBUG
-                          $ENV{GTEST_ROOT}/lib/gtest_maind.lib)
-    set_target_properties(gtest_main PROPERTIES IMPORTED_LOCATION_RELEASE
-                          $ENV{GTEST_ROOT}/lib/gtest_main.lib)
+    set_target_properties(gtest_main PROPERTIES IMPORTED_LOCATION_DEBUG $ENV{GTEST_ROOT}/lib/gtest_maind.lib)
+    set_target_properties(gtest_main PROPERTIES IMPORTED_LOCATION_RELEASE $ENV{GTEST_ROOT}/lib/gtest_main.lib)
 endif()
 
 
 # Some macros to minimaze copy-paste.
 
 macro(swm_set_gcc_flags target_name)
-  if(NOT MSVC)
-    set_target_properties(${target_name} PROPERTIES COMPILE_FLAGS
-                          "--std=c++14 -Werror -Wall -Wextra -Wconversion -pedantic")
-  endif()
+    if(NOT MSVC)
+        set_target_properties(${target_name} PROPERTIES COMPILE_FLAGS
+                              "--std=c++14 -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic")
+    endif()
 endmacro(swm_set_gcc_flags target_name)
 
 macro(swm_discover_sources src_dir h_files cpp_files)
-  file(GLOB_RECURSE ${h_files}   ${src_dir}/*.h)
-  file(GLOB_RECURSE ${cpp_files} ${src_dir}/*.cpp)
+    file(GLOB_RECURSE ${h_files}   ${src_dir}/*.h)
+    file(GLOB_RECURSE ${cpp_files} ${src_dir}/*.cpp)
 
-  if(MSVC)
-    foreach(_source IN ITEMS ${${h_files}})
-      get_filename_component(_source_path "${_source}" PATH)
-      file(RELATIVE_PATH _source_path_rel "${src_dir}" "${_source_path}")
-      string(REPLACE "/" "\\" _group_path "${_source_path_rel}")
-      source_group("Header Files\\${_group_path}" FILES "${_source}")
-    endforeach()
+    if(MSVC)
+        foreach(_source IN ITEMS ${${h_files}})
+            get_filename_component(_source_path "${_source}" PATH)
+            file(RELATIVE_PATH _source_path_rel "${src_dir}" "${_source_path}")
+            string(REPLACE "/" "\\" _group_path "${_source_path_rel}")
+            source_group("Header Files\\${_group_path}" FILES "${_source}")
+        endforeach()
 
-    foreach(_source IN ITEMS ${${cpp_files}})
-      get_filename_component(_source_path "${_source}" PATH)
-      file(RELATIVE_PATH _source_path_rel "${src_dir}" "${_source_path}")
-      string(REPLACE "/" "\\" _group_path "${_source_path_rel}")
-      source_group("Source Files\\${_group_path}" FILES "${_source}")
-    endforeach()
-  endif()
+        foreach(_source IN ITEMS ${${cpp_files}})
+            get_filename_component(_source_path "${_source}" PATH)
+            file(RELATIVE_PATH _source_path_rel "${src_dir}" "${_source_path}")
+            string(REPLACE "/" "\\" _group_path "${_source_path_rel}")
+            source_group("Source Files\\${_group_path}" FILES "${_source}")
+        endforeach()
+    endif()
 endmacro(swm_discover_sources src_dir h_files cpp_files)
 
 macro(swm_configure_lib target_name out_name)
-  target_include_directories(${target_name} SYSTEM PUBLIC
-                             $ENV{_KERL_ACTIVE_DIR}/usr/include)
-  if(NOT MSVC)
-    set_property(TARGET ${target_name} PROPERTY POSITION_INDEPENDENT_CODE ON)
-    swm_set_gcc_flags(${target_name})
-  endif()
-
-  set_target_properties(${target_name} PROPERTIES PREFIX "")
-  set_target_properties(${target_name} PROPERTIES OUTPUT_NAME ${out_name})
+    target_include_directories(${target_name} SYSTEM PUBLIC $ENV{_KERL_ACTIVE_DIR}/usr/include)
+    if(NOT MSVC)
+      set_property(TARGET ${target_name} PROPERTY POSITION_INDEPENDENT_CODE ON)
+      swm_set_gcc_flags(${target_name})
+    endif()
+ 
+    set_target_properties(${target_name} PROPERTIES PREFIX "")
+    set_target_properties(${target_name} PROPERTIES OUTPUT_NAME ${out_name})
 if(MSVC)
-  set_target_properties(${target_name} PROPERTIES LIBRARY_OUTPUT_DIRECTORY_DEBUG
-                        ${PROJECT_SOURCE_DIR}/bin)
-  set_target_properties(${target_name} PROPERTIES LIBRARY_OUTPUT_DIRECTORY_RELEASE
-                        ${PROJECT_SOURCE_DIR}/bin)
+    set_target_properties(${target_name} PROPERTIES LIBRARY_OUTPUT_DIRECTORY_DEBUG
+                          ${PROJECT_SOURCE_DIR}/bin)
+    set_target_properties(${target_name} PROPERTIES LIBRARY_OUTPUT_DIRECTORY_RELEASE
+                          ${PROJECT_SOURCE_DIR}/bin)
 else()
-  set_target_properties(${target_name} PROPERTIES ARCHIVE_OUTPUT_DIRECTORY
-                        ${PROJECT_SOURCE_DIR}/bin)
+    set_target_properties(${target_name} PROPERTIES ARCHIVE_OUTPUT_DIRECTORY
+                          ${PROJECT_SOURCE_DIR}/bin)
 endif()
 endmacro(swm_configure_lib target_name out_name)
 
 macro(swm_configure_assembly target_name out_name)
-  target_include_directories(${target_name} SYSTEM PUBLIC
-                             $ENV{_KERL_ACTIVE_DIR}/usr/include)
-  target_include_directories(${target_name} PUBLIC ${WM_DIR})
-  target_include_directories(${target_name} PUBLIC ${SCHED_LIB_DIR})
+    target_include_directories(${target_name} SYSTEM PUBLIC $ENV{_KERL_ACTIVE_DIR}/usr/include)
+    target_include_directories(${target_name} PUBLIC ${WM_DIR})
+    target_include_directories(${target_name} PUBLIC ${SCHED_LIB_DIR})
 
-  if(MSVC)
-    target_link_libraries(${target_name} Ws2)
-    if(MSVC_VERSION GREATER 1700)
-        target_link_libraries(${target_name} vs_legacy)
+    if(MSVC)
+      target_link_libraries(${target_name} Ws2)
+      if(MSVC_VERSION GREATER 1700)
+          target_link_libraries(${target_name} vs_legacy)
+      endif()
+    else()
+      swm_set_gcc_flags(${target_name})
     endif()
-  else()
-    swm_set_gcc_flags(${target_name})
-  endif()
 
-  set_target_properties(${target_name} PROPERTIES PREFIX "")
-  set_target_properties(${target_name} PROPERTIES OUTPUT_NAME ${out_name})
+    set_target_properties(${target_name} PROPERTIES PREFIX "")
+    set_target_properties(${target_name} PROPERTIES OUTPUT_NAME ${out_name})
+
 if(MSVC)
-  set_target_properties(${target_name} PROPERTIES RUNTIME_OUTPUT_DIRECTORY_DEBUG
-                        ${PROJECT_SOURCE_DIR}/bin)
-  set_target_properties(${target_name} PROPERTIES RUNTIME_OUTPUT_DIRECTORY_RELEASE
-                        ${PROJECT_SOURCE_DIR}/bin)
-  set_target_properties(${target_name} PROPERTIES LIBRARY_OUTPUT_DIRECTORY_DEBUG
-                        ${PROJECT_SOURCE_DIR}/bin)
-  set_target_properties(${target_name} PROPERTIES LIBRARY_OUTPUT_DIRECTORY_RELEASE
-                        ${PROJECT_SOURCE_DIR}/bin)
+    set_target_properties(${target_name} PROPERTIES RUNTIME_OUTPUT_DIRECTORY_DEBUG
+                          ${PROJECT_SOURCE_DIR}/bin)
+    set_target_properties(${target_name} PROPERTIES RUNTIME_OUTPUT_DIRECTORY_RELEASE
+                          ${PROJECT_SOURCE_DIR}/bin)
+    set_target_properties(${target_name} PROPERTIES LIBRARY_OUTPUT_DIRECTORY_DEBUG
+                          ${PROJECT_SOURCE_DIR}/bin)
+    set_target_properties(${target_name} PROPERTIES LIBRARY_OUTPUT_DIRECTORY_RELEASE
+                          ${PROJECT_SOURCE_DIR}/bin)
 else()
-  set_target_properties(${target_name} PROPERTIES RUNTIME_OUTPUT_DIRECTORY
-                        ${PROJECT_SOURCE_DIR}/bin)
-  set_target_properties(${target_name} PROPERTIES LIBRARY_OUTPUT_DIRECTORY
-                        ${PROJECT_SOURCE_DIR}/bin)
+    set_target_properties(${target_name} PROPERTIES RUNTIME_OUTPUT_DIRECTORY
+                          ${PROJECT_SOURCE_DIR}/bin)
+    set_target_properties(${target_name} PROPERTIES LIBRARY_OUTPUT_DIRECTORY
+                          ${PROJECT_SOURCE_DIR}/bin)
 endif()
 endmacro(swm_configure_assembly target_name out_name)
 
 
 macro(swm_configure_exe target_name out_name)
-  swm_configure_assembly(${target_name} ${out_name})
+    swm_configure_assembly(${target_name} ${out_name})
 
-  # Beware - it's a magic lib order!
-  target_link_libraries(${target_name} erl_interface)
-  target_link_libraries(${target_name} ei)
-  target_link_libraries(${target_name} sched-lib)
-  target_link_libraries(${target_name} wm-lib)
+    # Beware - it's a magic lib order!
+    target_link_libraries(${target_name} erl_interface)
+    target_link_libraries(${target_name} ei)
+    target_link_libraries(${target_name} sched-lib)
+    target_link_libraries(${target_name} wm-lib)
 
-  if(NOT MSVC)
-    target_link_libraries(${target_name} ${CMAKE_DL_LIBS})
-    target_link_libraries(${target_name} ${CMAKE_THREAD_LIBS_INIT})
-  endif()
+    if(NOT MSVC)
+        target_link_libraries(${target_name} ${CMAKE_DL_LIBS})
+        target_link_libraries(${target_name} ${CMAKE_THREAD_LIBS_INIT})
+    endif()
 
 endmacro(swm_configure_exe target_name out_name)
 
 
 macro(swm_configure_test target_name out_name test_headers)
-  swm_configure_assembly(${target_name} ${out_name})
-  target_include_directories(${target_name} SYSTEM PUBLIC
-                             ${GTEST_INCLUDE_DIRS})
-  # Beware - it's a magic lib order!
-  if(MSVC)
-      target_link_libraries(${target_name} gtest gtest_main)
-  else()
-      target_link_libraries(${target_name} ${GTEST_BOTH_LIBRARIES})
-  endif()
-  target_link_libraries(${target_name} sched-lib)
-  target_link_libraries(${target_name} plugin-lib)
-  target_link_libraries(${target_name} wm-lib)
-  target_link_libraries(${target_name} erl_interface)
-  target_link_libraries(${target_name} ei)
+    swm_configure_assembly(${target_name} ${out_name})
+    target_include_directories(${target_name} SYSTEM PUBLIC
+                               ${GTEST_INCLUDE_DIRS})
+    # Beware - it's a magic lib order!
+    if(MSVC)
+        target_link_libraries(${target_name} gtest gtest_main)
+    else()
+        target_link_libraries(${target_name} ${GTEST_BOTH_LIBRARIES})
+    endif()
+    target_link_libraries(${target_name} sched-lib)
+    target_link_libraries(${target_name} plugin-lib)
+    target_link_libraries(${target_name} wm-lib)
+    target_link_libraries(${target_name} erl_interface)
+    target_link_libraries(${target_name} ei)
 
-  if(NOT MSVC)
-    target_link_libraries(${target_name} ${CMAKE_DL_LIBS})
-    target_link_libraries(${target_name} ${CMAKE_THREAD_LIBS_INIT})
-  endif()
+    if(NOT MSVC)
+        target_link_libraries(${target_name} ${CMAKE_DL_LIBS})
+        target_link_libraries(${target_name} ${CMAKE_THREAD_LIBS_INIT})
+    endif()
 
-
-  if(MSVC)
-    set_target_properties(${target_name} PROPERTIES FOLDER tests)
-    add_test(NAME ${target_name}  WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}/bin"
-                                  COMMAND ${PROJECT_SOURCE_DIR}/bin/${out_name}.exe)
-    set_target_properties(${target_name} PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY
-                                         "${PROJECT_SOURCE_DIR}/bin")
-  else()
-    gtest_add_tests(${target_name}
-                    "${PROJECT_SOURCE_DIR}/bin"
-                    "${${test_headers}}")
-  endif()
+    if(MSVC)
+        set_target_properties(${target_name} PROPERTIES FOLDER tests)
+        add_test(NAME ${target_name}  WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}/bin"
+                                      COMMAND ${PROJECT_SOURCE_DIR}/bin/${out_name}.exe)
+        set_target_properties(${target_name} PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY
+                              "${PROJECT_SOURCE_DIR}/bin")
+    else()
+        gtest_discover_tests(${target_name} "${PROJECT_SOURCE_DIR}/bin" "${test_headers}")
+    endif()
 endmacro(swm_configure_test target_name out_name test_headers)
 
 macro(swm_configure_plugin target_name out_name)
@@ -312,20 +303,19 @@ add_dependencies(sched-exe sched-lib)
 add_dependencies(sched-exe fcfs)
 add_dependencies(sched-exe fair-sharing)
 if(MSVC)
-  set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-               PROPERTY VS_STARTUP_PROJECT sched-exe)
+    set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT sched-exe)
 endif()
 
 
 # Unit tests for sched-lib and plugin-lib
 if(${GTEST_FOUND})
-  swm_discover_sources(${SCHED_TST_DIR} SCHED_TST_SRC_H SCHED_TST_SRC_CPP)
-  list(APPEND SCHED_TST_SRC_CPP "${SCHED_EXE_DIR}/cli_args.cpp")
-  add_executable(sched-tests ${SCHED_TST_SRC_H} ${SCHED_TST_SRC_CPP})
-  swm_configure_test(sched-tests swm-sched-tests SCHED_TST_SRC_H)
-  target_include_directories(sched-tests PRIVATE ${SCHED_TST_DIR})
-  target_include_directories(sched-tests PRIVATE ${SCHED_EXE_DIR})
-  target_include_directories(sched-tests PRIVATE ${PLG_LIB_DIR})
-  add_dependencies(sched-tests sched-exe)
-  add_dependencies(sched-tests plugin-lib)
+    swm_discover_sources(${SCHED_TST_DIR} SCHED_TST_SRC_H SCHED_TST_SRC_CPP)
+    list(APPEND SCHED_TST_SRC_CPP "${SCHED_EXE_DIR}/cli_args.cpp")
+    add_executable(sched-tests ${SCHED_TST_SRC_H} ${SCHED_TST_SRC_CPP})
+    swm_configure_test(sched-tests swm-sched-tests ${SCHED_TST_SRC_H})
+    target_include_directories(sched-tests PRIVATE ${SCHED_TST_DIR})
+    target_include_directories(sched-tests PRIVATE ${SCHED_EXE_DIR})
+    target_include_directories(sched-tests PRIVATE ${PLG_LIB_DIR})
+    add_dependencies(sched-tests sched-exe)
+    add_dependencies(sched-tests plugin-lib)
 endif()

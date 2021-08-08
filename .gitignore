@@ -1,5 +1,5 @@
 *.swp
-deps/swm
+deps/swm-core
 CMakeFiles
 Testing
 CMakeCache.txt

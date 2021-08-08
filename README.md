@@ -1,14 +1,14 @@
 
 ### Preparations after the repository cloning
 
-1. The project depends on swm sources, thus create a sym link to swm in ./deps.
+1. The project depends on swm-core sources, thus create a sym link to swm-core in ./deps.
 For example:
 
  Linux:
-  $> ln -s ../../swm ./deps/
+  $> ln -s ../../swm-core ./deps/
 
  Windows (as administrator):
-  C:\..> mklink /D .\deps\swm ..\..\swm
+  C:\..> mklink /D .\deps\swm-core ..\..\swm-core
 
 2. Optionally, you can enable unit tests - just install GTest package.
 Instructions are provided in the following section.
@@ -34,11 +34,11 @@ Set directory with GTest sources as current.
 2. Generate GTest's compilation files by CMake tool:
 
  Linux:
-  $> cmake . -G "Unix Makefiles" -DCMAKE_INSTALL_PREFIX=/usr/local/GTest
+  $> export GTEST_ROOT=/usr/local/GTest
+  $> cmake . -G "Unix Makefiles"
 
  Windows:
-  C:\..> cmake . -G "Visual Studio 15 2017 Win64"
-                 -DCMAKE_INSTALL_PREFIX="C:/Program Files/GTest"
+  C:\..> cmake . -G "Visual Studio 15 2017 Win64" -DCMAKE_INSTALL_PREFIX="C:/Program Files/GTest"
 
 3. Compile and install GTest:
 
