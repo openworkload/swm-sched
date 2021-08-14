@@ -59,7 +59,7 @@ class ctrl : public ::testing::Test {
 
   const swm::AlgorithmFactory *factory() const { return &factory_; }
   const swm::Scanner *scanner() const { return &scanner_; }
-  
+
   std::shared_ptr<swm::util::CommandContext> create_context(const SwmUID &uid) {
     return std::shared_ptr<swm::util::CommandContext>(new swm::util::CommandContext(uid));
   }
@@ -147,8 +147,9 @@ class ctrl : public ::testing::Test {
     swm::util::MyQueue<std::shared_ptr<swm::util::CommandInterface> > queue(2);
     swm::util::Receiver receiver;
     ASSERT_NO_THROW(receiver.init(&queue, &istr));
-    while (!receiver.finished() && queue.element_count() < queue.size())
+    while (!receiver.finished() && queue.element_count() < queue.size()) {
       std::this_thread::yield();
+    }
     ASSERT_EQ(queue.element_count(), 1);
     auto res = queue.pop();
     ASSERT_EQ(res->type(), swm::util::SWM_COMMAND_SCHEDULE);
@@ -182,11 +183,13 @@ class ctrl : public ::testing::Test {
        "partition": [
          { "id": "1",
            "state": "down",
-           "jobs_per_node": 1
+           "jobs_per_node": 1,
+           "addresses": {}
          },
          { "id": "2",
            "state": "up",
-           "jobs_per_node": 2
+           "jobs_per_node": 2,
+           "addresses": {}
          }
        ],
        "node": [
@@ -196,31 +199,34 @@ class ctrl : public ::testing::Test {
            "resources": {
              "resource": {"name": "cpu", "count": 24},
              "resource": {"name": "mem", "count": 68719476736}
-           }
+           },
+           "prices": {}
          },
          { "id": "3",
-           "state_power": "down" }
-         ],
-         "rh": [
-           { "cluster": "1",
-             "sub": [
-               { "partition": "1" },
-               { "partition": "2",
-                 "sub": [
-                   {"node": "1"},
-                   {"node": "3"}
-                 ]
-               }
-             ]
-           }
-         ],
-         "scheduler": [
-           { "id": 1,
-             "name": "swm-fcfs",
-             "state": "up"
-           }
-         ]
-       }
+           "state_power": "down",
+           "prices": {}
+         }
+       ],
+       "rh": [
+         { "cluster": "1",
+           "sub": [
+             { "partition": "1" },
+             { "partition": "2",
+               "sub": [
+                 {"node": "1"},
+                 {"node": "3"}
+               ]
+             }
+           ]
+         }
+       ],
+       "scheduler": [
+         { "id": 1,
+           "name": "swm-fcfs",
+           "state": "up"
+         }
+       ]
+     }
 
     )";
   }

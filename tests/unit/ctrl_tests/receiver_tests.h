@@ -52,7 +52,7 @@ TEST_F(ctrl, receiver_parse_jobs) {
   construct_sched_command(&json);
   std::shared_ptr<swm::util::CommandInterface> cmd;
   receive_single_sched_command(json, &cmd);
-  ASSERT_NE(cmd.get(), nullptr);
+  ASSERT_TRUE(cmd.get());
   auto scmd = static_cast<swm::util::ScheduleCommand *>(cmd.get());
 
   ASSERT_EQ(scmd->scheduling_info()->jobs().size(), 1);
@@ -78,7 +78,7 @@ TEST_F(ctrl, receiver_parse_cluster) {
   construct_sched_command(&json);
   std::shared_ptr<swm::util::CommandInterface> cmd;
   receive_single_sched_command(json, &cmd);
-  ASSERT_NE(cmd.get(), nullptr);
+  ASSERT_TRUE(cmd.get());
   auto scmd = static_cast<swm::util::ScheduleCommand *>(cmd.get());
 
   auto sched = scmd->scheduling_info();
@@ -94,7 +94,7 @@ TEST_F(ctrl, receiver_parse_partitions) {
   construct_sched_command(&json);
   std::shared_ptr<swm::util::CommandInterface> cmd;
   receive_single_sched_command(json, &cmd);
-  ASSERT_NE(cmd.get(), nullptr);
+  ASSERT_TRUE(cmd.get());
   auto scmd = static_cast<swm::util::ScheduleCommand *>(cmd.get());
 
   auto sched = scmd->scheduling_info();
@@ -118,7 +118,7 @@ TEST_F(ctrl, receiver_parse_nodes) {
   construct_sched_command(&json);
   std::shared_ptr<swm::util::CommandInterface> cmd;
   receive_single_sched_command(json, &cmd);
-  ASSERT_NE(cmd.get(), nullptr);
+  ASSERT_TRUE(cmd.get());
   auto scmd = static_cast<swm::util::ScheduleCommand *>(cmd.get());
 
   auto sched = scmd->scheduling_info();
@@ -153,7 +153,7 @@ TEST_F(ctrl, receiver_parse_rh) {
   construct_sched_command(&json);
   std::shared_ptr<swm::util::CommandInterface> cmd;
   receive_single_sched_command(json, &cmd);
-  ASSERT_NE(cmd.get(), nullptr);
+  ASSERT_TRUE(cmd.get());
   auto scmd = static_cast<swm::util::ScheduleCommand *>(cmd.get());
 
   auto sched = scmd->scheduling_info();

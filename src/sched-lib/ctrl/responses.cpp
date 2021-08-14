@@ -90,7 +90,7 @@ TimetableResponse::TimetableResponse(const std::shared_ptr<CommandContext> &cont
   }
   result_.set_timetable(tt);
   result_.set_status(succeeded());
-  result_.print("   ", '\n');
+  //result_.print("   ", '\n');
 }
 
 bool TimetableResponse::serialize(std::unique_ptr<unsigned char[]> *data,

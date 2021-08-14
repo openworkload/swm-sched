@@ -3,10 +3,10 @@
 %% -*- erlang -*-
 %%! -smp enable -sname json-to-bin
 
--include("../../swm/include/wm_scheduler.hrl").
+-include("../../swm-core/include/wm_scheduler.hrl").
 
--define(SWM_LIB, "/../../swm/_build/default/lib/swm/ebin").
--define(SWM_JSX, "/../../swm/_build/default/lib/jsx/ebin").
+-define(SWM_LIB, "/../../swm-core/_build/default/lib/swm/ebin").
+-define(SWM_JSX, "/../../swm-core/_build/default/lib/jsx/ebin").
 
 
 logd(Format, Data) ->

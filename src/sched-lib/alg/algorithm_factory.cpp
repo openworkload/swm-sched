@@ -79,8 +79,7 @@ bool AlgorithmFactory::load_plugins(const std::string &path, std::stringstream *
       }
     }
     catch (std::exception &err) {
-      std::cerr << "Failed to load plugin " << files[i].c_str()
-                << ", details: " << err.what() << std::endl;
+      std::cerr << "Failed to load plugin " << files[i].c_str() << ", details: " << err.what() << std::endl;
       if (!util::free_library(lib)) {
         std::cerr << "Failed to unload library " << files[i].c_str() << std::endl;
       }

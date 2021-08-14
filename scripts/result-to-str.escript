@@ -3,8 +3,8 @@
 %% -*- erlang -*-
 %%! -smp enable -sname result-to-str
 
--define(SWM_LIB, "/../../swm/_build/default/lib/swm/ebin").
--define(SWM_JSX, "/../../swm/_build/default/lib/jsx/ebin").
+-define(SWM_LIB, "/../../swm-core/_build/default/lib/swm/ebin").
+-define(SWM_JSX, "/../../swm-core/_build/default/lib/jsx/ebin").
 
 print_timetable([]) ->
   ok;

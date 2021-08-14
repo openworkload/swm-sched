@@ -188,10 +188,10 @@ void Processor::worker_thread() {
     if (in_queue_->element_count() != 0) {
       auto req = in_queue_->pop();
       TimeCounter::Lock time_lock(req->context()->timer());
-      
+
       try {
         switch (req->type()) {
-        
+
           // Create new chain, start the asynchronous construction of timetable
           case SWM_COMMAND_SCHEDULE: {
             auto sreq = static_cast<ScheduleCommand *>(req.get());
@@ -213,7 +213,7 @@ void Processor::worker_thread() {
             std::shared_ptr<Chain> chain;
             chain.reset(new Chain());
             chain->init(sreq->scheduling_info(), algs, sreq->context()->timer());
-            
+
             std::shared_ptr<ChainController> controller;
             auto clb = [queue = out_queue_,
                         ctx = sreq->context()]
@@ -235,19 +235,17 @@ void Processor::worker_thread() {
 
             break;
           }
-
           // Stop the chain execution
           case SWM_COMMAND_INTERRUPT: {
             auto ireq = static_cast<InterruptCommand *>(req.get());
-          
+
             auto it = chains_.find(ireq->chain());
             if (it == chains_.end()) {
               respond_chain_not_found(out_queue_, ireq->context(), ireq->chain());
               break;
             }
 
-            it->second->invoke_interrupt([queue = out_queue_,
-                                          ctx = ireq->context()]
+            it->second->invoke_interrupt([queue = out_queue_, ctx = ireq->context()]
                                          (bool succeeded,
                                           const std::shared_ptr<TimetableInfoInterface> &,
                                           const std::shared_ptr<MetricsSnapshot> &) -> void {
@@ -257,7 +255,7 @@ void Processor::worker_thread() {
 
             break;
           }
-        
+
           // Take snapshot of the targets metrics and warp it into response
           case SWM_COMMAND_METRICS: {
             auto mreq = static_cast<MetricsCommand *>(req.get());
@@ -335,8 +333,7 @@ void Processor::worker_thread() {
       if (chain->finished()) {
         try { it = chains_.erase(it); }
         catch (std::exception &ex) {
-          std::cerr << "Exception from Processor::worker_thread(): failed to release chain, "
-                    << ex.what() << std::endl;
+          std::cerr << "Exception from Processor::worker_thread(): failed to release chain, " << ex.what() << std::endl;
         }
       }
       else {
@@ -344,7 +341,7 @@ void Processor::worker_thread() {
       }
     } // while
 
-    std::this_thread::sleep_for (std::chrono::seconds(1)); // FIXME
+    std::this_thread::sleep_for(std::chrono::milliseconds(2));  // TODO: wait for some event / conditional variable?
     std::this_thread::yield();
   } // while
 }

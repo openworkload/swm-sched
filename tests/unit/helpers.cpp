@@ -198,6 +198,7 @@ bool my_exec(const std::string &app, const std::string &args,
   }
 
   return !failed;
+
 #else
   std::stringstream cmd;
   cmd << app << " " << args;
@@ -208,7 +209,10 @@ bool my_exec(const std::string &app, const std::string &args,
     cmd << " 2>" << err_file.c_str();
   }
 
-  if (std::system(cmd.str().c_str()) == -1) {
+  const auto ret = std::system(cmd.str().c_str());
+  if (ret != 0) {
+    std::cout << "Could not run std::system: status=" << WEXITSTATUS(ret)
+              << " signal=" << WSTOPSIG(ret)  << std::endl;
     return false;
   }
 

@@ -61,7 +61,7 @@ bool Receiver::get_data(std::vector<std::unique_ptr<unsigned char[]> > *data,
   }
   if (command != SWM_COMMAND_SCHEDULE && command != SWM_COMMAND_INTERRUPT &&
       command != SWM_COMMAND_METRICS  && command != SWM_COMMAND_EXCHANGE) {
-    *errors << "unknown command #" << command;
+    *errors << "unknown command #" << int(command);
     return false;
   }
   *cmd = (CommandType)command;

@@ -41,13 +41,12 @@ std::string Scanner::find_cpu_name() {
   FILE *fp;
   char res[2048] = { 0 };
   fp = popen("/bin/cat /proc/cpuinfo | grep 'model name'", "r");
-  char* fr = fgets(res, sizeof(res) - 1, fp);
-  pclose(fp);
-  
+  const char* fr = fgets(res, sizeof(res) - 1, fp);
+
   if (fr == NULL) {
-    throw new std::runtime_error("Scanner::find_cpu_name(): cannot read file");
+    throw std::runtime_error("Scanner::find_cpu_name(): cannot read file");
   }
-  
+
   if (!res[0]) {
     throw std::runtime_error("Scanner::find_cpu_name(): unknown CPU model");
   }
@@ -58,6 +57,8 @@ std::string Scanner::find_cpu_name() {
       // FIXME the loop is endless!
       //mn[strlen(mn) - 1] = 0;
   }
+
+  pclose(fp);
   return mn;
 #endif
 }
@@ -69,19 +70,25 @@ size_t Scanner::find_cpu_cores() {
   return s_info.dwNumberOfProcessors;
 #else
   FILE *fp;
-  char res[128] = { 0 };
-  fp = popen("/bin/cat /proc/cpuinfo | grep -c '^processor'", "r");
-  size_t fr = fread(res, 1, sizeof(res) - 1, fp);
-  pclose(fp);
-  
+  char res[8] = { 0 };
+  static const char* cmd = "/bin/cat /proc/cpuinfo | grep -c '^processor'";
+  fp = popen(cmd, "r");
+  if (fp == NULL) {
+    const std::string err = std::string("Scanner::find_cpu_cores(): cannot run command: ") + cmd;
+    throw std::runtime_error(err);
+  }
+
+  const size_t fr = fread(res, 1, sizeof(res) - 1, fp);
+
   if (fr <= 0) {
-    throw std::runtime_error("Scanner::find_cpu_cores(): cannot read file");
+    throw std::runtime_error("Scanner::find_cpu_cores(): cannot read command output");
   }
 
   if (!res[0]) {
     throw std::runtime_error("Scanner::find_cpu_cores(): unknown cores");
   }
-  
+
+  pclose(fp);
   return std::max(1, atoi(res));
 #endif
 }
@@ -123,13 +130,12 @@ double Scanner::find_cpu_freq() {
       double cand = atof(mh);
       if (cand > mhz) {
         mhz = cand;
-      }
-      else {
+      } else {
         throw std::runtime_error("Scanner::find_cpu_freq(): unknown frequency");
       }
     }
   }
-  
+
   pclose(fp);
   return mhz;
 #endif
@@ -144,11 +150,11 @@ bool Scanner::scan() {
   try {
     name = find_cpu_name();
   }
-  catch (const std::exception &ex) { 
+  catch (const std::exception &ex) {
     name = "Unknown CPU";
     std::cerr << "Failed to determine CPU model: " << ex.what() << std::endl;
   }
-  
+
   size_t cores;
   try {
     cores = find_cpu_cores();
@@ -157,16 +163,17 @@ bool Scanner::scan() {
     cores = 1;
     std::cerr << "Failed to determine count of CPU cores: " << ex.what() << std::endl;
   }
-  
+
   double freq_mhz;
   try {
     freq_mhz = find_cpu_freq();
   }
   catch (const std::exception &ex) {
     freq_mhz = 1000;
-    std::cerr << "Failed to determine CPU frequency: " << ex.what() << std::endl;
+    // TODO: determine CPU frequency
+    //std::cerr << "Failed to determine CPU frequency: " << ex.what() << std::endl;
   }
-  
+
   cpu_.reset(new swm::ComputeUnit(swm::ComputeUnit::Type::Cpu, 1, name, cores, freq_mhz));
   inited_ = true;
   return true;

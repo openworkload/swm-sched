@@ -81,6 +81,7 @@ bool ScheduleCommand::init(const std::vector<std::unique_ptr<unsigned char[]> > 
       *errors << " of size " << strlen((const char*)data_slice);
       return false;
     }
+    //erl_print_term(stdout, term);
 
     switch (i) {
       case SWM_DATA_TYPE_SCHEDULERS: {

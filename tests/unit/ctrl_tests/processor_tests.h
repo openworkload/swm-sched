@@ -223,6 +223,7 @@ TEST_F(ctrl, processor_time_counting) {
     in_queue.push(create_interrupt_request("#interrupt", "#schedule"));
   }
   ASSERT_EQ(out_queue.element_count(), 2);
+
   while (out_queue.element_count() > 0) {
     auto resp = out_queue.pop();
     double astro = 0.0, idling = 0.0, working = 0.0;
@@ -235,14 +236,12 @@ TEST_F(ctrl, processor_time_counting) {
       ASSERT_GE(astro, 0.025); ASSERT_LE(astro, 0.075);
       ASSERT_GE(working, 0.025); ASSERT_LE(working, 0.075);
       ASSERT_LE(idling, 0.010);
-    }
-    else if (resp->context()->id() == "#interrupt") {
+    } else if (resp->context()->id() == "#interrupt") {
       ASSERT_TRUE(resp->succeeded());
       ASSERT_LE(astro, 0.010);
       ASSERT_LE(idling, 0.010);
       ASSERT_LE(working, 0.010);
-    }
-    else {
+    } else {
       ASSERT_TRUE(false) << "Wrong SwmUID";
     }
   }

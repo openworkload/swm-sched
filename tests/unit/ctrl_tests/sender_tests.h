@@ -70,7 +70,7 @@ TEST_F(ctrl, sender_timetable_response) {
   std::stringstream oss;
   swm::util::MyQueue<std::shared_ptr<swm::util::ResponseInterface> > queue(2);
   ASSERT_NO_THROW(sender.init(&queue, &oss));
-  
+
   swm::SwmTimetable table1, table2;
   table1.set_job_id("1");
   std::vector<std::string> nodes1; nodes1.push_back("4");
@@ -102,16 +102,17 @@ TEST_F(ctrl, sender_multiple_responses) {
 
   std::shared_ptr<swm::util::CommandContext> ctx1(new swm::util::CommandContext("1"));
   std::shared_ptr<swm::util::ResponseInterface> resp1(new swm::util::EmptyResponse(ctx1, false));
+  ASSERT_FALSE(resp1->succeeded());
   queue.push(resp1);
 
   std::shared_ptr<swm::util::CommandContext> ctx2(new swm::util::CommandContext("2"));
   swm::SwmTimetable empty_table;
   std::shared_ptr<swm::TimetableInfoInterface> table2(new TimetableInfoForTests(&empty_table));
   std::shared_ptr<swm::util::MetricsSnapshot> m(new swm::util::MetricsSnapshot());
-  std::shared_ptr<swm::util::ResponseInterface> resp2(new swm::util::TimetableResponse(ctx2,
-                                                                                       table2, m));
+  std::shared_ptr<swm::util::ResponseInterface> resp2(new swm::util::TimetableResponse(ctx2, table2, m));
+  ASSERT_TRUE(resp2->succeeded());
   queue.push(resp2);
-  
+
   ASSERT_NO_THROW(sender.close());
   ASSERT_EQ(queue.element_count(), 0);
   ASSERT_GE(oss.str().size(), 9);
