@@ -52,8 +52,7 @@ bool ScheduleCommand::AlgorithmSpec
 //--- ScheduleCommand ---
 //-----------------------
 
-bool ScheduleCommand::init(const std::vector<std::unique_ptr<unsigned char[]> > &data,
-                           std::stringstream *errors) {
+bool ScheduleCommand::init(const std::vector<std::unique_ptr<unsigned char[]> > &data, std::stringstream *errors) {
   std::stringstream errors_;
   if (errors == nullptr) {
     errors = &errors_;
@@ -78,10 +77,9 @@ bool ScheduleCommand::init(const std::vector<std::unique_ptr<unsigned char[]> > 
     auto term = erl_decode(data_slice);
     if (term == nullptr) {
       *errors << "failed to decode the slice at position " << i;
-      *errors << " of size " << strlen((const char*)data_slice);
       return false;
     }
-    //erl_print_term(stdout, term);
+    erl_print_term(stderr, term); std::cerr << std::endl;
 
     switch (i) {
       case SWM_DATA_TYPE_SCHEDULERS: {
@@ -193,18 +191,18 @@ static inline bool apply_rh_helper(ETERM* terms, std::vector<RhItem> *rh, std::s
   else if (ERL_IS_TUPLE(terms)) {
     ETERM *first = erl_element(1, terms);
     if (first == nullptr) {
-      *error << "Cannot get first element of RH tuple" << std::endl;
+      *error << "Can't get first element of RH tuple" << std::endl;
       return false;
     }
     ETERM *second = erl_element(2, terms);
     if (second == nullptr) {
-      *error << "Cannot get second element of RH tuple" << std::endl;
+      *error << "Can't get second element of RH tuple" << std::endl;
       return false;
     }
 
     SwmTupleAtomStr tpl;
     if (eterm_to_tuple_atom_str(first, tpl)) {
-      *error << "Cannot parse RH tuple" << std::endl;
+      *error << "Can't parse RH tuple" << std::endl;
       return false;
     }
 

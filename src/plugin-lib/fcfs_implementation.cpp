@@ -130,8 +130,7 @@ bool FcfsImplementation::schedule(const std::vector<const swm::SwmJob *> &jobs,
       // Schedule job and register its end time
       JobRef jr;
       if (!schedule_single_job(job, start_time_threshold, &gang_nodes, &tt, &jr, error)) {
-        std::cerr << "Cannot schedule job #\"" << job->get_id() << "\": "
-                  << error->str() << std::endl;
+        std::cerr << "Can't schedule job #\"" << job->get_id() << "\": " << error->str() << std::endl;
         continue;
       }
 
@@ -274,8 +273,7 @@ bool FcfsImplementation::schedule_single_job(const swm::SwmJob *job,
     const auto &resources = nr->node()->get_resources();
     for (const auto &req : requests) {
       if (req.get_name() != "node") {
-        auto iter = std::find_if(resources.begin(), resources.end(),
-                                 [req](const swm::SwmResource &res) -> bool {
+        auto iter = std::find_if(resources.begin(), resources.end(), [req](const swm::SwmResource &res) -> bool {
           return req.get_name() == res.get_name() && req.get_count() <= res.get_count();
         });
 
@@ -301,7 +299,7 @@ bool FcfsImplementation::schedule_single_job(const swm::SwmJob *job,
   //          But we will check the following nodes as well,
   //          probably, they are placed in the better partition
   if (node_num > selected_nodes.size()) {
-    // *error << "not enough nodes to fit the job's requirements";
+    *error << "not enough nodes";
     return false;
   }
   auto ext_node_num = node_num;
@@ -330,7 +328,7 @@ bool FcfsImplementation::schedule_single_job(const swm::SwmJob *job,
                                         -> bool {
       return v2->size() < v1->size();
     });
-    
+
     // Finally, refill vector "selected_nodes" by nodes
     // that are placed in the most populated partitions
     selected_nodes.clear();
@@ -368,7 +366,7 @@ bool FcfsImplementation::schedule_single_job(const swm::SwmJob *job,
   std::sort(nodes.begin(), nodes.end(), [](const NodeRef *r1, const NodeRef *r2) -> bool {
     return r2->when_free() > r1->when_free();
   });
-  
+
   return true;
 }
 

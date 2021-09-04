@@ -14,8 +14,7 @@ const ITEM *check_rh_and_extract_item(const swm::RhItem &rh,
                                       std::stringstream *error) {
   auto iter = m.find(rh.id());
   if (iter == m.end()) {
-    *error << item_name << " #" << rh.id()
-      << "was referenced in RH but cannot be found in \""<< item_name <<"s\"";
+    *error << item_name << " with id=" << rh.id() << " was referenced in RH but cannot be found in \""<< item_name <<"s\"";
     return nullptr;
   }
   if (rh.name() != item_name) {
