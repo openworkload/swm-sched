@@ -66,7 +66,7 @@ bool Receiver::get_data(std::vector<std::unique_ptr<unsigned char[]> > *data,
   }
   *cmd = (CommandType)command;
 
-  //2Taras: read uid
+  //TODO: read uid
   *uid = 1;
 
   unsigned char total = 0;

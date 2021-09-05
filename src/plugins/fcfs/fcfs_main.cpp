@@ -8,7 +8,7 @@
 
 
 bool swm_create_context(swm::MetricsInterface *metrics, void **ctx, std::stringstream *) {
-  // 2Taras: plugin can have its own metrics - just use injected instance "metrics"
+  // TODO: plugin can have its own metrics - just use injected instance "metrics"
   metrics->register_double_value(1, "the number of processed requests");
   *ctx = new PluginContext(metrics);
   return true;

@@ -61,7 +61,7 @@ bool ResponseInterface::encode_scheduler_result(ETERM* result_eterm,
     *data->get() = 0;
   }
 
-  //2Taras: serialize metrics as well. See MetricsResponse::serialize() for details
+  //TODO: serialize metrics as well. See MetricsResponse::serialize() for details
   //auto m = metrics_;
   
   if (*size == 0) {
@@ -161,11 +161,11 @@ bool MetricsResponse::serialize(std::unique_ptr<unsigned char[]> *data, size_t *
     throw std::runtime_error("MetricsResponse::serialize(): \"data\" and \"size\" cannot be equal to nullptr");
   }
 
-  //2Taras: we need to serialize request with metrics only
+  //TODO: we need to serialize request with metrics only
   //auto alg_metrics = metrics_->algorithm_metrics(); // per algorithm metrics
   //auto chain_metrics = metrics_->chain_metrics();   // chain metrics
   //auto serv_metrics = metrics_->service_metrics();  // global service metrics
-  
+
   // Enumeration can be implemented as:
   //auto en = chain_metrics.int_value_indices();
   //for (const auto rec : en) {

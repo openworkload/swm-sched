@@ -145,7 +145,7 @@ bool ScheduleCommand::init(const std::vector<std::unique_ptr<unsigned char[]> > 
 }
 
 bool ScheduleCommand::apply_schedulers(ETERM *, std::stringstream *) {
-  //2Taras: read schedulers, something like that:
+  //TODO: read schedulers, something like that:
   size_t nalgs = 1;
   for (size_t i = 0; i < nalgs; ++i) {
     std::string family  = "swm-fcfs";
@@ -282,7 +282,7 @@ bool ScheduleCommand::apply_nodes(ETERM* terms, std::stringstream *) {
 
 bool InterruptCommand::init(const std::vector<std::unique_ptr<unsigned char[]> > &,
                             std::stringstream *) {
-  //2Taras: read chain id
+  //TODO: read chain id
   chain_ = "42";
   return true;
 }
@@ -293,7 +293,7 @@ bool InterruptCommand::init(const std::vector<std::unique_ptr<unsigned char[]> >
 
 bool MetricsCommand::init(const std::vector<std::unique_ptr<unsigned char[]> > &,
                           std::stringstream *) {
-  //2Taras: read chain id
+  //TODO: read chain id
   chain_ = "42";
   return true;
 }
@@ -304,7 +304,7 @@ bool MetricsCommand::init(const std::vector<std::unique_ptr<unsigned char[]> > &
 
 bool ExchangeCommand::init(const std::vector<std::unique_ptr<unsigned char[]> > &,
                            std::stringstream *) {
-  //2Taras: read chain identifiers
+  //TODO: read chain identifiers
   source_chain_ = "42";
   target_chain_ = "42";
   return true;
