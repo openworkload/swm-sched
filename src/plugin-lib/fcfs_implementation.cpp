@@ -211,6 +211,12 @@ bool FcfsImplementation::is_node_owned_by_other_job(const swm::SwmJob &job,
   return iter_res != resources.end();
 }
 
+// Check if request does not block node to be selected for the job
+bool FcfsImplementation::is_dynamic_request(const std::string &req_name) const {
+  static const std::vector<std::string> dyn_req_names {"node", "image"};
+  return std::find(dyn_req_names.begin(), dyn_req_names.end(), req_name) != dyn_req_names.end();
+}
+
 bool FcfsImplementation::schedule_single_job(const swm::SwmJob *job,
                                              uint64_t start_time_threshold,
                                              std::set<std::string> *busy_nodes,
@@ -272,7 +278,7 @@ bool FcfsImplementation::schedule_single_job(const swm::SwmJob *job,
     bool fits = true;
     const auto &resources = nr->node()->get_resources();
     for (const auto &req : requests) {
-      if (req.get_name() != "node") {
+      if (!is_dynamic_request(req.get_name())) {
         auto iter = std::find_if(resources.begin(), resources.end(), [req](const swm::SwmResource &res) -> bool {
           return req.get_name() == res.get_name() && req.get_count() <= res.get_count();
         });

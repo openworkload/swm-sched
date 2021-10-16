@@ -78,6 +78,7 @@ class FcfsImplementation {
   void align_jobs(std::vector<JobRef> *jobs,
                   std::unordered_map<std::string, uint64_t> *jobs_to_endtimes,
                   uint64_t start_time);
+  bool is_dynamic_request(const std::string &req_name) const;
   bool schedule_single_job(const swm::SwmJob *job,
                            uint64_t start_time_threshold,
                            std::set<std::string> *busy_nodes,
