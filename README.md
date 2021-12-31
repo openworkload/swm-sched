@@ -10,7 +10,7 @@ Sky Workload Manager / Sky Port scheduler
 ## Build
 
 ## Requirements:
-* gcc with C++14 support
+* gcc with C++14 support or Visual Studio 2017
 * cmake version >= 2.8
 
 ### Preparations after the repository cloning
@@ -67,8 +67,8 @@ make install
 ```bash
 .\googletest-distribution.sln
 ```
--- Switch to `Release` mode, change option "C/C++ -> Code Generation -> Runtime Library" from "/MT" to "/MD" both for gtest and for gtest-main projects. Build target ALL_BUILD, then target INSTALL.
--- Switch to `Debug` mode. change option "C/C++ -> Code Generation -> Runtime Library" from "/MTd" to "/MDd" both for gtest and for gtest-main projects. Build taret ALL_BUILD only. Exit Visual Studio 2017.
+`Release` mode: change option `C/C++ -> Code Generation -> Runtime Library` from `/MT` to `/MD` both for gtest and for gtest-main projects. Build target `ALL_BUILD`, then target `INSTALL`.
+`Debug` mode: change option `C/C++ -> Code Generation -> Runtime Library` from `/MTd` to `/MDd` both for gtest and for gtest-main projects. Build taret `ALL_BUILD` only. Exit Visual Studio.
 ```bash
 copy ".\googlemock\gtest\Debug\gtest.lib" "C:\Program Files\GTest\lib\gtestd.lib"
 copy ".\googlemock\gtest\Debug\gtest_main.lib" "C:\Program Files\GTest\lib\gtest_maind.lib"
