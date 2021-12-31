@@ -213,7 +213,7 @@ bool FcfsImplementation::is_node_owned_by_other_job(const swm::SwmJob &job,
 
 // Check if request does not block node to be selected for the job
 bool FcfsImplementation::is_dynamic_request(const std::string &req_name) const {
-  static const std::vector<std::string> dyn_req_names {"node", "image"};
+  static const std::vector<std::string> dyn_req_names {"node", "image", "ports"};
   return std::find(dyn_req_names.begin(), dyn_req_names.end(), req_name) != dyn_req_names.end();
 }
 
