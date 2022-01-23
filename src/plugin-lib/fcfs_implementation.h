@@ -31,29 +31,29 @@ class FcfsImplementation {
   ~FcfsImplementation() { close(); }
   void operator =(const FcfsImplementation &) = delete;
 
-  bool init(const swm::SchedulingInfoInterface *sched_info, std::stringstream *error = nullptr);
-  bool schedule(const std::vector<const swm::SwmJob *> &jobs,
-                swm::PluginEventsInterface *events,
-                std::vector<swm::SwmTimetable> *tts,
+  bool init(const SchedulingInfoInterface *sched_info, std::stringstream *error = nullptr);
+  bool schedule(const std::vector<const SwmJob *> &jobs,
+                PluginEventsInterface *events,
+                std::vector<SwmTimetable> *tts,
                 bool ignore_priorities,
                 std::stringstream *error = nullptr);
   void close();
 
  private:
-  // The reference to instance of swm::Node that is bounded with time field
+  // The reference to instance of SwmNode that is bounded with time field
   // Equal to std::pair but simplifies the understanding of scheduling code
   class NodeRef {
    public:
     NodeRef() : node_(nullptr), when_free_(0) { }
-    NodeRef(const swm::SwmNode *node) : node_(node), when_free_(0) { }
+    NodeRef(const SwmNode *node) : node_(node), when_free_(0) { }
     NodeRef(const NodeRef &) = default;
 
-    const swm::SwmNode *node() const { return node_; }
+    const SwmNode *node() const { return node_; }
     uint64_t &when_free() { return when_free_; }
     const uint64_t &when_free() const { return when_free_; }
 
    private:
-    const swm::SwmNode *node_;
+    const SwmNode *node_;
     uint64_t when_free_;  // from the start of scheduling
   };
 
@@ -62,16 +62,16 @@ class FcfsImplementation {
   class JobRef {
    public:
     JobRef() : tt_(nullptr), job_(nullptr) { }
-    JobRef(swm::SwmTimetable *tt, const swm::SwmJob *job) : tt_(tt), job_(job) { }
+    JobRef(SwmTimetable *tt, const SwmJob *job) : tt_(tt), job_(job) { }
     JobRef(const JobRef &) = default;
 
-    swm::SwmTimetable *tt() const { return tt_; }
-    const swm::SwmJob *job() const { return job_; }
+    SwmTimetable *tt() const { return tt_; }
+    const SwmJob *job() const { return job_; }
     std::vector<NodeRef *> &nodes() { return nodes_; }
 
    private:
-    swm::SwmTimetable *tt_;
-    const swm::SwmJob *job_;
+    SwmTimetable *tt_;
+    const SwmJob *job_;
     std::vector<NodeRef *> nodes_;
   };
 
@@ -79,15 +79,18 @@ class FcfsImplementation {
                   std::unordered_map<std::string, uint64_t> *jobs_to_endtimes,
                   uint64_t start_time);
   bool is_dynamic_request(const std::string &req_name) const;
-  bool schedule_single_job(const swm::SwmJob *job,
+  bool does_node_fit_request(const std::vector<SwmResource> &requests,
+                             const std::vector<SwmResource> &resources,
+                             std::stringstream *error) const;
+  bool schedule_single_job(const SwmJob *job,
                            uint64_t start_time_threshold,
                            std::set<std::string> *busy_nodes,
-                           swm::SwmTimetable *tt,
+                           SwmTimetable *tt,
                            JobRef *job_ref = nullptr,
                            std::stringstream *error = nullptr);
 
-  bool is_node_owned_by_other_job(const swm::SwmJob &job,
-                                  const std::vector<swm::SwmResource> &resources) const;
+  bool is_node_owned_by_other_job(const SwmJob &job,
+                                  const std::vector<SwmResource> &resources) const;
 
   // Active nodes that are always sorted by "when_free" time, distributed by clusters
   std::unordered_map<std::string, std::vector<NodeRef *> > nodes_per_cluster_;
