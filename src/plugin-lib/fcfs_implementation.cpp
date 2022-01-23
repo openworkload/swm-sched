@@ -7,8 +7,7 @@
 
 namespace swm {
 
-bool FcfsImplementation::init(const swm::SchedulingInfoInterface *sched_info,
-                              std::stringstream *error) {
+bool FcfsImplementation::init(const swm::SchedulingInfoInterface *sched_info, std::stringstream *error) {
   if (!rh_.init(sched_info, error)) {
     return false;   // message was already constructed by extended rh
   }
@@ -41,8 +40,7 @@ bool FcfsImplementation::schedule(const std::vector<const swm::SwmJob *> &jobs,
     error = &error_;
   }
   if (events == nullptr || tts == nullptr) {
-    throw std::runtime_error(
-      "FcfsImplementation::schedule(): \"events\" and \"tts\" cannot be equal to nullptr");
+    throw std::runtime_error("FcfsImplementation::schedule(): \"events\" and \"tts\" cannot be equal to nullptr");
   }
 
   // Sort jobs according to their priorities and gang id
@@ -130,7 +128,7 @@ bool FcfsImplementation::schedule(const std::vector<const swm::SwmJob *> &jobs,
       // Schedule job and register its end time
       JobRef jr;
       if (!schedule_single_job(job, start_time_threshold, &gang_nodes, &tt, &jr, error)) {
-        std::cerr << "Can't schedule job #\"" << job->get_id() << "\": " << error->str() << std::endl;
+        std::cerr << "Can't schedule job " << job->get_id() << ": " << error->str() << std::endl;
         continue;
       }
 
@@ -178,8 +176,7 @@ void FcfsImplementation::align_jobs(std::vector<JobRef> *jobs,
   for (auto cluster_id : clusters) {
     auto iter = nodes_per_cluster_.find(cluster_id);
     if (iter == nodes_per_cluster_.end()) {
-      throw std::runtime_error(
-        "FcfsImplementation::align_timetables(): internal error, no such cluster");
+      throw std::runtime_error("FcfsImplementation::align_timetables(): internal error, no such cluster");
     }
     std::sort(iter->second.begin(), iter->second.end(), comp);
   }
@@ -236,17 +233,17 @@ bool FcfsImplementation::schedule_single_job(const swm::SwmJob *job,
   };
   auto node_num_iter = std::find_if(requests.begin(), requests.end(), pred);
   if (node_num_iter == requests.end()) {
-    *error << "job has not defined resource \"node\", unable to allocate it";
+    *error << "job has not defined resource \"node\", unable to allocate it; ";
     return false;
   }
   auto node_num = node_num_iter->get_count();
   if (node_num < 1) {
-    *error << "job's resource \"node\" must be greater or equal to 1";
+    *error << "job's resource \"node\" must be greater or equal to 1; ";
     return false;
   }
   auto nodes_iter = nodes_per_cluster_.find(job->get_cluster_id());
   if (nodes_iter == nodes_per_cluster_.end()) {
-    *error << "there is no cluster with such id (#" << job->get_cluster_id() << ")";
+    *error << "there is no cluster with such id (#" << job->get_cluster_id() << "); ";
     return false;
   }
   auto &nodes = nodes_iter->second;
@@ -284,6 +281,7 @@ bool FcfsImplementation::schedule_single_job(const swm::SwmJob *job,
         });
 
         if (iter == resources.end()) {
+          *error << "resource not found: " << req.get_name() << "; ";
           fits = false;
           break;
         } // if
@@ -291,6 +289,7 @@ bool FcfsImplementation::schedule_single_job(const swm::SwmJob *job,
     } // for
 
     if (is_node_owned_by_other_job(*job, resources)) {
+      *error << "node is owned by other job; ";
       continue;
     }
 
@@ -305,7 +304,7 @@ bool FcfsImplementation::schedule_single_job(const swm::SwmJob *job,
   //          But we will check the following nodes as well,
   //          probably, they are placed in the better partition
   if (node_num > selected_nodes.size()) {
-    *error << "not enough nodes";
+    *error << "not enough nodes: " << node_num << " > " << selected_nodes.size() << "; ";
     return false;
   }
   auto ext_node_num = node_num;
@@ -376,4 +375,4 @@ bool FcfsImplementation::schedule_single_job(const swm::SwmJob *job,
   return true;
 }
 
-} // swm
+} // namespace swm

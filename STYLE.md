@@ -33,7 +33,7 @@ Mandatory rules:
 19. Type names or enumerators start with a capital letter and have a capital letter for each new word, with no underscores ("Camel Case") [link](https://google.github.io/styleguide/cppguide.html#Type_Names)
 20. The names of namespaces, functions/methods, variables (including function parameters), constants and data members are all lowercase, with underscores between words [link](https://google.github.io/styleguide/cppguide.html#Variable_Names)
 21. Macros names are uppercase with underscores between the words: THIS\_THIS\_MY\_CONSTANT [link](https://google.github.io/styleguide/cppguide.html#Macro_Names)
-22. Each line of text in your code must be at most 100 characters long [link](https://google.github.io/styleguide/cppguide.html#Line_Length)
+22. Each line of text in your code must be at most 120 characters long.
 23. Do not use any of non-ASCII characters [link](https://google.github.io/styleguide/cppguide.html#Non-ASCII_Characters)
 24. Use spaces, no tabs, and indent 2 spaces at a time [link](https://google.github.io/styleguide/cppguide.html#Spaces_vs._Tabs)
 25. Return type on the same line as function name, and its parameters on the same line if they fit [link](https://google.github.io/styleguide/cppguide.html#Function_Declarations_and_Definitions)
