@@ -44,6 +44,7 @@ class SchedulingInfoInterface {
   virtual const std::vector<const SwmPartition *> &parts() const = 0;
   virtual const std::vector<const SwmNode *> &nodes() const = 0;
   virtual const std::vector<const SwmJob *> &jobs() const = 0;
+  virtual void print_resource_hierarchy(std::ostream *str) const = 0;
 };
 
 } // swm

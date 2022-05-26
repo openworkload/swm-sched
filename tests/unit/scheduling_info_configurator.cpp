@@ -190,7 +190,7 @@ void SchedulingInfoConfigurator::JobConfigurator
   setters_.emplace_back([job_ids](swm::SwmJob *job) -> void {
     std::vector<swm::SwmTupleAtomStr> deps(job_ids.size());
     for (size_t i = 0; i < job_ids.size(); ++i) {
-      deps[i].x2 = job_ids[i];
+      std::get<1>(deps[i]) = job_ids[i];
     }
     job->set_deps(deps);
   });

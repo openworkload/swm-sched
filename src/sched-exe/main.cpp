@@ -40,7 +40,10 @@ int main(int argc, char* const argv[]) {
       return -2;
     }
 
-    erl_init(nullptr, 0);
+    if (ei_init()) {
+      std::cerr << "Can't initialize ei library" << std::endl;
+      return -3;
+    }
 
     // Configuring service
     swm::Service service(&factory, &scanner);

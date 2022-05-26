@@ -27,7 +27,7 @@ class CommandInterface {
 
  protected:
   CommandInterface() {}
-  virtual bool init(const std::vector<std::unique_ptr<unsigned char[]> > &data,
+  virtual bool init(const std::vector<std::unique_ptr<char[]> > &data,
                     std::stringstream *errors) = 0;
  friend class Receiver;
 };
@@ -39,7 +39,7 @@ class CorruptedCommand : public CommandInterface {
   virtual CommandType type() const { return SWM_COMMAND_CORRUPTED; }
 
  protected:
-   virtual bool init(const std::vector<std::unique_ptr<unsigned char[]> > &,
+   virtual bool init(const std::vector<std::unique_ptr<char[]> > &,
                      std::stringstream *) {
      // Important: for compatibility purposes, always returns true
      return true;
@@ -82,18 +82,18 @@ class ScheduleCommand : public CommandInterface {
   virtual CommandType type() const override { return SWM_COMMAND_SCHEDULE; };
 
  protected:
-  bool init(const std::vector<std::unique_ptr<unsigned char[]> > &data,
+  bool init(const std::vector<std::unique_ptr<char[]> > &data,
             std::stringstream *errors = nullptr) override;
 
  private:
-  bool apply_schedulers(ETERM *term, std::stringstream *error = nullptr);
-  bool apply_jobs(ETERM* terms, std::stringstream *error = nullptr);
-  bool apply_rh(ETERM* terms, std::stringstream *error = nullptr);
-  bool apply_grid(ETERM* terms, std::stringstream *error = nullptr);
-  bool apply_clusters(ETERM* terms, std::stringstream *error = nullptr);
-  bool apply_partitions(ETERM* terms, std::stringstream *error = nullptr);
-  bool apply_nodes(ETERM* terms, std::stringstream *error = nullptr);
-  
+  bool apply_schedulers(char *buf, int &index, std::stringstream *error = nullptr);
+  bool apply_jobs(char *buf, int &index, std::stringstream *error = nullptr);
+  bool apply_rh(char *buf, int &index, std::stringstream *error = nullptr);
+  bool apply_grid(char *buf, int &index, std::stringstream *error = nullptr);
+  bool apply_clusters(char *buf, int &index, std::stringstream *error = nullptr);
+  bool apply_partitions(char *buf, int &index, std::stringstream *error = nullptr);
+  bool apply_nodes(char *buf, int &index, std::stringstream *error = nullptr);
+
   std::shared_ptr<CommandContext> context_;
   std::vector<AlgorithmSpec> schedulers_;
   std::shared_ptr<SchedulingInfoInterface> sched_info_ptr_;
@@ -113,7 +113,7 @@ class InterruptCommand : public CommandInterface {
   virtual CommandType type() const override { return SWM_COMMAND_INTERRUPT; };
 
  protected:
-  bool init(const std::vector<std::unique_ptr<unsigned char[]> > &data,
+  bool init(const std::vector<std::unique_ptr<char[]> > &data,
             std::stringstream *errors = nullptr) override;
 
  private:
@@ -134,7 +134,7 @@ class MetricsCommand : public CommandInterface {
   virtual CommandType type() const override { return SWM_COMMAND_METRICS; }
 
  protected:
-  bool init(const std::vector<std::unique_ptr<unsigned char[]> > &,
+  bool init(const std::vector<std::unique_ptr<char[]> > &,
             std::stringstream *) override;
 
  private:
@@ -157,7 +157,7 @@ class ExchangeCommand : public CommandInterface {
   virtual CommandType type() const override { return SWM_COMMAND_EXCHANGE; };
 
  protected:
-  bool init(const std::vector<std::unique_ptr<unsigned char[]> > &data,
+  bool init(const std::vector<std::unique_ptr<char[]> > &data,
             std::stringstream *errors) override;
 
  private:

@@ -10,7 +10,7 @@ Sky Workload Manager / Sky Port scheduler
 ## Build
 
 ## Requirements:
-* gcc with C++14 support or Visual Studio 2017
+* gcc with C++17 support or Visual Studio 2017
 * cmake version >= 2.8
 
 ### Preparations after the repository cloning

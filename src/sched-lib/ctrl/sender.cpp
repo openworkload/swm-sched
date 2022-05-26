@@ -59,7 +59,7 @@ void Sender::worker_thread() {
           continue;
         }
 
-        std::unique_ptr<unsigned char[]> data;
+        std::unique_ptr<char[]> data;
         size_t size = 0;
         std::stringstream errors;
         if (!resp->serialize(&data, &size, &errors)) {

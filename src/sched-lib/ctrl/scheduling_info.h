@@ -31,7 +31,7 @@ class SchedulingInfo : public SchedulingInfoInterface {
   std::vector<SwmJob> &jobs_vector() { are_references_valid_ = false; return jobs_; }
   
   void validate_references();
-  void print_resource_hierarchy(std::ostream *str);
+  virtual void print_resource_hierarchy(std::ostream *str) const override;
 
 private:
   bool are_references_valid_;

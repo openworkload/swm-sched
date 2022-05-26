@@ -18,11 +18,11 @@ class Receiver {
   void operator =(const Receiver &) = delete;
   ~Receiver();
 
-  void init(MyQueue<std::shared_ptr<CommandInterface> > *queue, std::istream *input);
+  void init(MyQueue<std::shared_ptr<CommandInterface>> *queue, std::istream *input);
   bool finished();
 
  private:
-  bool get_data(std::vector<std::unique_ptr<unsigned char[]> > *data,
+  bool get_data(std::vector<std::unique_ptr<char[]>> *data,
                 CommandType *cmd,
                 SwmUID *uid,
                 std::stringstream *errors = nullptr);

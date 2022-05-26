@@ -12,21 +12,12 @@
 logd(Format, Data) ->
   io:format(standard_error, Format, Data).
 
-remove_map_attr(Entity) -> % in C erl_decode() unable to decode maps
-  case element(1, Entity) of
-    resource ->
-      wm_entity:set_attr({prices, []}, Entity);
-    _ ->
-      Entity
-  end.
-
 get_list_attr([], _, Entities) ->
   Entities;
 get_list_attr([{_, AttrList}|T], {record, Name}, Entities) ->
   EmptyEntity = wm_entity:new(Name),
-  Entity1 = json_to_entity(AttrList, EmptyEntity),
-  Entity2 = remove_map_attr(Entity1), % erl_decode() does not like maps in 19.x
-  get_list_attr(T, {record, Name}, [Entity2|Entities]).
+  Entity = json_to_entity(AttrList, EmptyEntity),
+  get_list_attr(T, {record, Name}, [Entity|Entities]).
 
 get_attr_value(List, {list, Type}) when is_list(List) ->
   get_list_attr(List, Type, []);

@@ -22,55 +22,189 @@ void ResponseInterface::refresh_timers() {
   result_.set_work_time(working);
 }
 
-ETERM* ResponseInterface::make_scheduler_result_eterm(std::vector<ETERM*> timetable_eterms,
-                                                      std::vector<ETERM*> metric_eterms) const {
-  ETERM *props[SwmSchedulerResultTupleSize];
-  props[0] = erl_mk_atom("scheduler_result");
+ei_x_buff ResponseInterface::make_timetables_ei_buffer(
+    const std::vector<SwmTimetable> &timetables,
+    std::stringstream *errors) const {
 
-  props[1] = erl_mk_empty_list();
-  for (const auto x: timetable_eterms) {
-    props[1] = erl_cons(x, props[1]);
+  ei_x_buff x;
+  if (ei_x_new(&x)) {
+    *errors << "Can't create new ei_x_buff for timetables" << std::endl;
+    return x;
+  }
+  if (ei_x_encode_list_header(&x, timetables.size())) {
+    *errors << "Can't create timetables: can't encode list header" << std::endl;
+    ei_x_free(&x);
+    return x;
   }
 
-  props[2] = erl_mk_empty_list();
-  for (const auto x: metric_eterms) {
-    props[2] = erl_cons(x, props[2]);
+  for (const auto& table: timetables) {
+    const auto &nodes = table.get_job_nodes();
+    if (nodes.empty()) {
+      continue;
+    }
+    if (ei_x_encode_tuple_header(&x, 4)) {
+      *errors << "Can't create timetable: can't encode tuple header" << std::endl;
+      ei_x_free(&x);
+      return x;
+    }
+    if (ei_x_encode_atom(&x, "timetable")) {
+      *errors << "Can't create timetable: can't encode first atom" << std::endl;
+      ei_x_free(&x);
+      return x;
+    }
+    if (ei_x_encode_ulong(&x, table.get_start_time())) {
+      *errors << "Can't create timetable: can't encode start time" << std::endl;
+      ei_x_free(&x);
+      return x;
+    }
+    if (ei_x_encode_string(&x, table.get_job_id().c_str())) {
+      *errors << "Can't create timetable: can't encode job id" << std::endl;
+      ei_x_free(&x);
+      return x;
+    }
+
+    const size_t nodes_cnt = nodes.size();
+    if (ei_x_encode_list_header(&x, nodes_cnt)) {
+      *errors << "Can't create timetable: can't encode nodes list header" << std::endl;
+      ei_x_free(&x);
+      return x;
+    }
+    for (size_t i = 0; i < nodes_cnt; ++i) {
+      if (ei_x_encode_string(&x, nodes[nodes_cnt - i - 1].c_str())) {
+        ei_x_free(&x);
+        return x;
+      }
+    }
+    if (nodes_cnt && ei_x_encode_empty_list(&x)) {
+      *errors << "Can't create timetable: can't encode last nodes list element" << std::endl;
+      ei_x_free(&x);
+      return x;
+    }
   }
 
-  props[3] = erl_mk_string(result_.get_request_id().c_str());
-  props[4] = erl_mk_ulonglong(result_.get_status());
-  props[5] = erl_mk_float(result_.get_astro_time());
-  props[6] = erl_mk_float(result_.get_idle_time());
-  props[7] = erl_mk_float(result_.get_work_time());
+  if (timetables.size() && ei_x_encode_empty_list(&x)) {
+    *errors << "Can't create timetables list: can't encode last element" << std::endl;
+    ei_x_free(&x);
+  }
 
-  return erl_mk_tuple(props, SwmSchedulerResultTupleSize);
+  return x;
 }
 
-bool ResponseInterface::encode_scheduler_result(ETERM* result_eterm,
-                                                size_t* size,
-                                                std::unique_ptr<unsigned char[]> *data,
-                                                std::stringstream *errors) const {
-  const size_t len = erl_term_len(result_eterm);
-  if (len) {
-    data->reset(new unsigned char[len]);
-    *size = erl_encode(result_eterm, data->get());
-    erl_free_compound(result_eterm);
-  } else {
-    *size = 1;
-    data->reset(new unsigned char[*size]);
-    *data->get() = 0;
+ei_x_buff ResponseInterface::make_metrics_ei_buffer(
+    const std::vector<SwmMetric> &metrics,
+    std::stringstream *errors) const {
+
+  ei_x_buff x;
+  if (ei_x_new(&x)) {
+    *errors << "Can't create new ei_x_buff for metrics" << std::endl;
+    return x;
+  }
+  if (ei_x_encode_list_header(&x, metrics.size())) {
+    *errors << "Can't create metrics: can't encode list header" << std::endl;
+    ei_x_free(&x);
+    return x;
   }
 
-  //TODO: serialize metrics as well. See MetricsResponse::serialize() for details
-  //auto m = metrics_;
-  
-  if (*size == 0) {
-    *errors << "cannot encode ETERM";
-    return false;
+  for (const auto& metric: metrics) {
+    if (ei_x_encode_tuple_header(&x, 4)) {
+      *errors << "Can't create metric: can't encode tuple header" << std::endl;
+      ei_x_free(&x);
+      return x;
+    }
+    if (ei_x_encode_atom(&x, "metric")) {
+      *errors << "Can't create metric: can't encode first atom" << std::endl;
+      ei_x_free(&x);
+      return x;
+    }
+    if (ei_x_encode_atom(&x, metric.get_name().c_str())) {
+      *errors << "Can't create metric: can't encode name" << std::endl;
+      ei_x_free(&x);
+      return x;
+    }
+    if (ei_x_encode_ulong(&x, metric.get_value_integer())) {
+      *errors << "Can't create metric: can't encode value integer" << std::endl;
+      ei_x_free(&x);
+      return x;
+    }
+    if (ei_x_encode_double(&x, metric.get_value_float64())) {
+      *errors << "Can't create metric: can't encode value float64" << std::endl;
+      ei_x_free(&x);
+      return x;
+    }
   }
-  return true;
+
+  if (metrics.size() && ei_x_encode_empty_list(&x)) {
+    *errors << "Can't create metrics list: can't encode last element" << std::endl;
+    ei_x_free(&x);
+  }
+
+  return x;
 }
 
+ei_x_buff ResponseInterface::make_scheduler_result_ei_buffer(const std::vector<SwmTimetable> &timetables,
+                                                             const std::vector<SwmMetric> &metrics,
+                                                             std::stringstream *errors) const {
+  ei_x_buff timetables_buff = make_timetables_ei_buffer(timetables, errors);
+  ei_x_buff metrics_buff  = make_metrics_ei_buffer(metrics, errors);
+
+  ei_x_buff x;
+  if (ei_x_new(&x)) {
+    *errors << "Can't create new ei_x_buff" << std::endl;
+    return x;
+  }
+  if (ei_x_encode_version(&x)) {
+    *errors << "Can't encode binary format version" << std::endl;
+    ei_x_free(&x);
+    return x;
+  }
+  if (ei_x_encode_tuple_header(&x, 8)) {
+    *errors << "Can't create scheduler result: can't encode tuple header" << std::endl;
+    ei_x_free(&x);
+    return x;
+  }
+  if (ei_x_encode_atom(&x, "scheduler_result")) {
+    *errors << "Can't create scheduler result: can't encode atom scheduler_result" << std::endl;
+    ei_x_free(&x);
+    return x;
+  }
+  if (ei_x_append(&x, &timetables_buff)) {
+    *errors << "Can't create scheduler result: can't encode timetables" << std::endl;
+    ei_x_free(&x);
+    return x;
+  }
+  if (ei_x_append(&x, &metrics_buff)) {
+    *errors << "Can't create scheduler result: can't encode metrics" << std::endl;
+    ei_x_free(&x);
+    return x;
+  }
+  if (ei_x_encode_string(&x, result_.get_request_id().c_str())) {
+    *errors << "Can't create scheduler result: can't encode request ID" << std::endl;
+    ei_x_free(&x);
+    return x;
+  }
+  if (ei_x_encode_long(&x, result_.get_status())) {
+    *errors << "Can't create scheduler result: can't encode status" << std::endl;
+    ei_x_free(&x);
+    return x;
+  }
+  if (ei_x_encode_double(&x, result_.get_astro_time())) {
+    *errors << "Can't create scheduler result: can't encode astro time" << std::endl;
+    ei_x_free(&x);
+    return x;
+  }
+  if (ei_x_encode_double(&x, result_.get_idle_time())) {
+    *errors << "Can't create scheduler result: can't encode idle time" << std::endl;
+    ei_x_free(&x);
+    return x;
+  }
+  if (ei_x_encode_double(&x, result_.get_work_time())) {
+    *errors << "Can't create scheduler result: can't encode work time" << std::endl;
+    ei_x_free(&x);
+    return x;
+  }
+
+  return x;
+}
 
 //-------------------------
 //--- TimetableResponse ---
@@ -90,10 +224,10 @@ TimetableResponse::TimetableResponse(const std::shared_ptr<CommandContext> &cont
   }
   result_.set_timetable(tt);
   result_.set_status(succeeded());
-  //result_.print("   ", '\n');
+  result_.print("   ", '\n');
 }
 
-bool TimetableResponse::serialize(std::unique_ptr<unsigned char[]> *data,
+bool TimetableResponse::serialize(std::unique_ptr<char[]> *data,
                                   size_t *size,
                                   std::stringstream *errors) {
   if (data == nullptr || size == nullptr) {
@@ -105,58 +239,18 @@ bool TimetableResponse::serialize(std::unique_ptr<unsigned char[]> *data,
     errors = &errors_;
   }
   refresh_timers();
-  const auto timetable_eterms = make_timetable_eterms();
-  const auto metric_eterms = make_metric_eterms();
-  const auto result_eterm = make_scheduler_result_eterm(timetable_eterms, metric_eterms);
-  const bool is_encoded = encode_scheduler_result(result_eterm, size, data, errors);
-  return is_encoded;
-}
+  const ei_x_buff x = make_scheduler_result_ei_buffer(result_.get_timetable(), result_.get_metrics(), errors);
 
-std::vector<ETERM*> TimetableResponse::make_timetable_eterms() const {
-  std::vector<ETERM*> timetable_eterms;
-  for (const auto& table: result_.get_timetable()) {
-    const auto &nodes = table.get_job_nodes();
-    if (nodes.empty()) {
-      continue;
-    }
-
-    ETERM *props[SwmTimeTableTupleSize];
-    props[0] = erl_mk_atom("timetable");
-    props[1] = erl_mk_ulonglong(table.get_start_time());
-    props[2] = erl_mk_string(table.get_job_id().c_str());
-
-    props[3] = erl_mk_empty_list();
-    size_t nodes_cnt = nodes.size();
-    for (size_t j = 0; j < nodes_cnt; ++j) {
-      props[3] = erl_cons(erl_mk_string(nodes[nodes_cnt - j - 1].c_str()), props[3]);
-    }
-
-    ETERM *eterm = erl_mk_tuple(props, SwmTimeTableTupleSize);
-    timetable_eterms.push_back(eterm);
-  }
-  return timetable_eterms;
-}
-
-std::vector<ETERM*> TimetableResponse::make_metric_eterms() const {
-  std::vector<ETERM*> metric_eterms;
-  for (const auto& metric: result_.get_metrics()) {
-    ETERM *props[SwmMetricTupleSize];
-    props[0] = erl_mk_atom("metric");
-    props[1] = erl_mk_string(metric.get_name().c_str());
-    props[2] = erl_mk_ulonglong(metric.get_value_integer());
-    props[3] = erl_mk_float(metric.get_value_float64());
-    ETERM *eterm = erl_mk_tuple(props, SwmMetricTupleSize);
-    metric_eterms.push_back(eterm);
-  }
-  return metric_eterms;
+  data->reset(x.buff);
+  *size = x.index;
+  return x.buff != nullptr;
 }
 
 //-----------------------
 //--- MetricsResponse ---
 //-----------------------
 
-bool MetricsResponse::serialize(std::unique_ptr<unsigned char[]> *data, size_t *size,
-                                std::stringstream *) {
+bool MetricsResponse::serialize(std::unique_ptr<char[]> *data, size_t *size, std::stringstream *) {
   if (data == nullptr || size == nullptr) {
     throw std::runtime_error("MetricsResponse::serialize(): \"data\" and \"size\" cannot be equal to nullptr");
   }
@@ -183,21 +277,17 @@ bool MetricsResponse::serialize(std::unique_ptr<unsigned char[]> *data, size_t *
 //--- EmptyResponse ---
 //---------------------
 
-bool EmptyResponse::serialize(std::unique_ptr<unsigned char[]> *data, size_t *size,
-                              std::stringstream *)
-{
+bool EmptyResponse::serialize(std::unique_ptr<char[]> *data,
+                              size_t *size,
+                              std::stringstream *errors) {
   if (data == nullptr || size == nullptr) {
     throw std::runtime_error(
       "EmptyResponse::serialize(): \"data\" and \"size\" cannot be equal to nullptr");
   }
-
-  std::stringstream errors;
-  const auto result_eterm = make_scheduler_result_eterm({}, {});
-  const bool is_encoded = encode_scheduler_result(result_eterm, size, data, &errors);
-  if (errors.str().size()) {
-    std::cerr << "ERRORS: " << errors.str() << std::endl;
-  }
-  return is_encoded;
+  const ei_x_buff x =  make_scheduler_result_ei_buffer({}, {}, errors);
+  data->reset(x.buff);
+  *size = x.index;
+  return x.buff != nullptr;
 }
 
 } // util

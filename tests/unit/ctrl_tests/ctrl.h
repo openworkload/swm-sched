@@ -50,8 +50,8 @@ class ctrl : public ::testing::Test {
   };
 
   void SetUp() {
-    erl_init(nullptr, 0);
     std::stringstream errors;
+    ASSERT_EQ(ei_init(), 0);
     ASSERT_TRUE(factory_.load_plugins(find_plugin_dir(), &errors)) << errors.str();
     ASSERT_TRUE(scanner_.scan());
   }
@@ -170,7 +170,7 @@ class ctrl : public ::testing::Test {
            "state": "Q",
            "request": {
              "resource": { "name": "node", "count": 3 },
-             "resource": { "name": "mem", "count": 1073741824 }
+             "resource": { "name": "mem", "count": 1073741824 },
            }
          }
        ],
@@ -184,12 +184,10 @@ class ctrl : public ::testing::Test {
          { "id": "1",
            "state": "down",
            "jobs_per_node": 1,
-           "addresses": {}
          },
          { "id": "2",
            "state": "up",
            "jobs_per_node": 2,
-           "addresses": {}
          }
        ],
        "node": [
@@ -198,13 +196,11 @@ class ctrl : public ::testing::Test {
            "state_alloc": "free",
            "resources": {
              "resource": {"name": "cpu", "count": 24},
-             "resource": {"name": "mem", "count": 68719476736}
+             "resource": {"name": "mem", "count": 68719476736},
            },
-           "prices": {}
          },
          { "id": "3",
            "state_power": "down",
-           "prices": {}
          }
        ],
        "rh": [

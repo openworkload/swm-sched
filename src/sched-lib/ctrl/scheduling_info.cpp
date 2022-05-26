@@ -63,7 +63,7 @@ static inline void print_resource_hierarchy_helper(const RhItem &item,
   }
 }
 
-void SchedulingInfo::print_resource_hierarchy(std::ostream *str) {
+void SchedulingInfo::print_resource_hierarchy(std::ostream *str) const {
   if (str != nullptr) {
     for (size_t i = 0; i < rh_.size(); ++i) {
       print_resource_hierarchy_helper(rh_[i], str, 0);

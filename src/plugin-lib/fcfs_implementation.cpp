@@ -82,10 +82,10 @@ bool FcfsImplementation::schedule(const std::vector<const SwmJob *> &jobs,
       {
         bool has_deps = false;
         for (const auto &dep : job->get_deps()) {
-          auto iter = jobs_to_endtimes.find(dep.x2);
+          auto iter = jobs_to_endtimes.find(std::get<1>(dep));
           if (iter == jobs_to_endtimes.end()) {
             //std::cerr << "FCFS limitation: job #\"" << job->get_id() << "\" depends on "
-            //  << "job #\"" << dep.x2 << "\" and must be scheduled after it";
+            //  << "job #\"" << std::get<1>(dep) << "\" and must be scheduled after it";
             has_deps = true;
             break;
           }
@@ -190,17 +190,17 @@ bool FcfsImplementation::is_node_owned_by_other_job(const SwmJob &job,
     if (res.get_name() != "job") {
       return false;
     }
-    const std::vector<SwmTupleAtomEterm> props = res.get_properties();
+    std::vector<SwmTupleAtomBuff> props = res.get_properties();
     auto iter_id = std::find_if(props.begin(), props.end(),
-                                [](const SwmTupleAtomEterm &prop) -> bool {
-      return prop.x1 == "id";
+                                [](const SwmTupleAtomBuff &prop) -> bool {
+      return std::get<0>(prop) == "id";
     });
     if (iter_id == props.end()) {
       return false;
     }
 
     std::string prop_id;
-    if (eterm_to_str(iter_id->x2, prop_id)) {
+    if (ei_buffer_to_str(std::get<1>(*iter_id), prop_id)) {
       return false;
     }
     return res.get_name() == "job" && prop_id != job_id;
@@ -226,27 +226,27 @@ bool FcfsImplementation::does_node_fit_request(const std::vector<SwmResource> &r
                    resources.end(),
                    [&req, &error](const SwmResource &res) -> bool {
                      if (req.get_name() == res.get_name() && req.get_count() <= res.get_count()) {
-                       const auto req_props = req.get_properties();
+                       auto req_props = req.get_properties();
                        if (req_props.size()) {
-                         const auto res_props = res.get_properties();
-                         for (const SwmTupleAtomEterm &req_prop : req_props) {
+                         auto res_props = res.get_properties();
+                         for (SwmTupleAtomBuff &req_prop : req_props) {
                            const auto prop_found =
                              std::find_if(res_props.begin(),
                                           res_props.end(),
-                                          [&req_prop](const auto &res_prop) -> bool {
-                                            if (res_prop.x1 == req_prop.x1) {
+                                          [&req_prop](auto &res_prop) -> bool {
+                                            if (std::get<0>(res_prop) == std::get<0>(req_prop)) {
                                               std::string res_x2, req_x2;
-                                              eterm_to_str(res_prop.x2, res_x2);
-                                              eterm_to_str(req_prop.x2, req_x2);
+                                              ei_buffer_to_str(std::get<1>(res_prop), res_x2);
+                                              ei_buffer_to_str(std::get<1>(req_prop), req_x2);
                                               return res_x2 == req_x2;
                                             }
                                             return false;
                                           });
                            if (prop_found == res_props.end()) {
                              std::string value;
-                             eterm_to_str(req_prop.x2, value);
+                             ei_buffer_to_str(std::get<1>(req_prop), value);
                              *error << "resource's \"" << req.get_name() << "\" property "
-                                   << req_prop.x1 << "=" << value << " not found; ";
+                                   << std::get<0>(req_prop) << "=" << value << " not found; ";
                              return false;
                            }
                          };

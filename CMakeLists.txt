@@ -66,19 +66,6 @@ else()
 endif()
 
 
-# External library erl_interface.lib / liberl_interface.a
-add_library(erl_interface STATIC IMPORTED)
-if(MSVC)
-    set_target_properties(erl_interface PROPERTIES IMPORTED_LOCATION_DEBUG
-                          $ENV{_KERL_ACTIVE_DIR}/usr/lib/erl_interface_mdd.lib)
-    set_target_properties(erl_interface PROPERTIES IMPORTED_LOCATION_RELEASE
-                          $ENV{_KERL_ACTIVE_DIR}/usr/lib/erl_interface_md.lib)
-else()
-    set_target_properties(erl_interface PROPERTIES IMPORTED_LOCATION
-                          $ENV{_KERL_ACTIVE_DIR}/usr/lib/liberl_interface.a)
-endif()
-
-
 # Another external library, Windows-only
 if(MSVC)
     add_library(Ws2 STATIC IMPORTED)
@@ -111,7 +98,7 @@ endif()
 macro(swm_set_gcc_flags target_name)
     if(NOT MSVC)
         set_target_properties(${target_name} PROPERTIES COMPILE_FLAGS
-                              "--std=c++14 -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic")
+                              "--std=c++17 -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic")
     endif()
 endmacro(swm_set_gcc_flags target_name)
 
@@ -195,10 +182,9 @@ macro(swm_configure_exe target_name out_name)
     swm_configure_assembly(${target_name} ${out_name})
 
     # Beware - it's a magic lib order!
-    target_link_libraries(${target_name} erl_interface)
     target_link_libraries(${target_name} ei)
     target_link_libraries(${target_name} sched-lib)
-    target_link_libraries(${target_name} wm-lib)
+    target_link_libraries(${target_name} wm-lib ei)
 
     if(NOT MSVC)
         target_link_libraries(${target_name} ${CMAKE_DL_LIBS})
@@ -221,7 +207,6 @@ macro(swm_configure_test target_name out_name test_headers)
     target_link_libraries(${target_name} sched-lib)
     target_link_libraries(${target_name} plugin-lib)
     target_link_libraries(${target_name} wm-lib)
-    target_link_libraries(${target_name} erl_interface)
     target_link_libraries(${target_name} ei)
 
     if(NOT MSVC)
@@ -243,7 +228,6 @@ endmacro(swm_configure_test target_name out_name test_headers)
 macro(swm_configure_plugin target_name out_name)
 swm_configure_assembly(${target_name} ${out_name})
 target_include_directories(${target_name} PRIVATE ${PLG_LIB_DIR})
-target_link_libraries(${target_name} erl_interface)
 target_link_libraries(${target_name} ei)
 target_link_libraries(${target_name} wm-lib)
 target_link_libraries(${target_name} plugin-lib)

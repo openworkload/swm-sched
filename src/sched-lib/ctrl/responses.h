@@ -24,18 +24,23 @@ class ResponseInterface {
 
  protected:
   ResponseInterface() { };
-  virtual bool serialize(std::unique_ptr<unsigned char[]> *data, size_t *size,
+  virtual bool serialize(std::unique_ptr<char[]> *data, size_t *size,
                          std::stringstream *errors) = 0;
-  ETERM* make_scheduler_result_eterm(std::vector<ETERM*> timetable_eterms,
-                                     std::vector<ETERM*> metric_eterms) const;
-  bool encode_scheduler_result(ETERM* result_eterm, size_t *size,
-                               std::unique_ptr<unsigned char[]> *data,
+  ei_x_buff make_scheduler_result_ei_buffer(const std::vector<SwmTimetable> &timetables,
+                                            const std::vector<SwmMetric> &metrics,
+                                            std::stringstream *errors) const;
+  bool encode_scheduler_result(const char* result_eterm, size_t *size,
+                               std::unique_ptr<char[]> *data,
                                std::stringstream *errors) const;
   void refresh_timers();
 
   SwmSchedulerResult result_;
 
  friend class Sender;
+
+ private:
+  ei_x_buff make_timetables_ei_buffer(const std::vector<SwmTimetable> &timetables, std::stringstream *errors) const;
+  ei_x_buff make_metrics_ei_buffer(const std::vector<SwmMetric> &metrics, std::stringstream *errors) const;
 };
 
 
@@ -49,10 +54,8 @@ class TimetableResponse : public ResponseInterface {
   virtual bool succeeded() const override { return true; }
 
  private:
-  virtual bool serialize(std::unique_ptr<unsigned char[]> *data,
+  virtual bool serialize(std::unique_ptr<char[]> *data,
                          size_t *size, std::stringstream *errors) override;
-  std::vector<ETERM*> make_timetable_eterms() const;
-  std::vector<ETERM*> make_metric_eterms() const;
 
   std::shared_ptr<CommandContext> context_;
   std::shared_ptr<MetricsSnapshot> metrics_;
@@ -68,7 +71,7 @@ class MetricsResponse : public ResponseInterface {
   virtual bool succeeded() const override { return true; };
 
  private:
-  virtual bool serialize(std::unique_ptr<unsigned char[]> *data, size_t *size,
+  virtual bool serialize(std::unique_ptr<char[]> *data, size_t *size,
                          std::stringstream *errors) override;
   std::shared_ptr<CommandContext> context_;
   std::shared_ptr<MetricsSnapshot> metrics_;
@@ -85,7 +88,7 @@ class EmptyResponse : public ResponseInterface {
   virtual bool succeeded() const override { return succeeded_; };
 
  private:
-  virtual bool serialize(std::unique_ptr<unsigned char[]> *data, size_t *size,
+  virtual bool serialize(std::unique_ptr<char[]> *data, size_t *size,
                          std::stringstream *errors) override;
   std::shared_ptr<CommandContext> context_;
   bool succeeded_;

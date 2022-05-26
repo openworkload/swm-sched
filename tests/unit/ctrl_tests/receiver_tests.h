@@ -56,15 +56,14 @@ TEST_F(ctrl, receiver_parse_jobs) {
   auto scmd = static_cast<swm::util::ScheduleCommand *>(cmd.get());
 
   ASSERT_EQ(scmd->scheduling_info()->jobs().size(), 1);
-  auto job = scmd->scheduling_info()->jobs()[0];
+  const auto job = scmd->scheduling_info()->jobs()[0];
   ASSERT_EQ(job->get_id(), "10000000-0000-0000-0000-000000000000");
   ASSERT_EQ(job->get_cluster_id(), "1");
   ASSERT_EQ(job->get_state(), "Q");
 
   auto resources = job->get_request();
   ASSERT_EQ(resources.size(), 2);
-  std::sort(resources.begin(), resources.end(),
-            name_comparator<const swm::SwmResource>());
+  std::sort(resources.begin(), resources.end(), name_comparator<const swm::SwmResource>());
   auto res1 = resources[0];
   ASSERT_EQ(res1.get_name(), "node");
   ASSERT_EQ(res1.get_count(), 3);
@@ -133,8 +132,7 @@ TEST_F(ctrl, receiver_parse_nodes) {
   ASSERT_EQ(node1->get_state_alloc(), "free");
   ASSERT_EQ(node1->get_resources().size(), 2);
   auto resources = node1->get_resources();
-  std::sort(resources.begin(), resources.end(),
-            name_comparator<const swm::SwmResource>());
+  std::sort(resources.begin(), resources.end(), name_comparator<const swm::SwmResource>());
   auto node1_res1 = resources[0];
   ASSERT_EQ(node1_res1.get_name(), "cpu");
   ASSERT_EQ(node1_res1.get_count(), 24);

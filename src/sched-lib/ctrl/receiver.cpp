@@ -39,7 +39,7 @@ bool Receiver::finished() {
   return finished_;
 }
 
-bool Receiver::get_data(std::vector<std::unique_ptr<unsigned char[]> > *data,
+bool Receiver::get_data(std::vector<std::unique_ptr<char[]>> *data,
                         CommandType *cmd,
                         SwmUID *uid,
                         std::stringstream *errors) {
@@ -54,7 +54,7 @@ bool Receiver::get_data(std::vector<std::unique_ptr<unsigned char[]> > *data,
     errors = &errors_;
   }
 
-  unsigned char command;
+  char command;
   if (!swm_read_exact(input_, &command, 1)) {
     *errors << "could not read command";
     return false;
@@ -69,7 +69,7 @@ bool Receiver::get_data(std::vector<std::unique_ptr<unsigned char[]> > *data,
   //TODO: read uid
   *uid = 1;
 
-  unsigned char total = 0;
+  char total = 0;
   if (!swm_read_exact(input_, &total, 1)) {
     *errors << "could not read total data count";
     return false;
@@ -77,7 +77,7 @@ bool Receiver::get_data(std::vector<std::unique_ptr<unsigned char[]> > *data,
   
   data->resize(total);
   for (unsigned char i = 0; i < total; ++i) {
-    unsigned char type = 0;
+    char type = 0;
     if (!swm_read_exact(input_, &type, 1)) {
       *errors << "could not read data type (i=" << i << ")";
       return false;
@@ -93,7 +93,7 @@ bool Receiver::get_data(std::vector<std::unique_ptr<unsigned char[]> > *data,
       return false;
     }
 
-    (*data)[type].reset(new unsigned char[len]);
+    (*data)[type].reset(new char[len]);
     auto ptr = (*data)[type].get();
     if (!swm_read_exact(input_, ptr, len)) {
       *errors << "couldn't get " << len << " bytes of data type " << type;
@@ -113,7 +113,7 @@ static inline bool is_good(std::istream *str) {
 }
 
 void Receiver::worker_loop() {
-  std::vector<std::unique_ptr<unsigned char[]> > data;
+  std::vector<std::unique_ptr<char[]>> data;
   CommandType cmd_type;
   SwmUID uid;
   std::stringstream errors;
