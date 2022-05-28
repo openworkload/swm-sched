@@ -1,10 +1,15 @@
-Sky Workload Manager / Sky Port scheduler
-=========================================
+Sky Port scheduler
+==================
 
 
 ## Description
 
-[This](https://github.com/skyworkflows/swm-sched) is a scheduler for Sky Workload Manager and its single-user version Sky Port, which core daemon can be found [here](https://github.com/skyworkflows/swm-core). Sky Port is an universal bus between user software and compute resources. It can also be considered as a transportation layer between workload producers and compute resource providers. Sky Port makes it easy to connect user software to different cloud resources. Jobs submitted to Sky Port or Sky Workload Manager are scheduled by the daemon represented by this repository.
+[This](https://github.com/openworkload/swm-sched) is a scheduler for Open Workload project,
+which core daemon can be found [here](https://github.com/openworkload/swm-core).
+Sky Port is an universal bus between user software and compute resources.
+It can also be considered as a transportation layer between workload producers and compute resource providers.
+Sky Port makes it easy to connect user software to different cloud resources.
+Jobs submitted to Sky Port are scheduled by the daemon represented by this repository.
 
 
 ## Build
