@@ -1,0 +1,97 @@
+#!/bin/bash
+
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
+
+while [[ $# -gt 0 ]]
+do
+i="$1"
+
+case $i in
+    -h|--help)
+    echo "The script starts all scheduler benchmarks"
+    echo "Usage: ${0##*/}"
+    exit 0
+    ;;
+    *)
+    shift
+    ;;
+esac
+done
+
+ME=$( readlink -f "$0" )
+ROOT_DIR=$( dirname "$( dirname "$ME" )" )
+SETUPS_DIR=${ROOT_DIR}/scheduler/setups
+UTILS_DIR=${ROOT_DIR}/scheduler/utils
+
+DATE=$(date +%Y-%m-%dT%H:%M:%S)
+OUTPUT_GRAPH_FILE=~/tmp/swm-sched-benchmark-${DATE}.png
+
+TMPFILE_DATA=$(mktemp /tmp/swm-benchmarks-data.XXXXXX.tmp)
+TMPFILE_PLOT=$(mktemp /tmp/swm-benchmarks-plot.XXXXXX.tmp)
+
+trap 'rm -f -- "$TMPFILE_DATA"' INT TERM HUP EXIT
+trap 'rm -f -- "$TMPFILE_PLOT"' INT TERM HUP EXIT
+
+echo "Using data file: ${TMPFILE_DATA}"
+echo "Using plot file: ${TMPFILE_PLOT}"
+
+cat ${UTILS_DIR}/template.gnuplot > ${TMPFILE_PLOT}
+
+if [ -z $SWM_BENCHMARK_JOBS ]; then
+    export SWM_BENCHMARK_JOBS=1000
+fi
+if [ -z $SWM_BENCHMARK_JOB_STEP ]; then
+    export SWM_BENCHMARK_JOB_STEP=100
+fi
+if [ -z $SWM_BENCHMARK_NODES ]; then
+    export SWM_BENCHMARK_NODES=1000
+fi
+if [ -z $SWM_BENCHMARK_NODE_STEP ]; then
+    export SWM_BENCHMARK_NODE_STEP=100
+fi
+if [ -z $SWM_BENCHMARK_JOB_NODES ]; then
+    export SWM_BENCHMARK_JOB_NODES=1
+fi
+if [ -z $SWM_BENCHMARK_SETUP_FILE ]; then
+    export SWM_BENCHMARK_SETUP_FILE=${SETUPS_DIR}/benchmark1.json
+fi
+env | grep SWM
+
+TITLE="swm-sched benchmark\\\njobs=[0,$SWM_BENCHMARK_JOBS]:$SWM_BENCHMARK_JOB_STEP\\\nnodes=[0,$SWM_BENCHMARK_NODES]:$SWM_BENCHMARK_NODE_STEP"
+
+for JOB_TYPE1_NUMBER in $(seq 0 $SWM_BENCHMARK_JOB_STEP $SWM_BENCHMARK_JOBS); do
+    echo "Run $JOB_TYPE1_NUMBER jobs (nodes in [0, $SWM_BENCHMARK_NODES], step=$SWM_BENCHMARK_NODE_STEP)"
+    for NODES_NUMBER in $(seq 0 $SWM_BENCHMARK_NODE_STEP $SWM_BENCHMARK_NODES); do
+        echo -n "${JOB_TYPE1_NUMBER} ${NODES_NUMBER} " >> ${TMPFILE_DATA}
+        CMD="${UTILS_DIR}/benchmark.py\
+            -s ${SWM_BENCHMARK_SETUP_FILE}\
+            -t job=ID1:${JOB_TYPE1_NUMBER}\
+            -t node=ID1:${NODES_NUMBER}\
+            -t node=ID2:${NODES_NUMBER}\
+            -o astro-time"
+        echo "COMMAND: $CMD"
+        $CMD 2>/dev/null >> ${TMPFILE_DATA}
+        echo >> ${TMPFILE_DATA}
+    done
+done
+
+
+sed -i "s%INPUTFILE%${TMPFILE_DATA}%g" ${TMPFILE_PLOT}
+sed -i "s%OUTPUTFILE%${OUTPUT_GRAPH_FILE}%g" ${TMPFILE_PLOT}
+sed -i "s%JOBSTEP%${SWM_BENCHMARK_JOB_STEP}%g" ${TMPFILE_PLOT}
+sed -i "s%NODESTEP%${SWM_BENCHMARK_NODE_STEP}%g" ${TMPFILE_PLOT}
+sed -i "s%TITLE%${TITLE}%g" ${TMPFILE_PLOT}
+
+echo
+echo "gnuplot commands:"
+echo "------------------------------------------------------"
+cat ${TMPFILE_PLOT}
+echo "------------------------------------------------------"
+echo
+
+gnuplot ${TMPFILE_PLOT}
+if [ "$?" == "0" ]; then
+    echo "File created: ${OUTPUT_GRAPH_FILE}"
+else
+    echo "ERROR: gnuplot has failed, check out the benchmark log file!"
+fi

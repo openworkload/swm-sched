@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
+
+rerun_as_user() {
+    if [ "$UID" == "0" ]; then
+        RUN_USER=$1
+        runuser -u ${RUN_USER} $0 $@
+        exit $?
+    else
+        echo "Current user ID: $UID"
+    fi
+}
+
+while [[ $# -gt 0 ]]; do
+i="$1"
+case $i in
+    -h|--help)
+        echo "The script starts all scheduler benchmarks"
+        echo "Usage: ${0##*/} [-u USER]"
+        exit 0
+        ;;
+    -u|--user)
+        rerun_as_user $2
+        shift # past argument
+        shift # past value
+        ;;
+    -u=*|--user=*)
+        rerun_as_user ${i#*=}
+        shift # past argument=value
+        ;;
+    *)
+        shift
+        ;;
+esac
+done
+
+ME=$( readlink -f "$0" )
+ROOT_DIR=$( dirname "$( dirname "$ME" )" )
+SETUPS_DIR=${ROOT_DIR}/scheduler/setups
+UTILS_DIR=${ROOT_DIR}/scheduler/utils
+
+SETUP_FILE=${SETUPS_DIR}/fcfs.json
+EXPECTED_RESULT_FILE=${SETUPS_DIR}/fcfs-expected.hrl
+
+${UTILS_DIR}/test.py -s ${SETUP_FILE} -e ${EXPECTED_RESULT_FILE}
+exit $?

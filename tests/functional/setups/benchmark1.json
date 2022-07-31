@@ -1,0 +1,66 @@
+{
+  "job": [
+    {
+      "id": "ID1",
+      "cluster_id": 1,
+      "state": "Q",
+      "duration": 10,
+      "request": {
+          "resource": {"name": "node", "count": 1}
+      }
+    }
+  ],
+
+  "cluster": [
+    {
+      "id": 1,
+      "state": "up",
+      "scheduler": 1,
+      "manager": "chead"
+    }
+  ],
+
+  "partition": [
+    {
+      "id": 1,
+      "state": "online",
+      "jobs_per_node": 1,
+      "manager": "phead"
+    }
+  ],
+
+  "node": [
+    {
+      "id": "ID1",
+      "state_power": "up",
+      "state_alloc": "free",
+      "parent": "phead",
+      "resources": {
+          "resource": {"name": "cpu", "count": 32},
+          "resource": {"name": "mem", "count": 68719476736}
+      }
+    }
+  ],
+
+  "rh": [
+    {
+      "cluster": 1,
+      "sub": [
+        {
+          "partition": 1,
+          "sub": [
+            {"node": "ID1"}
+          ]
+        }
+      ]
+    }
+  ],
+
+  "scheduler": [
+    {
+      "id": 1,
+      "name": "fcfs",
+      "state": "up"
+    }
+  ]
+}
