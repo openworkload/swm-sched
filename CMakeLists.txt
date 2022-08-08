@@ -3,7 +3,7 @@
 if(MSVC)
     cmake_minimum_required(VERSION 3.6)
 else()
-    cmake_minimum_required(VERSION 2.8)
+    cmake_minimum_required(VERSION 2.8.5)
 endif()
 
 
@@ -18,6 +18,7 @@ set(PLG_LIB_DIR            ${PROJECT_SOURCE_DIR}/src/plugin-lib)
 set(PLG_DUMMY_DIR          ${PROJECT_SOURCE_DIR}/src/plugins/dummy)
 set(PLG_FCFS_DIR           ${PROJECT_SOURCE_DIR}/src/plugins/fcfs)
 set(PLG_FAIR_SHARING_DIR   ${PROJECT_SOURCE_DIR}/src/plugins/fair-sharing)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 if(MSVC)
     set_property(GLOBAL PROPERTY USE_FOLDERS ON)
     set(CMAKE_CONFIGURATION_TYPES "Debug;Release" CACHE STRING "" FORCE)

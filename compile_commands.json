@@ -1,0 +1,317 @@
+[
+{
+  "directory": "/home/taras/projects/swm-sched",
+  "command": "/usr/bin/c++   -isystem /usr/erlang/usr/include -I/home/taras/projects/swm-sched/deps/swm-core/c_src/lib -I/home/taras/projects/swm-sched/src/sched-lib    --std=c++17 -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -o CMakeFiles/sched-exe.dir/src/sched-exe/cli_args.cpp.o -c /home/taras/projects/swm-sched/src/sched-exe/cli_args.cpp",
+  "file": "/home/taras/projects/swm-sched/src/sched-exe/cli_args.cpp"
+},
+{
+  "directory": "/home/taras/projects/swm-sched",
+  "command": "/usr/bin/c++   -isystem /usr/erlang/usr/include -I/home/taras/projects/swm-sched/deps/swm-core/c_src/lib -I/home/taras/projects/swm-sched/src/sched-lib    --std=c++17 -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -o CMakeFiles/sched-exe.dir/src/sched-exe/main.cpp.o -c /home/taras/projects/swm-sched/src/sched-exe/main.cpp",
+  "file": "/home/taras/projects/swm-sched/src/sched-exe/main.cpp"
+},
+{
+  "directory": "/home/taras/projects/swm-sched",
+  "command": "/usr/bin/c++   -isystem /usr/erlang/usr/include -I/home/taras/projects/swm-sched/deps/swm-core/c_src/lib -I/home/taras/projects/swm-sched/src/sched-lib -isystem /usr/local/GTest/include -I/home/taras/projects/swm-sched/tests/unit -I/home/taras/projects/swm-sched/src/sched-exe -I/home/taras/projects/swm-sched/src/plugin-lib    --std=c++17 -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -o CMakeFiles/sched-tests.dir/tests/unit/helpers.cpp.o -c /home/taras/projects/swm-sched/tests/unit/helpers.cpp",
+  "file": "/home/taras/projects/swm-sched/tests/unit/helpers.cpp"
+},
+{
+  "directory": "/home/taras/projects/swm-sched",
+  "command": "/usr/bin/c++   -isystem /usr/erlang/usr/include -I/home/taras/projects/swm-sched/deps/swm-core/c_src/lib -I/home/taras/projects/swm-sched/src/sched-lib -isystem /usr/local/GTest/include -I/home/taras/projects/swm-sched/tests/unit -I/home/taras/projects/swm-sched/src/sched-exe -I/home/taras/projects/swm-sched/src/plugin-lib    --std=c++17 -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -o CMakeFiles/sched-tests.dir/tests/unit/main.cpp.o -c /home/taras/projects/swm-sched/tests/unit/main.cpp",
+  "file": "/home/taras/projects/swm-sched/tests/unit/main.cpp"
+},
+{
+  "directory": "/home/taras/projects/swm-sched",
+  "command": "/usr/bin/c++   -isystem /usr/erlang/usr/include -I/home/taras/projects/swm-sched/deps/swm-core/c_src/lib -I/home/taras/projects/swm-sched/src/sched-lib -isystem /usr/local/GTest/include -I/home/taras/projects/swm-sched/tests/unit -I/home/taras/projects/swm-sched/src/sched-exe -I/home/taras/projects/swm-sched/src/plugin-lib    --std=c++17 -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -o CMakeFiles/sched-tests.dir/tests/unit/scheduling_info_configurator.cpp.o -c /home/taras/projects/swm-sched/tests/unit/scheduling_info_configurator.cpp",
+  "file": "/home/taras/projects/swm-sched/tests/unit/scheduling_info_configurator.cpp"
+},
+{
+  "directory": "/home/taras/projects/swm-sched",
+  "command": "/usr/bin/c++   -isystem /usr/erlang/usr/include -I/home/taras/projects/swm-sched/deps/swm-core/c_src/lib -I/home/taras/projects/swm-sched/src/sched-lib -isystem /usr/local/GTest/include -I/home/taras/projects/swm-sched/tests/unit -I/home/taras/projects/swm-sched/src/sched-exe -I/home/taras/projects/swm-sched/src/plugin-lib    --std=c++17 -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -o CMakeFiles/sched-tests.dir/tests/unit/scheduling_info_presets.cpp.o -c /home/taras/projects/swm-sched/tests/unit/scheduling_info_presets.cpp",
+  "file": "/home/taras/projects/swm-sched/tests/unit/scheduling_info_presets.cpp"
+},
+{
+  "directory": "/home/taras/projects/swm-sched",
+  "command": "/usr/bin/c++   -isystem /usr/erlang/usr/include -I/home/taras/projects/swm-sched/deps/swm-core/c_src/lib -I/home/taras/projects/swm-sched/src/sched-lib -isystem /usr/local/GTest/include -I/home/taras/projects/swm-sched/tests/unit -I/home/taras/projects/swm-sched/src/sched-exe -I/home/taras/projects/swm-sched/src/plugin-lib    --std=c++17 -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -o CMakeFiles/sched-tests.dir/src/sched-exe/cli_args.cpp.o -c /home/taras/projects/swm-sched/src/sched-exe/cli_args.cpp",
+  "file": "/home/taras/projects/swm-sched/src/sched-exe/cli_args.cpp"
+},
+{
+  "directory": "/home/taras/projects/swm-sched",
+  "command": "/usr/bin/c++   -isystem /usr/erlang/usr/include -I/home/taras/projects/swm-sched/deps/swm-core/c_src/lib -I/home/taras/projects/swm-sched/src/sched-lib  -fPIC   --std=c++17 -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -o CMakeFiles/sched-lib.dir/src/sched-lib/alg/algorithm.cpp.o -c /home/taras/projects/swm-sched/src/sched-lib/alg/algorithm.cpp",
+  "file": "/home/taras/projects/swm-sched/src/sched-lib/alg/algorithm.cpp"
+},
+{
+  "directory": "/home/taras/projects/swm-sched",
+  "command": "/usr/bin/c++   -isystem /usr/erlang/usr/include -I/home/taras/projects/swm-sched/deps/swm-core/c_src/lib -I/home/taras/projects/swm-sched/src/sched-lib  -fPIC   --std=c++17 -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -o CMakeFiles/sched-lib.dir/src/sched-lib/alg/algorithm_factory.cpp.o -c /home/taras/projects/swm-sched/src/sched-lib/alg/algorithm_factory.cpp",
+  "file": "/home/taras/projects/swm-sched/src/sched-lib/alg/algorithm_factory.cpp"
+},
+{
+  "directory": "/home/taras/projects/swm-sched",
+  "command": "/usr/bin/c++   -isystem /usr/erlang/usr/include -I/home/taras/projects/swm-sched/deps/swm-core/c_src/lib -I/home/taras/projects/swm-sched/src/sched-lib  -fPIC   --std=c++17 -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -o CMakeFiles/sched-lib.dir/src/sched-lib/alg/algorithm_metrics.cpp.o -c /home/taras/projects/swm-sched/src/sched-lib/alg/algorithm_metrics.cpp",
+  "file": "/home/taras/projects/swm-sched/src/sched-lib/alg/algorithm_metrics.cpp"
+},
+{
+  "directory": "/home/taras/projects/swm-sched",
+  "command": "/usr/bin/c++   -isystem /usr/erlang/usr/include -I/home/taras/projects/swm-sched/deps/swm-core/c_src/lib -I/home/taras/projects/swm-sched/src/sched-lib  -fPIC   --std=c++17 -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -o CMakeFiles/sched-lib.dir/src/sched-lib/alg/lib_binding.cpp.o -c /home/taras/projects/swm-sched/src/sched-lib/alg/lib_binding.cpp",
+  "file": "/home/taras/projects/swm-sched/src/sched-lib/alg/lib_binding.cpp"
+},
+{
+  "directory": "/home/taras/projects/swm-sched",
+  "command": "/usr/bin/c++   -isystem /usr/erlang/usr/include -I/home/taras/projects/swm-sched/deps/swm-core/c_src/lib -I/home/taras/projects/swm-sched/src/sched-lib  -fPIC   --std=c++17 -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -o CMakeFiles/sched-lib.dir/src/sched-lib/auxl/cli_args_parser.cpp.o -c /home/taras/projects/swm-sched/src/sched-lib/auxl/cli_args_parser.cpp",
+  "file": "/home/taras/projects/swm-sched/src/sched-lib/auxl/cli_args_parser.cpp"
+},
+{
+  "directory": "/home/taras/projects/swm-sched",
+  "command": "/usr/bin/c++   -isystem /usr/erlang/usr/include -I/home/taras/projects/swm-sched/deps/swm-core/c_src/lib -I/home/taras/projects/swm-sched/src/sched-lib  -fPIC   --std=c++17 -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -o CMakeFiles/sched-lib.dir/src/sched-lib/auxl/directory.cpp.o -c /home/taras/projects/swm-sched/src/sched-lib/auxl/directory.cpp",
+  "file": "/home/taras/projects/swm-sched/src/sched-lib/auxl/directory.cpp"
+},
+{
+  "directory": "/home/taras/projects/swm-sched",
+  "command": "/usr/bin/c++   -isystem /usr/erlang/usr/include -I/home/taras/projects/swm-sched/deps/swm-core/c_src/lib -I/home/taras/projects/swm-sched/src/sched-lib  -fPIC   --std=c++17 -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -o CMakeFiles/sched-lib.dir/src/sched-lib/auxl/file.cpp.o -c /home/taras/projects/swm-sched/src/sched-lib/auxl/file.cpp",
+  "file": "/home/taras/projects/swm-sched/src/sched-lib/auxl/file.cpp"
+},
+{
+  "directory": "/home/taras/projects/swm-sched",
+  "command": "/usr/bin/c++   -isystem /usr/erlang/usr/include -I/home/taras/projects/swm-sched/deps/swm-core/c_src/lib -I/home/taras/projects/swm-sched/src/sched-lib  -fPIC   --std=c++17 -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -o CMakeFiles/sched-lib.dir/src/sched-lib/auxl/lib_funcs.cpp.o -c /home/taras/projects/swm-sched/src/sched-lib/auxl/lib_funcs.cpp",
+  "file": "/home/taras/projects/swm-sched/src/sched-lib/auxl/lib_funcs.cpp"
+},
+{
+  "directory": "/home/taras/projects/swm-sched",
+  "command": "/usr/bin/c++   -isystem /usr/erlang/usr/include -I/home/taras/projects/swm-sched/deps/swm-core/c_src/lib -I/home/taras/projects/swm-sched/src/sched-lib  -fPIC   --std=c++17 -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -o CMakeFiles/sched-lib.dir/src/sched-lib/auxl/metrics.cpp.o -c /home/taras/projects/swm-sched/src/sched-lib/auxl/metrics.cpp",
+  "file": "/home/taras/projects/swm-sched/src/sched-lib/auxl/metrics.cpp"
+},
+{
+  "directory": "/home/taras/projects/swm-sched",
+  "command": "/usr/bin/c++   -isystem /usr/erlang/usr/include -I/home/taras/projects/swm-sched/deps/swm-core/c_src/lib -I/home/taras/projects/swm-sched/src/sched-lib  -fPIC   --std=c++17 -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -o CMakeFiles/sched-lib.dir/src/sched-lib/auxl/time_counter.cpp.o -c /home/taras/projects/swm-sched/src/sched-lib/auxl/time_counter.cpp",
+  "file": "/home/taras/projects/swm-sched/src/sched-lib/auxl/time_counter.cpp"
+},
+{
+  "directory": "/home/taras/projects/swm-sched",
+  "command": "/usr/bin/c++   -isystem /usr/erlang/usr/include -I/home/taras/projects/swm-sched/deps/swm-core/c_src/lib -I/home/taras/projects/swm-sched/src/sched-lib  -fPIC   --std=c++17 -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -o CMakeFiles/sched-lib.dir/src/sched-lib/chn/chain.cpp.o -c /home/taras/projects/swm-sched/src/sched-lib/chn/chain.cpp",
+  "file": "/home/taras/projects/swm-sched/src/sched-lib/chn/chain.cpp"
+},
+{
+  "directory": "/home/taras/projects/swm-sched",
+  "command": "/usr/bin/c++   -isystem /usr/erlang/usr/include -I/home/taras/projects/swm-sched/deps/swm-core/c_src/lib -I/home/taras/projects/swm-sched/src/sched-lib  -fPIC   --std=c++17 -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -o CMakeFiles/sched-lib.dir/src/sched-lib/chn/chain_controller.cpp.o -c /home/taras/projects/swm-sched/src/sched-lib/chn/chain_controller.cpp",
+  "file": "/home/taras/projects/swm-sched/src/sched-lib/chn/chain_controller.cpp"
+},
+{
+  "directory": "/home/taras/projects/swm-sched",
+  "command": "/usr/bin/c++   -isystem /usr/erlang/usr/include -I/home/taras/projects/swm-sched/deps/swm-core/c_src/lib -I/home/taras/projects/swm-sched/src/sched-lib  -fPIC   --std=c++17 -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -o CMakeFiles/sched-lib.dir/src/sched-lib/chn/chain_metrics.cpp.o -c /home/taras/projects/swm-sched/src/sched-lib/chn/chain_metrics.cpp",
+  "file": "/home/taras/projects/swm-sched/src/sched-lib/chn/chain_metrics.cpp"
+},
+{
+  "directory": "/home/taras/projects/swm-sched",
+  "command": "/usr/bin/c++   -isystem /usr/erlang/usr/include -I/home/taras/projects/swm-sched/deps/swm-core/c_src/lib -I/home/taras/projects/swm-sched/src/sched-lib  -fPIC   --std=c++17 -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -o CMakeFiles/sched-lib.dir/src/sched-lib/chn/metrics_snapshot.cpp.o -c /home/taras/projects/swm-sched/src/sched-lib/chn/metrics_snapshot.cpp",
+  "file": "/home/taras/projects/swm-sched/src/sched-lib/chn/metrics_snapshot.cpp"
+},
+{
+  "directory": "/home/taras/projects/swm-sched",
+  "command": "/usr/bin/c++   -isystem /usr/erlang/usr/include -I/home/taras/projects/swm-sched/deps/swm-core/c_src/lib -I/home/taras/projects/swm-sched/src/sched-lib  -fPIC   --std=c++17 -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -o CMakeFiles/sched-lib.dir/src/sched-lib/ctrl/commands.cpp.o -c /home/taras/projects/swm-sched/src/sched-lib/ctrl/commands.cpp",
+  "file": "/home/taras/projects/swm-sched/src/sched-lib/ctrl/commands.cpp"
+},
+{
+  "directory": "/home/taras/projects/swm-sched",
+  "command": "/usr/bin/c++   -isystem /usr/erlang/usr/include -I/home/taras/projects/swm-sched/deps/swm-core/c_src/lib -I/home/taras/projects/swm-sched/src/sched-lib  -fPIC   --std=c++17 -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -o CMakeFiles/sched-lib.dir/src/sched-lib/ctrl/processor.cpp.o -c /home/taras/projects/swm-sched/src/sched-lib/ctrl/processor.cpp",
+  "file": "/home/taras/projects/swm-sched/src/sched-lib/ctrl/processor.cpp"
+},
+{
+  "directory": "/home/taras/projects/swm-sched",
+  "command": "/usr/bin/c++   -isystem /usr/erlang/usr/include -I/home/taras/projects/swm-sched/deps/swm-core/c_src/lib -I/home/taras/projects/swm-sched/src/sched-lib  -fPIC   --std=c++17 -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -o CMakeFiles/sched-lib.dir/src/sched-lib/ctrl/receiver.cpp.o -c /home/taras/projects/swm-sched/src/sched-lib/ctrl/receiver.cpp",
+  "file": "/home/taras/projects/swm-sched/src/sched-lib/ctrl/receiver.cpp"
+},
+{
+  "directory": "/home/taras/projects/swm-sched",
+  "command": "/usr/bin/c++   -isystem /usr/erlang/usr/include -I/home/taras/projects/swm-sched/deps/swm-core/c_src/lib -I/home/taras/projects/swm-sched/src/sched-lib  -fPIC   --std=c++17 -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -o CMakeFiles/sched-lib.dir/src/sched-lib/ctrl/responses.cpp.o -c /home/taras/projects/swm-sched/src/sched-lib/ctrl/responses.cpp",
+  "file": "/home/taras/projects/swm-sched/src/sched-lib/ctrl/responses.cpp"
+},
+{
+  "directory": "/home/taras/projects/swm-sched",
+  "command": "/usr/bin/c++   -isystem /usr/erlang/usr/include -I/home/taras/projects/swm-sched/deps/swm-core/c_src/lib -I/home/taras/projects/swm-sched/src/sched-lib  -fPIC   --std=c++17 -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -o CMakeFiles/sched-lib.dir/src/sched-lib/ctrl/scheduling_info.cpp.o -c /home/taras/projects/swm-sched/src/sched-lib/ctrl/scheduling_info.cpp",
+  "file": "/home/taras/projects/swm-sched/src/sched-lib/ctrl/scheduling_info.cpp"
+},
+{
+  "directory": "/home/taras/projects/swm-sched",
+  "command": "/usr/bin/c++   -isystem /usr/erlang/usr/include -I/home/taras/projects/swm-sched/deps/swm-core/c_src/lib -I/home/taras/projects/swm-sched/src/sched-lib  -fPIC   --std=c++17 -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -o CMakeFiles/sched-lib.dir/src/sched-lib/ctrl/sender.cpp.o -c /home/taras/projects/swm-sched/src/sched-lib/ctrl/sender.cpp",
+  "file": "/home/taras/projects/swm-sched/src/sched-lib/ctrl/sender.cpp"
+},
+{
+  "directory": "/home/taras/projects/swm-sched",
+  "command": "/usr/bin/c++   -isystem /usr/erlang/usr/include -I/home/taras/projects/swm-sched/deps/swm-core/c_src/lib -I/home/taras/projects/swm-sched/src/sched-lib  -fPIC   --std=c++17 -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -o CMakeFiles/sched-lib.dir/src/sched-lib/ctrl/service.cpp.o -c /home/taras/projects/swm-sched/src/sched-lib/ctrl/service.cpp",
+  "file": "/home/taras/projects/swm-sched/src/sched-lib/ctrl/service.cpp"
+},
+{
+  "directory": "/home/taras/projects/swm-sched",
+  "command": "/usr/bin/c++   -isystem /usr/erlang/usr/include -I/home/taras/projects/swm-sched/deps/swm-core/c_src/lib -I/home/taras/projects/swm-sched/src/sched-lib  -fPIC   --std=c++17 -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -o CMakeFiles/sched-lib.dir/src/sched-lib/ctrl/service_metrics.cpp.o -c /home/taras/projects/swm-sched/src/sched-lib/ctrl/service_metrics.cpp",
+  "file": "/home/taras/projects/swm-sched/src/sched-lib/ctrl/service_metrics.cpp"
+},
+{
+  "directory": "/home/taras/projects/swm-sched",
+  "command": "/usr/bin/c++   -isystem /usr/erlang/usr/include -I/home/taras/projects/swm-sched/deps/swm-core/c_src/lib -I/home/taras/projects/swm-sched/src/sched-lib  -fPIC   --std=c++17 -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -o CMakeFiles/sched-lib.dir/src/sched-lib/hw/scanner.cpp.o -c /home/taras/projects/swm-sched/src/sched-lib/hw/scanner.cpp",
+  "file": "/home/taras/projects/swm-sched/src/sched-lib/hw/scanner.cpp"
+},
+{
+  "directory": "/home/taras/projects/swm-sched",
+  "command": "/usr/bin/c++   -isystem /usr/erlang/usr/include -I/home/taras/projects/swm-sched/deps/swm-core/c_src/lib -I/home/taras/projects/swm-sched/src/sched-lib -I/home/taras/projects/swm-sched/src/plugin-lib  -fPIC   --std=c++17 -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -o CMakeFiles/plugin-lib.dir/src/plugin-lib/extended_rh.cpp.o -c /home/taras/projects/swm-sched/src/plugin-lib/extended_rh.cpp",
+  "file": "/home/taras/projects/swm-sched/src/plugin-lib/extended_rh.cpp"
+},
+{
+  "directory": "/home/taras/projects/swm-sched",
+  "command": "/usr/bin/c++   -isystem /usr/erlang/usr/include -I/home/taras/projects/swm-sched/deps/swm-core/c_src/lib -I/home/taras/projects/swm-sched/src/sched-lib -I/home/taras/projects/swm-sched/src/plugin-lib  -fPIC   --std=c++17 -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -o CMakeFiles/plugin-lib.dir/src/plugin-lib/fcfs_implementation.cpp.o -c /home/taras/projects/swm-sched/src/plugin-lib/fcfs_implementation.cpp",
+  "file": "/home/taras/projects/swm-sched/src/plugin-lib/fcfs_implementation.cpp"
+},
+{
+  "directory": "/home/taras/projects/swm-sched",
+  "command": "/usr/bin/c++   -isystem /usr/erlang/usr/include -I/home/taras/projects/swm-sched/deps/swm-core/c_src/lib -I/home/taras/projects/swm-sched/src/sched-lib -I/home/taras/projects/swm-sched/src/plugin-lib  -fPIC   --std=c++17 -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -o CMakeFiles/plugin-lib.dir/src/plugin-lib/timetable_info.cpp.o -c /home/taras/projects/swm-sched/src/plugin-lib/timetable_info.cpp",
+  "file": "/home/taras/projects/swm-sched/src/plugin-lib/timetable_info.cpp"
+},
+{
+  "directory": "/home/taras/projects/swm-sched",
+  "command": "/usr/bin/c++   -isystem /usr/erlang/usr/include  -fPIC   --std=c++17 -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -o CMakeFiles/wm-lib.dir/deps/swm-core/c_src/lib/wm_account.cpp.o -c /home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_account.cpp",
+  "file": "/home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_account.cpp"
+},
+{
+  "directory": "/home/taras/projects/swm-sched",
+  "command": "/usr/bin/c++   -isystem /usr/erlang/usr/include  -fPIC   --std=c++17 -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -o CMakeFiles/wm-lib.dir/deps/swm-core/c_src/lib/wm_boot_info.cpp.o -c /home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_boot_info.cpp",
+  "file": "/home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_boot_info.cpp"
+},
+{
+  "directory": "/home/taras/projects/swm-sched",
+  "command": "/usr/bin/c++   -isystem /usr/erlang/usr/include  -fPIC   --std=c++17 -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -o CMakeFiles/wm-lib.dir/deps/swm-core/c_src/lib/wm_cluster.cpp.o -c /home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_cluster.cpp",
+  "file": "/home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_cluster.cpp"
+},
+{
+  "directory": "/home/taras/projects/swm-sched",
+  "command": "/usr/bin/c++   -isystem /usr/erlang/usr/include  -fPIC   --std=c++17 -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -o CMakeFiles/wm-lib.dir/deps/swm-core/c_src/lib/wm_credential.cpp.o -c /home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_credential.cpp",
+  "file": "/home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_credential.cpp"
+},
+{
+  "directory": "/home/taras/projects/swm-sched",
+  "command": "/usr/bin/c++   -isystem /usr/erlang/usr/include  -fPIC   --std=c++17 -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -o CMakeFiles/wm-lib.dir/deps/swm-core/c_src/lib/wm_entity_utils.cpp.o -c /home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_entity_utils.cpp",
+  "file": "/home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_entity_utils.cpp"
+},
+{
+  "directory": "/home/taras/projects/swm-sched",
+  "command": "/usr/bin/c++   -isystem /usr/erlang/usr/include  -fPIC   --std=c++17 -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -o CMakeFiles/wm-lib.dir/deps/swm-core/c_src/lib/wm_executable.cpp.o -c /home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_executable.cpp",
+  "file": "/home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_executable.cpp"
+},
+{
+  "directory": "/home/taras/projects/swm-sched",
+  "command": "/usr/bin/c++   -isystem /usr/erlang/usr/include  -fPIC   --std=c++17 -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -o CMakeFiles/wm-lib.dir/deps/swm-core/c_src/lib/wm_global.cpp.o -c /home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_global.cpp",
+  "file": "/home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_global.cpp"
+},
+{
+  "directory": "/home/taras/projects/swm-sched",
+  "command": "/usr/bin/c++   -isystem /usr/erlang/usr/include  -fPIC   --std=c++17 -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -o CMakeFiles/wm-lib.dir/deps/swm-core/c_src/lib/wm_grid.cpp.o -c /home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_grid.cpp",
+  "file": "/home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_grid.cpp"
+},
+{
+  "directory": "/home/taras/projects/swm-sched",
+  "command": "/usr/bin/c++   -isystem /usr/erlang/usr/include  -fPIC   --std=c++17 -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -o CMakeFiles/wm-lib.dir/deps/swm-core/c_src/lib/wm_group.cpp.o -c /home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_group.cpp",
+  "file": "/home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_group.cpp"
+},
+{
+  "directory": "/home/taras/projects/swm-sched",
+  "command": "/usr/bin/c++   -isystem /usr/erlang/usr/include  -fPIC   --std=c++17 -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -o CMakeFiles/wm-lib.dir/deps/swm-core/c_src/lib/wm_hook.cpp.o -c /home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_hook.cpp",
+  "file": "/home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_hook.cpp"
+},
+{
+  "directory": "/home/taras/projects/swm-sched",
+  "command": "/usr/bin/c++   -isystem /usr/erlang/usr/include  -fPIC   --std=c++17 -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -o CMakeFiles/wm-lib.dir/deps/swm-core/c_src/lib/wm_image.cpp.o -c /home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_image.cpp",
+  "file": "/home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_image.cpp"
+},
+{
+  "directory": "/home/taras/projects/swm-sched",
+  "command": "/usr/bin/c++   -isystem /usr/erlang/usr/include  -fPIC   --std=c++17 -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -o CMakeFiles/wm-lib.dir/deps/swm-core/c_src/lib/wm_io.cpp.o -c /home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_io.cpp",
+  "file": "/home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_io.cpp"
+},
+{
+  "directory": "/home/taras/projects/swm-sched",
+  "command": "/usr/bin/c++   -isystem /usr/erlang/usr/include  -fPIC   --std=c++17 -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -o CMakeFiles/wm-lib.dir/deps/swm-core/c_src/lib/wm_job.cpp.o -c /home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_job.cpp",
+  "file": "/home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_job.cpp"
+},
+{
+  "directory": "/home/taras/projects/swm-sched",
+  "command": "/usr/bin/c++   -isystem /usr/erlang/usr/include  -fPIC   --std=c++17 -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -o CMakeFiles/wm-lib.dir/deps/swm-core/c_src/lib/wm_metric.cpp.o -c /home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_metric.cpp",
+  "file": "/home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_metric.cpp"
+},
+{
+  "directory": "/home/taras/projects/swm-sched",
+  "command": "/usr/bin/c++   -isystem /usr/erlang/usr/include  -fPIC   --std=c++17 -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -o CMakeFiles/wm-lib.dir/deps/swm-core/c_src/lib/wm_node.cpp.o -c /home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_node.cpp",
+  "file": "/home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_node.cpp"
+},
+{
+  "directory": "/home/taras/projects/swm-sched",
+  "command": "/usr/bin/c++   -isystem /usr/erlang/usr/include  -fPIC   --std=c++17 -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -o CMakeFiles/wm-lib.dir/deps/swm-core/c_src/lib/wm_partition.cpp.o -c /home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_partition.cpp",
+  "file": "/home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_partition.cpp"
+},
+{
+  "directory": "/home/taras/projects/swm-sched",
+  "command": "/usr/bin/c++   -isystem /usr/erlang/usr/include  -fPIC   --std=c++17 -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -o CMakeFiles/wm-lib.dir/deps/swm-core/c_src/lib/wm_process.cpp.o -c /home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_process.cpp",
+  "file": "/home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_process.cpp"
+},
+{
+  "directory": "/home/taras/projects/swm-sched",
+  "command": "/usr/bin/c++   -isystem /usr/erlang/usr/include  -fPIC   --std=c++17 -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -o CMakeFiles/wm-lib.dir/deps/swm-core/c_src/lib/wm_project.cpp.o -c /home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_project.cpp",
+  "file": "/home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_project.cpp"
+},
+{
+  "directory": "/home/taras/projects/swm-sched",
+  "command": "/usr/bin/c++   -isystem /usr/erlang/usr/include  -fPIC   --std=c++17 -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -o CMakeFiles/wm-lib.dir/deps/swm-core/c_src/lib/wm_queue.cpp.o -c /home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_queue.cpp",
+  "file": "/home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_queue.cpp"
+},
+{
+  "directory": "/home/taras/projects/swm-sched",
+  "command": "/usr/bin/c++   -isystem /usr/erlang/usr/include  -fPIC   --std=c++17 -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -o CMakeFiles/wm-lib.dir/deps/swm-core/c_src/lib/wm_relocation.cpp.o -c /home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_relocation.cpp",
+  "file": "/home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_relocation.cpp"
+},
+{
+  "directory": "/home/taras/projects/swm-sched",
+  "command": "/usr/bin/c++   -isystem /usr/erlang/usr/include  -fPIC   --std=c++17 -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -o CMakeFiles/wm-lib.dir/deps/swm-core/c_src/lib/wm_remote.cpp.o -c /home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_remote.cpp",
+  "file": "/home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_remote.cpp"
+},
+{
+  "directory": "/home/taras/projects/swm-sched",
+  "command": "/usr/bin/c++   -isystem /usr/erlang/usr/include  -fPIC   --std=c++17 -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -o CMakeFiles/wm-lib.dir/deps/swm-core/c_src/lib/wm_resource.cpp.o -c /home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_resource.cpp",
+  "file": "/home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_resource.cpp"
+},
+{
+  "directory": "/home/taras/projects/swm-sched",
+  "command": "/usr/bin/c++   -isystem /usr/erlang/usr/include  -fPIC   --std=c++17 -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -o CMakeFiles/wm-lib.dir/deps/swm-core/c_src/lib/wm_role.cpp.o -c /home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_role.cpp",
+  "file": "/home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_role.cpp"
+},
+{
+  "directory": "/home/taras/projects/swm-sched",
+  "command": "/usr/bin/c++   -isystem /usr/erlang/usr/include  -fPIC   --std=c++17 -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -o CMakeFiles/wm-lib.dir/deps/swm-core/c_src/lib/wm_scheduler.cpp.o -c /home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_scheduler.cpp",
+  "file": "/home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_scheduler.cpp"
+},
+{
+  "directory": "/home/taras/projects/swm-sched",
+  "command": "/usr/bin/c++   -isystem /usr/erlang/usr/include  -fPIC   --std=c++17 -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -o CMakeFiles/wm-lib.dir/deps/swm-core/c_src/lib/wm_scheduler_result.cpp.o -c /home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_scheduler_result.cpp",
+  "file": "/home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_scheduler_result.cpp"
+},
+{
+  "directory": "/home/taras/projects/swm-sched",
+  "command": "/usr/bin/c++   -isystem /usr/erlang/usr/include  -fPIC   --std=c++17 -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -o CMakeFiles/wm-lib.dir/deps/swm-core/c_src/lib/wm_timetable.cpp.o -c /home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_timetable.cpp",
+  "file": "/home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_timetable.cpp"
+},
+{
+  "directory": "/home/taras/projects/swm-sched",
+  "command": "/usr/bin/c++   -isystem /usr/erlang/usr/include  -fPIC   --std=c++17 -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -o CMakeFiles/wm-lib.dir/deps/swm-core/c_src/lib/wm_user.cpp.o -c /home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_user.cpp",
+  "file": "/home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_user.cpp"
+},
+{
+  "directory": "/home/taras/projects/swm-sched",
+  "command": "/usr/bin/c++  -Ddummy_EXPORTS -isystem /usr/erlang/usr/include -I/home/taras/projects/swm-sched/deps/swm-core/c_src/lib -I/home/taras/projects/swm-sched/src/sched-lib -I/home/taras/projects/swm-sched/src/plugin-lib  -fPIC   --std=c++17 -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -o CMakeFiles/dummy.dir/src/plugins/dummy/dummy_main.cpp.o -c /home/taras/projects/swm-sched/src/plugins/dummy/dummy_main.cpp",
+  "file": "/home/taras/projects/swm-sched/src/plugins/dummy/dummy_main.cpp"
+},
+{
+  "directory": "/home/taras/projects/swm-sched",
+  "command": "/usr/bin/c++  -Dfcfs_EXPORTS -isystem /usr/erlang/usr/include -I/home/taras/projects/swm-sched/deps/swm-core/c_src/lib -I/home/taras/projects/swm-sched/src/sched-lib -I/home/taras/projects/swm-sched/src/plugin-lib  -fPIC   --std=c++17 -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -o CMakeFiles/fcfs.dir/src/plugins/fcfs/fcfs_main.cpp.o -c /home/taras/projects/swm-sched/src/plugins/fcfs/fcfs_main.cpp",
+  "file": "/home/taras/projects/swm-sched/src/plugins/fcfs/fcfs_main.cpp"
+},
+{
+  "directory": "/home/taras/projects/swm-sched",
+  "command": "/usr/bin/c++  -Dfair_sharing_EXPORTS -isystem /usr/erlang/usr/include -I/home/taras/projects/swm-sched/deps/swm-core/c_src/lib -I/home/taras/projects/swm-sched/src/sched-lib -I/home/taras/projects/swm-sched/src/plugin-lib  -fPIC   --std=c++17 -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -o CMakeFiles/fair-sharing.dir/src/plugins/fair-sharing/fair_sharing_main.cpp.o -c /home/taras/projects/swm-sched/src/plugins/fair-sharing/fair_sharing_main.cpp",
+  "file": "/home/taras/projects/swm-sched/src/plugins/fair-sharing/fair_sharing_main.cpp"
+}
+]
