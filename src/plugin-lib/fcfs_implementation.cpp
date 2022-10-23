@@ -243,13 +243,9 @@ bool FcfsImplementation::does_node_fit_request(const std::vector<SwmResource> &r
                                             return false;
                                           });
                            if (prop_found == res_props.end()) {
-                             std::string value;
-                             ei_buffer_to_str(std::get<1>(req_prop), value);
-                             *error << "resource's \"" << req.get_name() << "\" property "
-                                   << std::get<0>(req_prop) << "=" << value << " not found; ";
                              return false;
                            }
-                         };
+                         }
                        }
                        return true;
                      }
