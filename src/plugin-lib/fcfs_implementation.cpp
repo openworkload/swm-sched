@@ -17,13 +17,15 @@ bool FcfsImplementation::init(const SchedulingInfoInterface *sched_info, std::st
   }
 
   const auto nodes = sched_info->nodes();
-  const SwmCluster *ref;
+  const SwmCluster *cluster;
   for (const auto node : nodes) {
-    if (node->get_state_power() == "up" &&
-        node->get_state_alloc() == "idle" &&
-        (ref = rh_.node_to_cluster(node))->get_state() == "up" &&
-        rh_.node_to_part(node)->get_state() == "up") {
-      nodes_per_cluster_[ref->get_id()].emplace_back(new NodeRef(node));
+    cluster = rh_.node_to_cluster(node);
+    const bool is_up = node->get_state_power() == "up" &&
+                       node->get_state_alloc() == "idle" &&
+                       cluster->get_state() == "up" &&
+                       rh_.node_to_part(node)->get_state() == "up";
+    if (node->get_is_template() == "true" || is_up) {
+      nodes_per_cluster_[cluster->get_id()].emplace_back(new NodeRef(node));
     }
   }
 
