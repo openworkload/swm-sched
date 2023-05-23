@@ -60,7 +60,7 @@ bool ExtendedRH::parse_part(const RhItem &item,
     return false;
   }
 
-  for (const auto child : item.children()) {
+  for (const auto &child : item.children()) {
     if (child.name() == "partition") {
       if (!parse_part(child, known_parts, known_nodes, cluster, error)) {
         return false;
@@ -80,11 +80,11 @@ bool ExtendedRH::parse_cluster(const RhItem &item, std::set<std::string> *known_
                                std::stringstream *error) {
   auto cluster = check_rh_and_extract_item(item, ids_to_clusters_,
                                            "cluster", known_clusters, error);
-  if (cluster == nullptr) {
+  if (!cluster) {
     return false;
   }
 
-  for (const auto part : item.children()) {
+  for (const auto &part : item.children()) {
     if (!parse_part(part, known_parts, known_nodes, cluster, error)) {
       return false;
     }
@@ -124,7 +124,7 @@ bool ExtendedRH::init(const swm::SchedulingInfoInterface *sched_info, std::strin
   std::set<std::string> cluster_ids;
   std::set<std::string> part_ids;
   std::set<std::string> node_ids;
-  for (const auto cluster : *root_rh) {
+  for (const auto &cluster : *root_rh) {
     if (!parse_cluster(cluster, &cluster_ids, &part_ids, &node_ids, error)) {
       return false;
     }

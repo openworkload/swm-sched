@@ -58,7 +58,6 @@ SchedulingInfoConfigurator::PartitionConfigurator::PartitionConfigurator(const s
     std::stringstream ss;
     ss << "partition #" << id;
     part->set_name(ss.str());
-
     part->set_id(id);
     part->set_state(state);
   });
@@ -76,7 +75,7 @@ const swm::SwmPartition *
     SchedulingInfoConfigurator::PartitionConfigurator::build(swm::util::SchedulingInfo *obj,
   std::vector<swm::RhItem> *child_rh) {
   swm::SwmPartition part;
-  for (const auto setter : setters_) {
+  for (const auto &setter : setters_) {
     setter(&part);
   }
 
