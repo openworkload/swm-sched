@@ -1,3 +1,12 @@
+<p align="center">
+    <a href="https://github.com/openworkload/swm-sched/blob/master/LICENSE" alt="License">
+        <img src="https://img.shields.io/github/license/openworkload/swm-sched" />
+    </a>
+    <a href="https://github.com/openworkload/swm-sched/actions/workflows/cmake-single-platform.yml" alt="Test results">
+        <img src="https://github.com/openworkload/swm-sched/actions/workflows/cmake-single-platform.yml/badge.svg?event=push" />
+    </a>
+</p>
+
 Sky Port scheduler
 ==================
 
