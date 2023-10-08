@@ -21,9 +21,8 @@ jobs:
       run: |
         git config --global url.https://github.com/.insteadOf git://github.com/
         mkdir deps
-        cd deps
-        git clone https://github.com/openworkload/swm-core.git
-        ls -l
+        git clone https://github.com/openworkload/swm-core.git deps/swm-core
+        ls -l ./deps/swm-core/c_src/lib
         
     - uses: actions/checkout@v1
     - name: Configure the scheduler build
