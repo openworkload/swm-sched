@@ -23,10 +23,11 @@ jobs:
         mkdir deps
         cd deps
         git clone https://github.com/openworkload/swm-core.git
+        ls -l
         
     - uses: actions/checkout@v1
-    - name: Configure the sceduler build
-      run: mkdir build && cd build && cmake -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DCMAKE_CXX_FLAGS="-Werror" ..
+    - name: Configure the scheduler build
+      run: GTEST_ROOT=/usr/src/gtest cmake -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DCMAKE_CXX_FLAGS="-Werror" -G "Unix Makefiles"  .
       
     - name: Build the scheduler
       run: make
