@@ -20,6 +20,7 @@ jobs:
     - uses: actions/checkout@v1
     - name: Configure the scheduler build
       run: |
+        sudo apt-get install erlang-dev
         git config --global url.https://github.com/.insteadOf git://github.com/
         git clone https://github.com/openworkload/swm-core.git deps/swm-core
         ls -l ./deps/
