@@ -288,5 +288,30 @@
   "directory": "/home/taras/projects/swm-sched",
   "command": "/usr/bin/c++  -I/home/taras/projects/swm-sched/deps/swm-core/c_src/lib -I/home/taras/projects/swm-sched/src/sched-lib -isystem /usr/erlang/usr/include --std=c++17 -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -o CMakeFiles/sched-exe.dir/src/sched-exe/main.cpp.o -c /home/taras/projects/swm-sched/src/sched-exe/main.cpp",
   "file": "/home/taras/projects/swm-sched/src/sched-exe/main.cpp"
+},
+{
+  "directory": "/home/taras/projects/swm-sched",
+  "command": "/usr/bin/c++  -I/home/taras/projects/swm-sched/deps/swm-core/c_src/lib -I/home/taras/projects/swm-sched/src/sched-lib -I/home/taras/projects/swm-sched/tests/unit -I/home/taras/projects/swm-sched/src/sched-exe -I/home/taras/projects/swm-sched/src/plugin-lib -isystem /usr/erlang/usr/include -isystem /usr/local/GTest/include --std=c++17 -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -o CMakeFiles/sched-tests.dir/tests/unit/helpers.cpp.o -c /home/taras/projects/swm-sched/tests/unit/helpers.cpp",
+  "file": "/home/taras/projects/swm-sched/tests/unit/helpers.cpp"
+},
+{
+  "directory": "/home/taras/projects/swm-sched",
+  "command": "/usr/bin/c++  -I/home/taras/projects/swm-sched/deps/swm-core/c_src/lib -I/home/taras/projects/swm-sched/src/sched-lib -I/home/taras/projects/swm-sched/tests/unit -I/home/taras/projects/swm-sched/src/sched-exe -I/home/taras/projects/swm-sched/src/plugin-lib -isystem /usr/erlang/usr/include -isystem /usr/local/GTest/include --std=c++17 -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -o CMakeFiles/sched-tests.dir/tests/unit/main.cpp.o -c /home/taras/projects/swm-sched/tests/unit/main.cpp",
+  "file": "/home/taras/projects/swm-sched/tests/unit/main.cpp"
+},
+{
+  "directory": "/home/taras/projects/swm-sched",
+  "command": "/usr/bin/c++  -I/home/taras/projects/swm-sched/deps/swm-core/c_src/lib -I/home/taras/projects/swm-sched/src/sched-lib -I/home/taras/projects/swm-sched/tests/unit -I/home/taras/projects/swm-sched/src/sched-exe -I/home/taras/projects/swm-sched/src/plugin-lib -isystem /usr/erlang/usr/include -isystem /usr/local/GTest/include --std=c++17 -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -o CMakeFiles/sched-tests.dir/tests/unit/scheduling_info_configurator.cpp.o -c /home/taras/projects/swm-sched/tests/unit/scheduling_info_configurator.cpp",
+  "file": "/home/taras/projects/swm-sched/tests/unit/scheduling_info_configurator.cpp"
+},
+{
+  "directory": "/home/taras/projects/swm-sched",
+  "command": "/usr/bin/c++  -I/home/taras/projects/swm-sched/deps/swm-core/c_src/lib -I/home/taras/projects/swm-sched/src/sched-lib -I/home/taras/projects/swm-sched/tests/unit -I/home/taras/projects/swm-sched/src/sched-exe -I/home/taras/projects/swm-sched/src/plugin-lib -isystem /usr/erlang/usr/include -isystem /usr/local/GTest/include --std=c++17 -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -o CMakeFiles/sched-tests.dir/tests/unit/scheduling_info_presets.cpp.o -c /home/taras/projects/swm-sched/tests/unit/scheduling_info_presets.cpp",
+  "file": "/home/taras/projects/swm-sched/tests/unit/scheduling_info_presets.cpp"
+},
+{
+  "directory": "/home/taras/projects/swm-sched",
+  "command": "/usr/bin/c++  -I/home/taras/projects/swm-sched/deps/swm-core/c_src/lib -I/home/taras/projects/swm-sched/src/sched-lib -I/home/taras/projects/swm-sched/tests/unit -I/home/taras/projects/swm-sched/src/sched-exe -I/home/taras/projects/swm-sched/src/plugin-lib -isystem /usr/erlang/usr/include -isystem /usr/local/GTest/include --std=c++17 -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -o CMakeFiles/sched-tests.dir/src/sched-exe/cli_args.cpp.o -c /home/taras/projects/swm-sched/src/sched-exe/cli_args.cpp",
+  "file": "/home/taras/projects/swm-sched/src/sched-exe/cli_args.cpp"
 }
 ]

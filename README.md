@@ -80,6 +80,10 @@ copy ".\googlemock\gtest\Debug\gtest_main.lib" "C:\Program Files\GTest\lib\gtest
 ```
 4. Set up environment variable GTEST_ROOT as `/usr/local/GTest` (Linux) or `C:\Program Files\GTest` (Windows).
 
+### Run unit tests
+```bash
+./bin/swm-sched-tests
+```
 
 ## Contributing
 
