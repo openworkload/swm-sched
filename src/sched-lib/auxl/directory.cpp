@@ -51,7 +51,7 @@ std::string directory_full_path(const std::string &dirname) {
   auto subpath = dirname;
   auto started = subpath.length();
   while (realpath(subpath.data(), buf) == nullptr && 
-	     started != 0 && started != std::string::npos) {
+    started != 0 && started != std::string::npos) {
     started = dirname.find_last_of("/", started - 1);
     subpath = dirname.substr(0, started);
   }
@@ -70,7 +70,7 @@ std::string directory_full_path(const std::string &dirname) {
       res = std::string(buf) + dirname.substr(started);
     break;
   }
-	  
+
 #endif
   if (res.empty()) {
     std::stringstream ss;
@@ -92,11 +92,11 @@ void find_files(const std::string &path, const std::string &pattern,
   if (files == nullptr) {
     throw std::runtime_error("Directory::find_files(): pointer \"files\" is equal to nullptr");
   }
-  
+
   if (!directory_exist(path)) {
     throw std::runtime_error("Directory::find_files(): directory not found");
   }
-  
+
   std::string full_path = directory_full_path(path);
   if (full_path.back() != PATH_SEPARATOR) {
     full_path.push_back(PATH_SEPARATOR);
@@ -106,11 +106,11 @@ void find_files(const std::string &path, const std::string &pattern,
   WIN32_FIND_DATA find_file_data;
   HANDLE h_find;
   std::string str = full_path + pattern;
-  
+
   if (str.length() > MAX_PATH - 1) {
     throw std::runtime_error("Directory::find_files(): path is too long");
   }
-  
+
   h_find = FindFirstFile(str.c_str(), &find_file_data);
   if (h_find == INVALID_HANDLE_VALUE) {
     if (GetLastError() == ERROR_FILE_NOT_FOUND) {
@@ -119,7 +119,7 @@ void find_files(const std::string &path, const std::string &pattern,
 
     throw std::runtime_error("Directory::find_files(): invalid path or pattern");
   }
-  
+
   bool found = true;
   while (found) {
     if (!(find_file_data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) {
@@ -127,7 +127,7 @@ void find_files(const std::string &path, const std::string &pattern,
     }
     found = FindNextFile(h_find, &find_file_data) != 0;
   }
-  
+
   FindClose(h_find);
 #else
   DIR *dp;
@@ -146,9 +146,9 @@ void find_files(const std::string &path, const std::string &pattern,
           files->push_back(full_name);
         } // if
       } // if
-	  } // if
+    } // if
   } // while
-  
+
   closedir(dp);
 #endif
 }

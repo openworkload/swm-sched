@@ -50,14 +50,15 @@ TEST(auxl, directory_find_files_default) {
   expected_files.push_back(test_path + "\\explorer.exe");
   expected_files.push_back(test_path + "\\notepad.exe");
 #else
-  test_path = "/bin";
+  test_path = "/usr/bin";
   test_pattern = "*";
-  expected_files.push_back("/bin/cat");
-  expected_files.push_back("/bin/ls");
+  expected_files.push_back("/usr/bin/cat");
+  expected_files.push_back("/usr/bin/ls");
 #endif
   swm::util::find_files(test_path, test_pattern, &find_files);
   ASSERT_FALSE(find_files.empty());
-  for (auto &exp_file: expected_files)
+  for (auto &exp_file: expected_files) {
     ASSERT_TRUE(std::find(find_files.begin(), find_files.end(), exp_file) != find_files.end());
+  }
 }
 

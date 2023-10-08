@@ -43,7 +43,7 @@ json_to_entity([{AttrBin,ValueBin}|T], OldEntity) ->
   Name = element(1, OldEntity),
   Type = wm_entity:get_type(Name, Attr),
   Value = get_attr_value(ValueBin, Type),
-  NewEntity = wm_entity:set_attr({Attr, Value}, OldEntity),
+  NewEntity = wm_entity:set({Attr, Value}, OldEntity),
   json_to_entity(T, NewEntity).
 
 json_to_rh([], RhMap) ->

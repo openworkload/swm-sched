@@ -39,9 +39,9 @@ std::string file_full_path(const std::string &filename) {
   auto subpath = filename;
   auto started = subpath.length();
   while (realpath(subpath.data(), buf) == nullptr &&
-	  started != 0 && started != std::string::npos) {
-	  started = filename.find_last_of("/", started - 1);
-	  subpath = filename.substr(0, started);
+    started != 0 && started != std::string::npos) {
+    started = filename.find_last_of("/", started - 1);
+    subpath = filename.substr(0, started);
   }
 
   switch (started)

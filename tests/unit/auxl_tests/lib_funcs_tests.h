@@ -9,7 +9,7 @@ TEST(auxl, lib_funcs_load_and_free_library) {
 #if defined(WIN32)
   std::string test_lib = find_win_dir() + "\\system32\\kernel32.dll";
 #else
-  std::string test_lib = "/usr/lib/sudo/sudoers.so";
+  std::string test_lib = "/usr/libexec/sudo/sudoers.so";
 #endif
   auto lib = swm::util::load_library(test_lib);
   auto success_load = lib != nullptr;
@@ -51,7 +51,7 @@ TEST(auxl, lib_funcs_load_func) {
   std::string test_lib = find_win_dir() + "\\system32\\kernel32.dll";
   std::string test_func = "LoadLibraryA";
 #else
-  std::string test_lib = "/usr/lib/sudo/sudoers.so";
+  std::string test_lib = "/usr/libexec/sudo/sudoers.so";
   std::string test_func = "sudoers_io";
 #endif
   void* lib = swm::util::load_library(test_lib);
@@ -66,7 +66,7 @@ TEST(auxl, lib_funcs_load_unknkown_func) {
 #if defined(WIN32)
   std::string test_lib = find_win_dir() + "\\system32\\kernel32.dll";
 #else
-  std::string test_lib = "/usr/lib/sudo/sudoers.so";
+  std::string test_lib = "/usr/libexec/sudo/sudoers.so";
 #endif
   void* lib = swm::util::load_library(test_lib);
   auto success_load = swm::util::get_library_function(lib, test_func) != nullptr;

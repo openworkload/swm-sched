@@ -122,12 +122,12 @@ bool AlgorithmFactory::load_plugins(const std::string &path, std::stringstream *
     *error << "failed to determine plugin by its descriptor";
     return false;
   }
-  
+
   res->reset(new Algorithm(*itr));
   if (!(*res)->init(error)) {
     return false;
   }
-  
+
   return true;
 }
 
