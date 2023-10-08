@@ -22,11 +22,16 @@ jobs:
         git config --global url.https://github.com/.insteadOf git://github.com/
         mkdir deps
         git clone https://github.com/openworkload/swm-core.git deps/swm-core
-        ls -l ./deps/swm-core/c_src/lib
         
     - uses: actions/checkout@v1
     - name: Configure the scheduler build
-      run: GTEST_ROOT=/usr/src/gtest cmake -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DCMAKE_CXX_FLAGS="-Werror" -G "Unix Makefiles"  .
+      run: |
+        echo List files in workspace
+        ls ${{github.workspace}}
+        echo List files in wm lib
+        ls -l ./deps/swm-core/c_src/lib
+        export GTEST_ROOT=/usr/src/gtest
+        cmake . -G "Unix Makefiles"
       
     - name: Build the scheduler
       run: make
