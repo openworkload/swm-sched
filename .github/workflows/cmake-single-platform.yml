@@ -16,18 +16,20 @@ jobs:
     steps:
     - name: Compile gtest
       run: sudo apt-get install libgtest-dev && cd /usr/src/gtest && sudo cmake CMakeLists.txt && sudo make && sudo cp lib/*.a /usr/lib && sudo ln -s /usr/lib/libgtest.a /usr/local/lib/libgtest.a && sudo ln -s /usr/lib/libgtest_main.a /usr/local/lib/libgtest_main.a
-    - name: Show Working directory
-      run: ls
+
     - name: Checkout swm-core (to link with the C++ lib) 
-    - uses: actions/checkout@master
-      with:
-        name: openworkload/swm-core
-        path: ./deps/swm-core
-        ref: refs/heads/release
+      run: |
+        git config --global url.https://github.com/.insteadOf git://github.com/
+        mkdir deps
+        cd deps
+        git clone https://github.com/openworkload/swm-core.git
+        
     - uses: actions/checkout@v1
-    - name: configure
+    - name: Configure the sceduler build
       run: mkdir build && cd build && cmake -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DCMAKE_CXX_FLAGS="-Werror" ..
-    - name: make
+      
+    - name: Build the scheduler
       run: make
-    - name: Run Test
+      
+    - name: Run the scheduler unit tests
       run: ${{github.workspace}}/bin/swm-sched-tests
