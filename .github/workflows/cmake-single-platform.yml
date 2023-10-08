@@ -21,7 +21,6 @@ jobs:
     - name: Configure the scheduler build
       run: |
         git config --global url.https://github.com/.insteadOf git://github.com/
-        mkdir deps
         git clone https://github.com/openworkload/swm-core.git deps/swm-core
         ls -l ./deps/
         ls -l ./deps/swm-core
