@@ -5,8 +5,8 @@
     <a href="https://github.com/openworkload/swm-sched" alt="Required C++ version">
         <img src="https://img.shields.io/badge/C++-17-blue.svg" />
     </a>
-    <a href="https://github.com/openworkload/swm-sched/actions/workflows/cmake-single-platform.yml" alt="Test results">
-        <img src="https://github.com/openworkload/swm-sched/actions/workflows/cmake-single-platform.yml/badge.svg?event=push" />
+    <a href="https://github.com/openworkload/swm-sched/actions/workflows/unittests-linux.yml" alt="Test results">
+        <img src="https://github.com/openworkload/swm-sched/actions/workflows/unittests-linux.yml/badge.svg?event=push" />
     </a>
 </p>
 
