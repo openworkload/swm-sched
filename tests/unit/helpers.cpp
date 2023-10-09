@@ -211,7 +211,7 @@ bool my_exec(const std::string &app, const std::string &args,
 
   const auto ret = std::system(cmd.str().c_str());
   if (ret != 0) {
-    std::cout << "Could not run std::system: status=" << WEXITSTATUS(ret)
+    std::cerr << "Could not run std::system: status=" << WEXITSTATUS(ret)
               << " signal=" << WSTOPSIG(ret)  << std::endl;
     return false;
   }

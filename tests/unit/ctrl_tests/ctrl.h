@@ -123,7 +123,7 @@ class ctrl : public ::testing::Test {
       std::string err_string = "escript: exception error";
       if (!my_exec("escript", args.str(), &output, &error) ||
         (output.size() >= err_string.size() && output.substr(0, err_string.size()) == err_string)) {
-        throw std::runtime_error("failed to launch converter: " + args.str());
+        throw std::runtime_error("Failed to launch \"" + args.str() + "\": " + error + ", " + output);
       }
       istr->str(output);
       my_chdir(cur_dir);

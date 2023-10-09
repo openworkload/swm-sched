@@ -1,0 +1,46 @@
+name: C++ unit tests
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+env:
+  BUILD_TYPE: Release
+
+jobs:
+  unittests:
+    runs-on: ubuntu-22.04
+
+    steps:
+    - name: Prepare gtest
+      run: |
+        sudo apt-get update -y
+        sudo apt-get -y install cmake libgtest-dev
+        cd /usr/src/gtest
+        sudo cmake CMakeLists.txt
+        sudo make
+        sudo cp lib/*.a /usr/lib
+        sudo ln -s /usr/lib/libgtest.a /usr/local/lib/libgtest.a
+        sudo ln -s /usr/lib/libgtest_main.a /usr/local/lib/libgtest_main.a
+
+    - uses: actions/checkout@v1
+    - name: Configure the scheduler build
+      run: |
+        sudo pip install cogapp
+        sudo apt-get install erlang erlang-dev -y
+        git config --global url.https://github.com/.insteadOf git://github.com/
+        git clone https://github.com/openworkload/swm-core.git deps/swm-core
+        export GTEST_ROOT=/usr/src/gtest
+        cmake . -G "Unix Makefiles"
+
+    - name: Build the scheduler
+      run: make
+
+    - name: Run the scheduler unit tests
+      run: |
+        cd ${{github.workspace}}/deps/swm-core
+        make && make release
+        cd ${{github.workspace}}
+        ./bin/swm-sched-tests
