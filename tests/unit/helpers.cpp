@@ -111,8 +111,7 @@ static inline bool read_to_end(const std::string &file, std::string *content) {
   return true;
 }
 
-bool my_exec(const std::string &app, const std::string &args,
-             std::string *out, std::string *err) {
+bool my_exec(const std::string &args, std::string *out, std::string *err) {
   std::string out_file = find_temp_dir() + "/" + "my_exec.out";
   std::string err_file = find_temp_dir() + "/" + "my_exec.err";
 #if defined(WIN32)
@@ -169,7 +168,7 @@ bool my_exec(const std::string &app, const std::string &args,
   si.hStdOutput = h_out;
 
   if (!failed) {
-    failed = !CreateProcessA(NULL, (char *)(app + " " + args).c_str(),
+    failed = !CreateProcessA(NULL, (char *)("sh -c '" + args + "'").c_str(),
                              NULL, NULL, TRUE, CREATE_NO_WINDOW,
                              NULL, NULL, &si, &pi);
   }
@@ -201,17 +200,18 @@ bool my_exec(const std::string &app, const std::string &args,
 
 #else
   std::stringstream cmd;
-  cmd << app << " " << args;
+  cmd << "/usr/bin/bash -c '" << args;
   if (out != nullptr) {
     cmd << " 1>" << out_file.c_str();
   }
   if (err != nullptr) {
     cmd << " 2>" << err_file.c_str();
   }
+  cmd << "' ";
 
   const auto ret = std::system(cmd.str().c_str());
   if (ret != 0) {
-    std::cerr << "Could not run std::system: status=" << WEXITSTATUS(ret)
+    std::cerr << "Could not run std::system(\"" << cmd.str() << "\"): status=" << WEXITSTATUS(ret)
               << " signal=" << WSTOPSIG(ret)  << std::endl;
     return false;
   }

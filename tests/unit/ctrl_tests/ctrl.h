@@ -116,12 +116,13 @@ class ctrl : public ::testing::Test {
       }
       fstr << json;
       fstr.close();
+      std::cerr << ">>> " << temp_file << std::endl;
 
       std::string output, error;
       std::stringstream args;
       args << find_converter() << " " << temp_file;
       std::string err_string = "escript: exception error";
-      if (!my_exec("escript", args.str(), &output, &error) ||
+      if (!my_exec(args.str(), &output, &error) ||
         (output.size() >= err_string.size() && output.substr(0, err_string.size()) == err_string)) {
         throw std::runtime_error("Failed to launch \"" + args.str() + "\": " + error + ", " + output);
       }

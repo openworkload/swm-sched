@@ -25,10 +25,8 @@ std::string find_converter();
 // Tries to find root directory of swm-sched. If fails, throws std::exception.
 std::string find_swm_sched_dir();
 
-// Executes command and redirects its stdout and stderr
-// Uses find_temp_dir() for temporary objects
-bool my_exec(const std::string &app, const std::string &args,
-             std::string *out = nullptr, std::string *err = nullptr);
+// Executes command in shell and redirects its stdout and stderr
+bool my_exec(const std::string &args, std::string *out = nullptr, std::string *err = nullptr);
 
 // C++ wrapper for getcwd()/_getcwd()
 bool my_getcwd(std::string *path);

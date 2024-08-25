@@ -6,9 +6,6 @@ on:
   pull_request:
     branches: [ "master" ]
 
-env:
-  BUILD_TYPE: Release
-
 jobs:
   unittests:
     runs-on: ubuntu-22.04
@@ -41,6 +38,8 @@ jobs:
     - name: Run the scheduler unit tests
       run: |
         cd ${{github.workspace}}/deps/swm-core
-        make && make release
+        ln -s /usr/local/bin/cog /usr/local/bin/cog.py || true
+        make
+        make release
         cd ${{github.workspace}}
         ./bin/swm-sched-tests
