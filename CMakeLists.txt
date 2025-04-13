@@ -1,14 +1,12 @@
-# Need at least 3.6 for selection of the VS startup project.
-# No restrictions for Linux, but 2.8 is preferred.
-if(MSVC)
-    cmake_minimum_required(VERSION 3.6)
-else()
-    cmake_minimum_required(VERSION 2.8.5)
-endif()
+cmake_minimum_required(VERSION 3.16)
 
-
-# Defining the root project (solution)
 project(swm-sched CXX)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 set(TESTS_DIR              ${PROJECT_SOURCE_DIR}/tests/unit)
 set(WM_DIR                 ${PROJECT_SOURCE_DIR}/deps/swm-core/c_src/lib)
 set(SCHED_LIB_DIR          ${PROJECT_SOURCE_DIR}/src/sched-lib)
@@ -18,20 +16,6 @@ set(PLG_LIB_DIR            ${PROJECT_SOURCE_DIR}/src/plugin-lib)
 set(PLG_DUMMY_DIR          ${PROJECT_SOURCE_DIR}/src/plugins/dummy)
 set(PLG_FCFS_DIR           ${PROJECT_SOURCE_DIR}/src/plugins/fcfs)
 set(PLG_FAIR_SHARING_DIR   ${PROJECT_SOURCE_DIR}/src/plugins/fair-sharing)
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-if(MSVC)
-    set_property(GLOBAL PROPERTY USE_FOLDERS ON)
-    set(CMAKE_CONFIGURATION_TYPES "Debug;Release" CACHE STRING "" FORCE)
-    set(CMAKE_SUPPRESS_REGENERATION ON)
-endif()
-
-
-# Some checks for environment variables and Win64
-if (MSVC)
-    if(NOT "${CMAKE_GENERATOR}" MATCHES "(Win64|IA64)")
-        message(FATAL_ERROR "Generator Win32 is not supported due to dependency on Erlang 64-bit library")
-    endif()
-endif()
 
 if(NOT EXISTS $ENV{_KERL_ACTIVE_DIR}/usr/include)
     message("Erlang SDK not found, please set up environment variable _KERL_ACTIVE_DIR")
@@ -47,101 +31,35 @@ else()
     message(WARNING "Unit tests disabled")
 endif()
 
-
-# pThreads, Linux-only
-if(NOT MSVC)
-    find_package(Threads REQUIRED)
-endif()
-
+find_package(Threads REQUIRED)
 
 # External library ei.lib / libei.a
 add_library(ei STATIC IMPORTED)
-if(MSVC)
-    set_target_properties(ei PROPERTIES IMPORTED_LOCATION_DEBUG
-                          $ENV{_KERL_ACTIVE_DIR}/usr/lib/ei_mdd.lib)
-    set_target_properties(ei PROPERTIES IMPORTED_LOCATION_RELEASE
-                          $ENV{_KERL_ACTIVE_DIR}/usr/lib/ei_md.lib)
-else()
-    set_target_properties(ei PROPERTIES IMPORTED_LOCATION
-                          $ENV{_KERL_ACTIVE_DIR}/usr/lib/libei.a)
-endif()
+set_target_properties(ei PROPERTIES IMPORTED_LOCATION
+                      $ENV{_KERL_ACTIVE_DIR}/usr/lib/libei.a)
 
-
-# Another external library, Windows-only
-if(MSVC)
-    add_library(Ws2 STATIC IMPORTED)
-    set_target_properties(Ws2 PROPERTIES IMPORTED_LOCATION Ws2_32.lib)
-endif()
-
-
-# Implementation of sscanf(), sprintf(), etc for VS 2015+ (VC++ 12.0+ toolsets).
-if(MSVC AND MSVC_VERSION GREATER 1700)
-    add_library(vs_legacy STATIC IMPORTED)
-    set_target_properties(vs_legacy PROPERTIES IMPORTED_LOCATION legacy_stdio_definitions.lib)
-endif()
-
-
-# Libraries for GTest. Defining them directly because we need unit tests
-# for Debug and Release modes. Default linking supports only one mode.
-# Not an issue for Linux.
-if (MSVC AND GTEST_FOUND)
-    add_library(gtest STATIC IMPORTED)
-    set_target_properties(gtest PROPERTIES IMPORTED_LOCATION_DEBUG $ENV{GTEST_ROOT}/lib/gtestd.lib)
-    set_target_properties(gtest PROPERTIES IMPORTED_LOCATION_RELEASE $ENV{GTEST_ROOT}/lib/gtest.lib)
-    add_library(gtest_main STATIC IMPORTED)
-    set_target_properties(gtest_main PROPERTIES IMPORTED_LOCATION_DEBUG $ENV{GTEST_ROOT}/lib/gtest_maind.lib)
-    set_target_properties(gtest_main PROPERTIES IMPORTED_LOCATION_RELEASE $ENV{GTEST_ROOT}/lib/gtest_main.lib)
-endif()
-
-
-# Some macros to minimaze copy-paste.
+##################### Some macros to minimaze copy-paste #####################
 
 macro(swm_set_gcc_flags target_name)
-    if(NOT MSVC)
-        set_target_properties(${target_name} PROPERTIES COMPILE_FLAGS
-                              "--std=c++17 -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic")
-    endif()
+    set_target_properties(${target_name} PROPERTIES COMPILE_FLAGS
+                          "--std=c++17 -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic")
 endmacro(swm_set_gcc_flags target_name)
 
 macro(swm_discover_sources src_dir h_files cpp_files)
     file(GLOB_RECURSE ${h_files}   ${src_dir}/*.h)
     file(GLOB_RECURSE ${cpp_files} ${src_dir}/*.cpp)
-
-    if(MSVC)
-        foreach(_source IN ITEMS ${${h_files}})
-            get_filename_component(_source_path "${_source}" PATH)
-            file(RELATIVE_PATH _source_path_rel "${src_dir}" "${_source_path}")
-            string(REPLACE "/" "\\" _group_path "${_source_path_rel}")
-            source_group("Header Files\\${_group_path}" FILES "${_source}")
-        endforeach()
-
-        foreach(_source IN ITEMS ${${cpp_files}})
-            get_filename_component(_source_path "${_source}" PATH)
-            file(RELATIVE_PATH _source_path_rel "${src_dir}" "${_source_path}")
-            string(REPLACE "/" "\\" _group_path "${_source_path_rel}")
-            source_group("Source Files\\${_group_path}" FILES "${_source}")
-        endforeach()
-    endif()
 endmacro(swm_discover_sources src_dir h_files cpp_files)
 
 macro(swm_configure_lib target_name out_name)
     target_include_directories(${target_name} SYSTEM PUBLIC $ENV{_KERL_ACTIVE_DIR}/usr/include)
-    if(NOT MSVC)
-      set_property(TARGET ${target_name} PROPERTY POSITION_INDEPENDENT_CODE ON)
-      swm_set_gcc_flags(${target_name})
-    endif()
- 
+    set_property(TARGET ${target_name} PROPERTY POSITION_INDEPENDENT_CODE ON)
+    swm_set_gcc_flags(${target_name})
+
     set_target_properties(${target_name} PROPERTIES PREFIX "")
     set_target_properties(${target_name} PROPERTIES OUTPUT_NAME ${out_name})
-if(MSVC)
-    set_target_properties(${target_name} PROPERTIES LIBRARY_OUTPUT_DIRECTORY_DEBUG
-                          ${PROJECT_SOURCE_DIR}/bin)
-    set_target_properties(${target_name} PROPERTIES LIBRARY_OUTPUT_DIRECTORY_RELEASE
-                          ${PROJECT_SOURCE_DIR}/bin)
-else()
-    set_target_properties(${target_name} PROPERTIES ARCHIVE_OUTPUT_DIRECTORY
-                          ${PROJECT_SOURCE_DIR}/bin)
-endif()
+    set_target_properties(${target_name} PROPERTIES LIBRARY_OUTPUT_DIRECTORY_DEBUG ${PROJECT_SOURCE_DIR}/bin)
+    set_target_properties(${target_name} PROPERTIES LIBRARY_OUTPUT_DIRECTORY_RELEASE ${PROJECT_SOURCE_DIR}/bin)
+    set_target_properties(${target_name} PROPERTIES ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin)
 endmacro(swm_configure_lib target_name out_name)
 
 macro(swm_configure_assembly target_name out_name)
@@ -149,33 +67,13 @@ macro(swm_configure_assembly target_name out_name)
     target_include_directories(${target_name} PUBLIC ${WM_DIR})
     target_include_directories(${target_name} PUBLIC ${SCHED_LIB_DIR})
 
-    if(MSVC)
-      target_link_libraries(${target_name} Ws2)
-      if(MSVC_VERSION GREATER 1700)
-          target_link_libraries(${target_name} vs_legacy)
-      endif()
-    else()
-      swm_set_gcc_flags(${target_name})
-    endif()
+    swm_set_gcc_flags(${target_name})
 
     set_target_properties(${target_name} PROPERTIES PREFIX "")
     set_target_properties(${target_name} PROPERTIES OUTPUT_NAME ${out_name})
 
-if(MSVC)
-    set_target_properties(${target_name} PROPERTIES RUNTIME_OUTPUT_DIRECTORY_DEBUG
-                          ${PROJECT_SOURCE_DIR}/bin)
-    set_target_properties(${target_name} PROPERTIES RUNTIME_OUTPUT_DIRECTORY_RELEASE
-                          ${PROJECT_SOURCE_DIR}/bin)
-    set_target_properties(${target_name} PROPERTIES LIBRARY_OUTPUT_DIRECTORY_DEBUG
-                          ${PROJECT_SOURCE_DIR}/bin)
-    set_target_properties(${target_name} PROPERTIES LIBRARY_OUTPUT_DIRECTORY_RELEASE
-                          ${PROJECT_SOURCE_DIR}/bin)
-else()
-    set_target_properties(${target_name} PROPERTIES RUNTIME_OUTPUT_DIRECTORY
-                          ${PROJECT_SOURCE_DIR}/bin)
-    set_target_properties(${target_name} PROPERTIES LIBRARY_OUTPUT_DIRECTORY
-                          ${PROJECT_SOURCE_DIR}/bin)
-endif()
+    set_target_properties(${target_name} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin)
+    set_target_properties(${target_name} PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin)
 endmacro(swm_configure_assembly target_name out_name)
 
 
@@ -187,43 +85,23 @@ macro(swm_configure_exe target_name out_name)
     target_link_libraries(${target_name} sched-lib)
     target_link_libraries(${target_name} wm-lib ei)
 
-    if(NOT MSVC)
-        target_link_libraries(${target_name} ${CMAKE_DL_LIBS})
-        target_link_libraries(${target_name} ${CMAKE_THREAD_LIBS_INIT})
-    endif()
+    target_link_libraries(${target_name} ${CMAKE_DL_LIBS})
+    target_link_libraries(${target_name} ${CMAKE_THREAD_LIBS_INIT})
 
 endmacro(swm_configure_exe target_name out_name)
 
 
 macro(swm_configure_test target_name out_name test_headers)
     swm_configure_assembly(${target_name} ${out_name})
-    target_include_directories(${target_name} SYSTEM PUBLIC
-                               ${GTEST_INCLUDE_DIRS})
-    # Beware - it's a magic lib order!
-    if(MSVC)
-        target_link_libraries(${target_name} gtest gtest_main)
-    else()
-        target_link_libraries(${target_name} ${GTEST_BOTH_LIBRARIES})
-    endif()
+    target_include_directories(${target_name} SYSTEM PUBLIC ${GTEST_INCLUDE_DIRS})
+    target_link_libraries(${target_name} ${GTEST_BOTH_LIBRARIES})
     target_link_libraries(${target_name} sched-lib)
     target_link_libraries(${target_name} plugin-lib)
     target_link_libraries(${target_name} wm-lib)
     target_link_libraries(${target_name} ei)
-
-    if(NOT MSVC)
-        target_link_libraries(${target_name} ${CMAKE_DL_LIBS})
-        target_link_libraries(${target_name} ${CMAKE_THREAD_LIBS_INIT})
-    endif()
-
-    if(MSVC)
-        set_target_properties(${target_name} PROPERTIES FOLDER tests)
-        add_test(NAME ${target_name}  WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}/bin"
-                                      COMMAND ${PROJECT_SOURCE_DIR}/bin/${out_name}.exe)
-        set_target_properties(${target_name} PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY
-                              "${PROJECT_SOURCE_DIR}/bin")
-    else()
-        gtest_discover_tests(${target_name} "${PROJECT_SOURCE_DIR}/bin" "${test_headers}")
-    endif()
+    target_link_libraries(${target_name} ${CMAKE_DL_LIBS})
+    target_link_libraries(${target_name} ${CMAKE_THREAD_LIBS_INIT})
+    gtest_discover_tests(${target_name} "${PROJECT_SOURCE_DIR}/bin" "${test_headers}")
 endmacro(swm_configure_test target_name out_name test_headers)
 
 macro(swm_configure_plugin target_name out_name)
@@ -234,9 +112,6 @@ target_link_libraries(${target_name} wm-lib)
 target_link_libraries(${target_name} plugin-lib)
 add_dependencies(${target_name} plugin-lib)
 set_target_properties(${target_name} PROPERTIES PREFIX "")
-if(MSVC)
-    set_target_properties(${target_name} PROPERTIES FOLDER plugins)
-endif()
 add_dependencies(${target_name} plugin-lib)
 endmacro(swm_configure_plugin target_name out_name)
 
@@ -287,10 +162,6 @@ target_link_libraries(sched-exe sched-lib)
 add_dependencies(sched-exe sched-lib)
 add_dependencies(sched-exe fcfs)
 add_dependencies(sched-exe fair-sharing)
-if(MSVC)
-    set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT sched-exe)
-endif()
-
 
 # Unit tests for sched-lib and plugin-lib
 if(${GTEST_FOUND})

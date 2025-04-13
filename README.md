@@ -28,14 +28,15 @@ Jobs submitted to Sky Port are scheduled by the daemon represented by this repos
 
 ## Requirements:
 * gcc with C++17 support
-* cmake version >= 2.8
+* cmake version >= 3.6
 
 ### Preparations after the repository cloning
 
 1. The project depends on swm-core sources, thus create a sym link to swm-core in ./deps:
 ```bash
-cd deps
+pushd deps
 ln -s ../../swm-core .
+popd
 ```
 
 2. Optionally, you can enable unit tests - just install GTest package.
