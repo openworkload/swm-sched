@@ -4,7 +4,7 @@ project(swm-sched CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_EXTENSIONS OFF)
+set(CMAKE_CXX_EXTENSIONS ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 set(TESTS_DIR              ${PROJECT_SOURCE_DIR}/tests/unit)
@@ -33,16 +33,14 @@ endif()
 
 find_package(Threads REQUIRED)
 
-# External library ei.lib / libei.a
 add_library(ei STATIC IMPORTED)
-set_target_properties(ei PROPERTIES IMPORTED_LOCATION
-                      $ENV{_KERL_ACTIVE_DIR}/usr/lib/libei.a)
+set_target_properties(ei PROPERTIES IMPORTED_LOCATION $ENV{_KERL_ACTIVE_DIR}/usr/lib/libei.a)
 
 ##################### Some macros to minimaze copy-paste #####################
 
 macro(swm_set_gcc_flags target_name)
-    set_target_properties(${target_name} PROPERTIES COMPILE_FLAGS
-                          "--std=c++17 -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic")
+    set_target_properties(${target_name} PROPERTIES COMPILE_FLAGS "-Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic")
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -rdynamic")
 endmacro(swm_set_gcc_flags target_name)
 
 macro(swm_discover_sources src_dir h_files cpp_files)
@@ -57,8 +55,6 @@ macro(swm_configure_lib target_name out_name)
 
     set_target_properties(${target_name} PROPERTIES PREFIX "")
     set_target_properties(${target_name} PROPERTIES OUTPUT_NAME ${out_name})
-    set_target_properties(${target_name} PROPERTIES LIBRARY_OUTPUT_DIRECTORY_DEBUG ${PROJECT_SOURCE_DIR}/bin)
-    set_target_properties(${target_name} PROPERTIES LIBRARY_OUTPUT_DIRECTORY_RELEASE ${PROJECT_SOURCE_DIR}/bin)
     set_target_properties(${target_name} PROPERTIES ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin)
 endmacro(swm_configure_lib target_name out_name)
 
@@ -105,14 +101,14 @@ macro(swm_configure_test target_name out_name test_headers)
 endmacro(swm_configure_test target_name out_name test_headers)
 
 macro(swm_configure_plugin target_name out_name)
-swm_configure_assembly(${target_name} ${out_name})
-target_include_directories(${target_name} PRIVATE ${PLG_LIB_DIR})
-target_link_libraries(${target_name} ei)
-target_link_libraries(${target_name} wm-lib)
-target_link_libraries(${target_name} plugin-lib)
-add_dependencies(${target_name} plugin-lib)
-set_target_properties(${target_name} PROPERTIES PREFIX "")
-add_dependencies(${target_name} plugin-lib)
+    swm_configure_assembly(${target_name} ${out_name})
+    target_include_directories(${target_name} PRIVATE ${PLG_LIB_DIR})
+    target_link_libraries(${target_name} ei)
+    target_link_libraries(${target_name} wm-lib)
+    target_link_libraries(${target_name} plugin-lib)
+    add_dependencies(${target_name} plugin-lib)
+    set_target_properties(${target_name} PROPERTIES PREFIX "")
+    add_dependencies(${target_name} plugin-lib)
 endmacro(swm_configure_plugin target_name out_name)
 
 
