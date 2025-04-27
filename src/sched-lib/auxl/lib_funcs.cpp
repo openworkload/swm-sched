@@ -35,7 +35,12 @@ void *load_library(const std::string &lib) {
 #if defined(WIN32)
   return LoadLibraryA(lib.c_str());
 #else
-  return dlopen(lib.c_str(), RTLD_NOW);
+  const auto ret = dlopen(lib.c_str(), RTLD_NOW);
+  if (!ret) {
+    const char* error = dlerror();
+    std::cerr << "Syscall dlopen failed: " << (error ? error : "Unknown error") << std::endl;
+  }
+  return ret;
 #endif
 }
 

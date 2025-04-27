@@ -76,6 +76,8 @@ bool AlgorithmFactory::load_plugins(const std::string &path, std::stringstream *
                                                         construct_tt_ptr, improve_tt_ptr, cu_ptr));
         lib_bindings_.push_back(binding);
         alg_ptrs_.push_back(binding->get_algorithm_descriptor());
+      } else {
+        std::cerr << "Failed to load library " << files[i].c_str() << std::endl;
       }
     }
     catch (std::exception &err) {
@@ -88,7 +90,7 @@ bool AlgorithmFactory::load_plugins(const std::string &path, std::stringstream *
 
   // Ensuring that at least one plugin was loaded successfully.
   if (alg_ptrs_.empty()) {
-    *errors << "failed to load at least one plugin";
+    *errors << "Failed to load at least one plugin";
     lib_bindings_.clear();
     return false;
   }
