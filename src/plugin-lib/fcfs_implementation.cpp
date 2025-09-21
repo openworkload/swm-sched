@@ -228,6 +228,9 @@ bool FcfsImplementation::does_node_fit_request(const std::vector<SwmResource> &r
       std::find_if(resources.begin(),
                    resources.end(),
                    [&req, &error](const SwmResource &res) -> bool {
+                     if (req.get_count() == 0) {
+                       return true;
+                     }
                      if (req.get_name() == res.get_name() && req.get_count() <= res.get_count()) {
                        auto req_props = req.get_properties();
                        if (req_props.size()) {
