@@ -73,8 +73,10 @@ Defaults (`_KERL_ACTIVE_DIR=/usr/erlang`, `GTEST_ROOT=/usr/local/GTest`) match t
 
 ### Run github actions
 ```bash
-act -j unittests
+make act-unittests
 ```
+
+This runs `act --job unittests` (requires [nektos/act](https://github.com/nektos/act) and Docker).
 
 
 ## Contributing
