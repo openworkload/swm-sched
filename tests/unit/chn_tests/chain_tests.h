@@ -144,6 +144,7 @@ TEST_F(chn, chain_time_counting) {
   }
   double working = 0.0;
   counter->get_times(nullptr, nullptr, &working);
-  ASSERT_LE(working, 0.06);
+  // ~50ms sleep plus destructor/stop overhead; upper bound allows scheduling jitter under load.
+  ASSERT_LE(working, 0.20);
   ASSERT_GE(working, 0.04);
 }

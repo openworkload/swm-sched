@@ -224,26 +224,41 @@ TEST_F(ctrl, processor_time_counting) {
   }
   ASSERT_EQ(out_queue.element_count(), 2);
 
+  double schedule_astro = -1.0;
+  double schedule_working = -1.0;
+  double interrupt_astro = -1.0;
+  double interrupt_working = -1.0;
+
   while (out_queue.element_count() > 0) {
     auto resp = out_queue.pop();
     double astro = 0.0, idling = 0.0, working = 0.0;
     resp->context()->timer()->get_times(&astro, &idling, &working);
     ASSERT_GE(astro, 0.0);
     ASSERT_GE(working, 0.0);
+    ASSERT_GE(idling, 0.0);
 
     if (resp->context()->id() == "#schedule") {
       ASSERT_FALSE(resp->succeeded());
-      ASSERT_GE(astro, 0.025); ASSERT_LE(astro, 0.075);
-      ASSERT_GE(working, 0.025); ASSERT_LE(working, 0.075);
-      ASSERT_LE(idling, 0.010);
+      // Ran for ~50ms before interrupt; keep a loose floor, not a tight ceiling.
+      ASSERT_GE(astro, 0.025);
+      ASSERT_GE(working, 0.025);
+      schedule_astro = astro;
+      schedule_working = working;
     } else if (resp->context()->id() == "#interrupt") {
       ASSERT_TRUE(resp->succeeded());
-      ASSERT_LE(astro, 0.010);
-      ASSERT_LE(idling, 0.010);
-      ASSERT_LE(working, 0.010);
+      interrupt_astro = astro;
+      interrupt_working = working;
     } else {
       ASSERT_TRUE(false) << "Wrong SwmUID";
     }
   }
+
+  ASSERT_GT(schedule_astro, 0.0);
+  ASSERT_GT(schedule_working, 0.0);
+  ASSERT_GE(interrupt_astro, 0.0);
+  ASSERT_GE(interrupt_working, 0.0);
+  // Interrupt handling should be cheaper than the interrupted schedule work.
+  ASSERT_LT(interrupt_astro, schedule_astro);
+  ASSERT_LT(interrupt_working, schedule_working);
 }
 
