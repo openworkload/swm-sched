@@ -28,25 +28,9 @@ Jobs submitted to Sky Port are scheduled by the daemon represented by this repos
 
 ## Requirements:
 * gcc with C++17 support
-* cmake version >= 3.6
-
-### Preparations after the repository cloning
-
-1. The project depends on swm-core sources, thus create a sym link to swm-core in ./deps:
-```bash
-pushd deps
-ln -s ../../swm-core .
-popd
-```
-
-2. Optionally, you can enable unit tests - just install GTest package.
-Instructions are provided in the following section.
-
-3. Generate compilation files by CMake tool:
-```bash
-cmake -G "Unix Makefiles"
-make
-```
+* cmake version >= 3.16
+* Erlang/OTP with `ei` (set `_KERL_ACTIVE_DIR` to the Erlang root that contains `usr/include` and `usr/lib/libei.a`)
+* Sibling checkout of [swm-core](https://github.com/openworkload/swm-core) at `../swm-core` (used via `deps/swm-core`)
 
 ### Installing GTest (optional)
 
@@ -70,6 +54,18 @@ make install
 
 4. Set up environment variable GTEST_ROOT as `/usr/local/GTest`.
 
+### Compile binaries
+
+Optionally, enable unit tests by installing GTest (see the previous section).
+If `GTEST_ROOT` points at an installed GTest, CMake enables the unit tests automatically.
+
+```bash
+./build.sh
+```
+
+`build.sh` links `deps/swm-core` to `../swm-core` when needed, then runs `cmake` and `make`.
+Defaults (`_KERL_ACTIVE_DIR=/usr/erlang`, `GTEST_ROOT=/usr/local/GTest`) match the `skyport-dev` container; override them in the environment for other setups.
+
 ### Run unit tests
 ```bash
 ./bin/swm-sched-tests
@@ -79,6 +75,7 @@ make install
 ```bash
 act -j unittests
 ```
+
 
 ## Contributing
 
