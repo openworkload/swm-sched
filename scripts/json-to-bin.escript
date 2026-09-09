@@ -104,7 +104,10 @@ get_final_binary(JsonBin) ->
 convert_and_print(JsonBin) ->
   true = code:add_pathz(filename:dirname(escript:script_name()) ++ ?SWM_JSX),
   FinalBin = get_final_binary(JsonBin),
-  io:put_chars(standard_io, binary_to_list(FinalBin)).
+  % CI/act often uses a UTF-8 locale where standard_io encoding is unicode;
+  % writing raw scheduler bytes through unicode would UTF-8-escape values like 0x83.
+  ok = io:setopts(standard_io, [{encoding, latin1}]),
+  ok = file:write(standard_io, FinalBin).
 
 main([Filename]) ->
   true = code:add_pathz(filename:dirname(escript:script_name()) ++ ?SWM_LIB),

@@ -11,35 +11,48 @@ jobs:
     runs-on: ubuntu-22.04
 
     steps:
+    - uses: actions/checkout@v4
+
+    - name: Install Erlang/OTP 27
+      uses: erlef/setup-beam@v1
+      with:
+        otp-version: "27.3.4"
+
+    - name: Export Erlang root for CMake
+      run: |
+        OTP_ROOT="$(erl -noshell -eval 'io:format("~s",[code:root_dir()]),halt().')"
+        echo "_KERL_ACTIVE_DIR=${OTP_ROOT}" >> "$GITHUB_ENV"
+        echo "Using _KERL_ACTIVE_DIR=${OTP_ROOT}"
+        test -f "${OTP_ROOT}/usr/include/ei.h"
+        test -f "${OTP_ROOT}/usr/lib/libei.a"
+
     - name: Prepare gtest
       run: |
         sudo apt-get update -y
-        sudo apt-get -y install cmake libgtest-dev
+        sudo apt-get -y install cmake g++ libgtest-dev
         cd /usr/src/gtest
         sudo cmake CMakeLists.txt
         sudo make
-        sudo cp lib/*.a /usr/lib
-        sudo ln -s /usr/lib/libgtest.a /usr/local/lib/libgtest.a
-        sudo ln -s /usr/lib/libgtest_main.a /usr/local/lib/libgtest_main.a
+        sudo cp lib/*.a /usr/lib 2>/dev/null || sudo find . -name 'libgtest*.a' -exec cp {} /usr/lib \;
+        sudo ln -sf /usr/lib/libgtest.a /usr/local/lib/libgtest.a
+        sudo ln -sf /usr/lib/libgtest_main.a /usr/local/lib/libgtest_main.a
 
-    - uses: actions/checkout@v1
     - name: Configure the scheduler build
       run: |
         sudo pip install cogapp
-        sudo apt-get install erlang erlang-dev -y
         git config --global url.https://github.com/.insteadOf git://github.com/
+        rm -rf deps/swm-core
         git clone https://github.com/openworkload/swm-core.git deps/swm-core
+        # Compile Erlang deps used by json-to-bin.escript before C++ build.
+        ln -sf "$(command -v cog)" /usr/local/bin/cog.py || true
+        make -C deps/swm-core gen compile
         export GTEST_ROOT=/usr/src/gtest
         cmake . -G "Unix Makefiles"
 
     - name: Build the scheduler
-      run: make
+      run: |
+        export GTEST_ROOT=/usr/src/gtest
+        make
 
     - name: Run the scheduler unit tests
-      run: |
-        cd ${{github.workspace}}/deps/swm-core
-        ln -s /usr/local/bin/cog /usr/local/bin/cog.py || true
-        make
-        make release
-        cd ${{github.workspace}}
-        ./bin/swm-sched-tests
+      run: ./bin/swm-sched-tests

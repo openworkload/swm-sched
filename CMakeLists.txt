@@ -171,3 +171,11 @@ if(${GTEST_FOUND})
     add_dependencies(sched-tests sched-exe)
     add_dependencies(sched-tests plugin-lib)
 endif()
+
+# Run GitHub Actions unit tests locally via nektos/act
+add_custom_target(act-unittests
+    COMMAND act --job unittests
+    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+    USES_TERMINAL
+    COMMENT "Running unittests job with act"
+)
