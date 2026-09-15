@@ -22,6 +22,7 @@ class SchedulingInfoConfigurator {
     void create_resource(const std::string &name, uint64_t value) {
       create_resources({ { name, value } });
     }
+    void set_is_template(bool is_template);
 
    private:
     NodeConfigurator(const std::string &id,

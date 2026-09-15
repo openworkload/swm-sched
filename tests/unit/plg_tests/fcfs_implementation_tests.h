@@ -100,3 +100,46 @@ TEST_F(plg, fcfs_priorities) {
   ASSERT_EQ(tts[1].get_start_time(), 0); ASSERT_EQ(tts[1].get_job_nodes().size(), 1);
   ASSERT_EQ(tts[2].get_start_time(), 3); ASSERT_EQ(tts[2].get_job_nodes().size(), 1);
 }
+
+TEST_F(plg, fcfs_template_node_satisfies_multi_node_request) {
+  SchedulingInfoConfigurator config;
+  auto cluster = config.create_cluster("1", "up");
+  auto part = cluster->create_partition("1", "up");
+  auto tpl = part->create_node("tpl1", "up", "idle");
+  tpl->set_is_template(true);
+  // Only one template node exists, but the job asks for 3 compute nodes.
+  auto job = config.create_job("1", "1", 1);
+  job->create_request("node", 3);
+
+  std::shared_ptr<swm::SchedulingInfoInterface> info;
+  config.construct(&info);
+
+  swm::FcfsImplementation fcfs;
+  std::vector<swm::SwmTimetable> tts;
+  ASSERT_TRUE(fcfs.init(info.get()));
+  ASSERT_TRUE(fcfs.schedule(info->jobs(), events(), &tts, true));
+  ASSERT_EQ(tts.size(), 1);
+  ASSERT_EQ(tts[0].get_job_id(), "1");
+  ASSERT_EQ(tts[0].get_job_nodes().size(), 1);
+  ASSERT_EQ(tts[0].get_job_nodes()[0], "tpl1");
+  ASSERT_EQ(tts[0].get_start_time(), 0);
+}
+
+TEST_F(plg, fcfs_template_node_not_enough_without_template_flag) {
+  SchedulingInfoConfigurator config;
+  auto cluster = config.create_cluster("1", "up");
+  auto part = cluster->create_partition("1", "up");
+  part->create_node("1", "up", "idle");
+  auto job = config.create_job("1", "1", 1);
+  job->create_request("node", 3);
+
+  std::shared_ptr<swm::SchedulingInfoInterface> info;
+  config.construct(&info);
+
+  swm::FcfsImplementation fcfs;
+  std::vector<swm::SwmTimetable> tts;
+  ASSERT_TRUE(fcfs.init(info.get()));
+  ASSERT_TRUE(fcfs.schedule(info->jobs(), events(), &tts, true));
+  // Real (non-template) nodes must still satisfy the requested count.
+  ASSERT_EQ(tts.size(), 0);
+}

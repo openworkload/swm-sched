@@ -335,7 +335,22 @@ bool FcfsImplementation::schedule_single_job(const SwmJob *job,
   }
 
 
-  // Step 3 - the first "node_num" nodes are preferred to use
+  // Step 3 - cloud template nodes are elastic: one matching template can
+  //          satisfy any requested node count (VMs are spawned later from it).
+  //          Keep a single template id in the timetable (wm_compute expects that).
+  {
+    auto template_it =
+      std::find_if(selected_nodes.begin(), selected_nodes.end(),
+                   [](const NodeRef *nr) -> bool {
+                     return nr->node()->get_is_template() == "true";
+                   });
+    if (template_it != selected_nodes.end()) {
+      selected_nodes.assign(1, *template_it);
+      node_num = 1;
+    }
+  }
+
+  // Step 4 - the first "node_num" nodes are preferred to use
   //          because the vector are sorted by "when_free" times
   //          But we will check the following nodes as well,
   //          probably, they are placed in the better partition
@@ -350,7 +365,7 @@ bool FcfsImplementation::schedule_single_job(const SwmJob *job,
   }
   selected_nodes.resize(ext_node_num);
 
-  // Step 4 - if we have a choice, select the nodes from the same partition
+  // Step 5 - if we have a choice, select the nodes from the same partition
   if (selected_nodes.size() > node_num) {
     // We have to separate references of the selected nodes by partitions
     std::unordered_map<const SwmPartition *, std::vector<NodeRef *> > parts_to_nodes;
@@ -382,7 +397,7 @@ bool FcfsImplementation::schedule_single_job(const SwmJob *job,
     selected_nodes.resize(node_num);
   }
 
-  // Step 5 - done! We need to create and fill the timetable by node's identifiers
+  // Step 6 - done! We need to create and fill the timetable by node's identifiers
   //          Also we need to update/resort vector "nodes" and extend collection "busy_nodes"
   auto first_free_node = std::min_element(selected_nodes.begin(), selected_nodes.end(),
                                           [](const NodeRef *v1, const NodeRef *v2) -> bool {

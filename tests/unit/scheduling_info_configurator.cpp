@@ -37,6 +37,12 @@ void SchedulingInfoConfigurator::NodeConfigurator::create_resources(const std::v
   });
 }
 
+void SchedulingInfoConfigurator::NodeConfigurator::set_is_template(bool is_template) {
+  setters_.emplace_back([is_template](swm::SwmNode *node) -> void {
+    node->set_is_template(is_template ? "true" : "false");
+  });
+}
+
 const swm::SwmNode *
     SchedulingInfoConfigurator::NodeConfigurator::build(swm::util::SchedulingInfo *obj) {
   swm::SwmNode node;
