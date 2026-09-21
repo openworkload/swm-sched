@@ -6,6 +6,7 @@
 #include "alg/algorithm_factory.h"
 #include "ctrl/service.h"
 #include "cli_args.h"
+#include "wm_io.h"
 
 int main(int argc, char* const argv[]) {
   size_t ivalue;
@@ -26,6 +27,12 @@ int main(int argc, char* const argv[]) {
       swm::CliArgs::format_help_message(&std::cout);
       std::cout << std::endl;
       return 0;
+    }
+
+    // Default: INFO actions only. --debug enables DEBUG (and DEBUG2 EI dumps).
+    swm_log_init(args.has_debug_flag() ? SWM_LOG_LEVEL_DEBUG2 : SWM_LOG_LEVEL_INFO, stderr);
+    if (args.has_debug_flag()) {
+      swm_logi("Debug logging enabled");
     }
 
     // Constructing factories
@@ -70,6 +77,7 @@ int main(int argc, char* const argv[]) {
       service.set_input(&input);
     }
 
+    swm_logi("Scheduler service starting");
     // Done! Starting service, current thread will be blocked
     service.main_loop();
     return 0;

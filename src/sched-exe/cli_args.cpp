@@ -106,7 +106,7 @@ void CliArgs::format_help_message(std::ostream *stream) {
   *stream << "     -h, --help:" << std::endl;
   *stream << "          prints the current help message and exits" << std::endl;
   *stream << "     -d, --debug:" << std::endl;
-  *stream << "          forces to print additional debug messages to log" << std::endl;
+  *stream << "          enable debug logging" << std::endl;
   *stream << "     -p, --plugins:" << std::endl;
   *stream << "          defines directory <PLUGINS> which plugins are stored in. Current" << std::endl;
   *stream << "          directory is used by default." << std::endl;

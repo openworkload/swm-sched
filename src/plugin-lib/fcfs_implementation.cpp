@@ -3,7 +3,11 @@
 
 #include <set>
 #include <algorithm>
+#include <sstream>
+#include <string>
+#include <unordered_map>
 #include "timetable_info.h"
+#include "wm_io.h"
 
 using namespace swm;
 
@@ -18,6 +22,8 @@ bool FcfsImplementation::init(const SchedulingInfoInterface *sched_info, std::st
 
   const auto nodes = sched_info->nodes();
   const SwmCluster *cluster;
+  size_t schedulable = 0;
+  size_t templates = 0;
   for (const auto node : nodes) {
     cluster = rh_.node_to_cluster(node);
     const bool is_up = node->get_state_power() == "up" &&
@@ -26,9 +32,19 @@ bool FcfsImplementation::init(const SchedulingInfoInterface *sched_info, std::st
                        rh_.node_to_part(node)->get_state() == "up";
     if (node->get_is_template() == "true" || is_up) {
       nodes_per_cluster_[cluster->get_id()].emplace_back(new NodeRef(node));
+      ++schedulable;
+      if (node->get_is_template() == "true") {
+        ++templates;
+      }
     }
   }
 
+  swm_logi("FCFS init: jobs=%zu nodes_total=%zu schedulable=%zu templates=%zu clusters=%zu",
+           sched_info->jobs().size(),
+           nodes.size(),
+           schedulable,
+           templates,
+           sched_info->clusters().size());
   return true;
 }
 
@@ -69,6 +85,8 @@ bool FcfsImplementation::schedule(const std::vector<const SwmJob *> &jobs,
   uint64_t gang_start_time = 0;
   tts->resize(jobs_ref->size());
   size_t tt_number = 0;
+  size_t queued = 0;
+  size_t skipped = 0;
   for (size_t i = 0; i < jobs_ref->size(); i++) {
     if (events->forced_to_interrupt()) {
       return false;
@@ -76,6 +94,7 @@ bool FcfsImplementation::schedule(const std::vector<const SwmJob *> &jobs,
 
     const auto job = (*jobs_ref)[i];
     if (job->get_state() == "Q") {
+      ++queued;
       auto &tt = (*tts)[tt_number];
       tt.set_job_id(job->get_id());
 
@@ -86,14 +105,17 @@ bool FcfsImplementation::schedule(const std::vector<const SwmJob *> &jobs,
         for (const auto &dep : job->get_deps()) {
           auto iter = jobs_to_endtimes.find(std::get<1>(dep));
           if (iter == jobs_to_endtimes.end()) {
-            //std::cerr << "FCFS limitation: job #\"" << job->get_id() << "\" depends on "
-            //  << "job #\"" << std::get<1>(dep) << "\" and must be scheduled after it";
+            swm_logi("Skip job %s: unmet dependency on job %s",
+                     job->get_id().c_str(), std::get<1>(dep).c_str());
             has_deps = true;
             break;
           }
           start_time_threshold = std::max(start_time_threshold, iter->second);
         }
-        if (has_deps) { continue; }
+        if (has_deps) {
+          ++skipped;
+          continue;
+        }
       }
 
       // Check the gang id
@@ -102,8 +124,9 @@ bool FcfsImplementation::schedule(const std::vector<const SwmJob *> &jobs,
         if (!job->get_gang_id().empty()) {
           auto gang_iter = known_gang_ids.find(job->get_gang_id());
           if (gang_iter != known_gang_ids.end()) {
-            //std::cerr << "FCFS limitation: jobs from the gang #\"" << job->get_gang_id() << "\""
-            //          << " must be placed in a row";
+            swm_logi("Skip job %s: gang \"%s\" is not contiguous in the queue",
+                     job->get_id().c_str(), job->get_gang_id().c_str());
+            ++skipped;
             continue;
           }
           known_gang_ids.insert(job->get_gang_id());
@@ -129,10 +152,19 @@ bool FcfsImplementation::schedule(const std::vector<const SwmJob *> &jobs,
 
       // Schedule job and register its end time
       JobRef jr;
+      error->str("");
+      error->clear();
       if (!schedule_single_job(job, start_time_threshold, &gang_nodes, &tt, &jr, error)) {
-        std::cerr << "Can't schedule job " << job->get_id() << ": " << error->str() << std::endl;
+        swm_logi("Can't schedule job %s: %s",
+                 job->get_id().c_str(), error->str().c_str());
+        ++skipped;
         continue;
       }
+
+      swm_logi("Scheduled job %s start=%llu nodes=%zu",
+               job->get_id().c_str(),
+               static_cast<unsigned long long>(tt.get_start_time()),
+               tt.get_job_nodes().size());
 
       jobs_to_endtimes[job->get_id()] = tt.get_start_time() + job->get_duration();
       gang_start_time = std::max(gang_start_time, tt.get_start_time());
@@ -146,6 +178,8 @@ bool FcfsImplementation::schedule(const std::vector<const SwmJob *> &jobs,
     align_jobs(&gang_jobs, &jobs_to_endtimes, gang_start_time);
   }
   tts->resize(tt_number);
+  swm_logi("FCFS finished: queued=%zu scheduled=%zu skipped=%zu",
+           queued, tt_number, skipped);
   return true;
 }
 
@@ -299,10 +333,21 @@ bool FcfsImplementation::schedule_single_job(const SwmJob *job,
   }
   auto &nodes = nodes_iter->second;
 
-  // Step 2 - select nodes that satisfy the requirements
   const auto job_nodes_vec = job->get_nodes();
+  swm_logd("FCFS try job %s: request_nodes=%llu cluster=%s preset=%zu pool=%zu",
+           job->get_id().c_str(),
+           static_cast<unsigned long long>(node_num),
+           job->get_cluster_id().c_str(),
+           job_nodes_vec.size(),
+           nodes.size());
+
+  // Step 2 - select nodes that satisfy the requirements
   std::set<std::string> node_ids_set(job_nodes_vec.begin(), job_nodes_vec.end());
   std::vector<NodeRef *> selected_nodes;
+  size_t after_busy = 0;
+  size_t after_preset = 0;
+  size_t after_owned = 0;
+  size_t after_fit = 0;
 
   for (auto &nr : nodes) {
     const auto node_id = nr->node()->get_id();
@@ -312,6 +357,7 @@ bool FcfsImplementation::schedule_single_job(const SwmJob *job,
     if (busy_iter != busy_nodes->end()) {
       continue;
     }
+    ++after_busy;
 
     // Check pre-set node ids
     if (job_nodes_vec.size()) {
@@ -321,6 +367,7 @@ bool FcfsImplementation::schedule_single_job(const SwmJob *job,
       }
       node_ids_set.erase(found);
     }
+    ++after_preset;
 
     const auto &resources = nr->node()->get_resources();
 
@@ -328,12 +375,22 @@ bool FcfsImplementation::schedule_single_job(const SwmJob *job,
       *error << "node is owned by other job; ";
       continue;
     }
+    ++after_owned;
 
     if (does_node_fit_request(requests, resources, error)) {
+      ++after_fit;
       selected_nodes.emplace_back(nr);
     }
   }
 
+  swm_logd("FCFS candidates job %s: pool=%zu after_busy=%zu after_preset=%zu "
+           "after_owned=%zu after_fit=%zu",
+           job->get_id().c_str(),
+           nodes.size(),
+           after_busy,
+           after_preset,
+           after_owned,
+           after_fit);
 
   // Step 3 - cloud template nodes are elastic: one matching template can
   //          satisfy any requested node count (VMs are spawned later from it).
@@ -345,6 +402,12 @@ bool FcfsImplementation::schedule_single_job(const SwmJob *job,
                      return nr->node()->get_is_template() == "true";
                    });
     if (template_it != selected_nodes.end()) {
+      const auto *tpl = (*template_it)->node();
+      swm_logd("FCFS template collapse job %s: %s (%s); request_nodes %llu -> 1",
+               job->get_id().c_str(),
+               tpl->get_name().c_str(),
+               tpl->get_id().c_str(),
+               static_cast<unsigned long long>(node_num));
       selected_nodes.assign(1, *template_it);
       node_num = 1;
     }
@@ -355,7 +418,10 @@ bool FcfsImplementation::schedule_single_job(const SwmJob *job,
   //          But we will check the following nodes as well,
   //          probably, they are placed in the better partition
   if (node_num > selected_nodes.size()) {
-    *error << "not enough nodes: " << node_num << " > " << selected_nodes.size() << "; ";
+    *error << "not enough nodes: " << node_num << " > " << selected_nodes.size()
+           << " (preset=" << job_nodes_vec.size()
+           << " cluster_pool=" << nodes.size()
+           << " after_fit=" << after_fit << "); ";
     return false;
   }
   auto ext_node_num = node_num;
@@ -385,6 +451,17 @@ bool FcfsImplementation::schedule_single_job(const SwmJob *job,
       return v2->size() < v1->size();
     });
 
+    const auto *chosen_part = rh_.node_to_part((*refs.front())[0]->node());
+    swm_logd("FCFS partition pick job %s: candidates=%zu need=%llu parts=%zu "
+             "chosen=%s (%s) size=%zu",
+             job->get_id().c_str(),
+             selected_nodes.size(),
+             static_cast<unsigned long long>(node_num),
+             parts_to_nodes.size(),
+             chosen_part->get_name().c_str(),
+             chosen_part->get_id().c_str(),
+             refs.front()->size());
+
     // Finally, refill vector "selected_nodes" by nodes
     // that are placed in the most populated partitions
     selected_nodes.clear();
@@ -408,11 +485,27 @@ bool FcfsImplementation::schedule_single_job(const SwmJob *job,
   tt->set_start_time(start_time);
   std::vector<std::string> node_ids;
   node_ids.reserve(selected_nodes.size());
-  for (const auto pn : selected_nodes) {
+  std::string node_names;
+  constexpr size_t kMaxLoggedNames = 8;
+  for (size_t i = 0; i < selected_nodes.size(); ++i) {
+    const auto pn = selected_nodes[i];
     pn->when_free() = start_time + job->get_duration();
     node_ids.push_back(pn->node()->get_id());
     busy_nodes->insert(pn->node()->get_id());
+    if (i < kMaxLoggedNames) {
+      if (!node_names.empty()) {
+        node_names += ",";
+      }
+      node_names += pn->node()->get_name();
+    }
   }
+  if (selected_nodes.size() > kMaxLoggedNames) {
+    node_names += ",+" + std::to_string(selected_nodes.size() - kMaxLoggedNames) + " more";
+  }
+  swm_logd("FCFS assign job %s: start=%llu nodes=[%s]",
+           job->get_id().c_str(),
+           static_cast<unsigned long long>(start_time),
+           node_names.c_str());
   tt->set_job_nodes(node_ids);
   if (job_ref != nullptr) {
     *job_ref = JobRef(tt, job);

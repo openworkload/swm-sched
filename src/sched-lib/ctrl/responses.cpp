@@ -3,6 +3,7 @@
 
 #include "constants.h"
 #include "chn/metrics_snapshot.h"
+#include "wm_io.h"
 
 
 namespace swm {
@@ -70,7 +71,7 @@ ei_x_buff ResponseInterface::make_timetables_ei_buffer(
       return x;
     }
     for (size_t i = 0; i < nodes_cnt; ++i) {
-      if (ei_x_encode_string(&x, nodes[nodes_cnt - i - 1].c_str())) {
+      if (ei_x_encode_string(&x, nodes[i].c_str())) {
         ei_x_free(&x);
         return x;
       }
@@ -224,7 +225,8 @@ TimetableResponse::TimetableResponse(const std::shared_ptr<CommandContext> &cont
   }
   result_.set_timetable(tt);
   result_.set_status(succeeded());
-  result_.print("   ", '\n');
+  swm_logi("schedule done request_id=%s jobs=%zu",
+           context_->id().c_str(), tt.size());
 }
 
 bool TimetableResponse::serialize(std::unique_ptr<char[]> *data,

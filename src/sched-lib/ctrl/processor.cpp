@@ -6,6 +6,7 @@
 
 #include "hw/scanner.h"
 #include "alg/algorithm_factory.h"
+#include "wm_io.h"
 
 namespace swm {
 namespace util {
@@ -195,6 +196,10 @@ void Processor::worker_thread() {
           // Create new chain, start the asynchronous construction of timetable
           case SWM_COMMAND_SCHEDULE: {
             auto sreq = static_cast<ScheduleCommand *>(req.get());
+            swm_logi("Schedule request id=%s jobs=%zu nodes=%zu",
+                     sreq->context()->id().c_str(),
+                     sreq->scheduling_info()->jobs().size(),
+                     sreq->scheduling_info()->nodes().size());
             if (chains_.find(sreq->context()->id()) != chains_.end()) {
               respond_chain_already_exists(out_queue_, sreq->context(), sreq->context()->id());
               break;

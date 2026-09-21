@@ -87,8 +87,7 @@ bool ScheduleCommand::init(const std::vector<std::unique_ptr<char[]>> &data, std
       return false;
     }
 
-    print_ei_buf(buf, index);
-
+    // Do not dump full EI entities; counts are logged after parsing.
     switch (i) {
       case SWM_DATA_TYPE_SCHEDULERS: {
         if (!apply_schedulers(buf, index, errors)) {
@@ -147,6 +146,12 @@ bool ScheduleCommand::init(const std::vector<std::unique_ptr<char[]>> &data, std
   }
 
   sched_info_->validate_references();
+  swm_logi("Parsed entities: schedulers=%zu jobs=%zu nodes=%zu clusters=%zu partitions=%zu",
+           schedulers_.size(),
+           sched_info_->jobs().size(),
+           sched_info_->nodes().size(),
+           sched_info_->clusters().size(),
+           sched_info_->parts().size());
   return true;
 }
 
