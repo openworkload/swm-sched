@@ -88,6 +88,7 @@ make act-unittests
 ```
 
 This runs `act --job unittests` (requires [nektos/act](https://github.com/nektos/act) and Docker).
+Repo [`.actrc`](.actrc) maps `ubuntu-24.04` to `catthehacker/ubuntu:act-24.04` (includes Node for `setup-beam` and other actions).
 
 
 ## Contributing
