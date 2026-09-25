@@ -13,10 +13,10 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Install Erlang/OTP 27
+    - name: Install Erlang/OTP 29
       uses: erlef/setup-beam@v1
       with:
-        otp-version: "27.3.4"
+        otp-version: "29.1"
 
     - name: Export Erlang root for CMake
       run: |
