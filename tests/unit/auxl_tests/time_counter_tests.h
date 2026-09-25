@@ -1,10 +1,11 @@
 #pragma once
 
-#include <gtest/gtest.h>
-#include <atomic>
-
-#include "test_defs.h"
 #include "auxl/time_counter.h"
+#include "test_defs.h"
+
+#include <gtest/gtest.h>
+
+#include <atomic>
 
 // Feel free to adjust this values
 const int SLEEP_MS = 50;
@@ -73,11 +74,16 @@ TEST(auxl, time_counter_off_from_another_thread) {
   ASSERT_NO_THROW(counter.turn_on());
   volatile bool thrown = false;
   auto thread_func = [cnt = &counter, flag = &thrown]() -> void {
-    try { cnt->turn_off(); *flag = false; }
-    catch (const std::runtime_error &) { *flag = true; }
+    try {
+      cnt->turn_off();
+      *flag = false;
+    } catch (const std::runtime_error &) {
+      *flag = true;
+    }
   };
   std::thread thread = std::thread(thread_func);
-  if (thread.joinable()) thread.join();
+  if (thread.joinable())
+    thread.join();
   ASSERT_TRUE(thrown);
 }
 
@@ -121,20 +127,29 @@ TEST(auxl, time_counter_concurrency) {
   volatile bool go = false;
   auto thread_func = [cnt = &counter, threads = &threads_cnt, go = &go]() -> void {
     threads->fetch_add(1);
-    while (!*go) { std::this_thread::yield(); }
+    while (!*go) {
+      std::this_thread::yield();
+    }
     cnt->turn_on();
     std::this_thread::sleep_for(std::chrono::milliseconds(SLEEP_MS));
     cnt->turn_off();
   };
 
   std::vector<std::thread> threads(10);
-  for (auto & t : threads) { t = std::thread(thread_func); }
-  while (threads_cnt.load() != (int)threads.size()) { std::this_thread::yield(); }
+  for (auto &t : threads) {
+    t = std::thread(thread_func);
+  }
+  while (threads_cnt.load() != (int)threads.size()) {
+    std::this_thread::yield();
+  }
   counter.reset();
   std::this_thread::sleep_for(std::chrono::milliseconds(SLEEP_MS));
   go = true;
-  for (auto & t : threads) { if (t.joinable()) t.join(); }
-  
+  for (auto &t : threads) {
+    if (t.joinable())
+      t.join();
+  }
+
   double astro = 0.0, idling = 0.0, working = 0.0;
   counter.get_times(&astro, &idling, &working);
   ASSERT_GT(astro, (SLEEP_MS - ERROR_MS) * 2e-3);

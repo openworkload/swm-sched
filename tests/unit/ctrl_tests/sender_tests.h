@@ -1,15 +1,15 @@
 
 #pragma once
 
-#include <iostream>
+#include "chn/metrics_snapshot.h"
+#include "ctrl.h"
+#include "ctrl/responses.h"
+#include "ctrl/sender.h"
+#include "test_defs.h"
+
 #include <gtest/gtest.h>
 
-#include "test_defs.h"
-#include "ctrl.h"
-#include "ctrl/sender.h"
-#include "ctrl/responses.h"
-#include "chn/metrics_snapshot.h"
-
+#include <iostream>
 
 TEST_F(ctrl, sender_start_stop) {
   std::unique_ptr<swm::util::Sender> ptr(new swm::util::Sender());
@@ -55,11 +55,11 @@ TEST_F(ctrl, sender_failed_response) {
   std::stringstream oss;
   swm::util::MyQueue<std::shared_ptr<swm::util::ResponseInterface> > queue(2);
   ASSERT_NO_THROW(sender.init(&queue, &oss));
-  
+
   std::shared_ptr<swm::util::CommandContext> ctx(new swm::util::CommandContext("0"));
   std::shared_ptr<swm::util::ResponseInterface> resp(new swm::util::EmptyResponse(ctx, false));
   queue.push(resp);
-  
+
   ASSERT_NO_THROW(sender.close());
   ASSERT_EQ(queue.element_count(), 0);
   ASSERT_GE(oss.str().size(), 0);
@@ -73,17 +73,20 @@ TEST_F(ctrl, sender_timetable_response) {
 
   swm::SwmTimetable table1, table2;
   table1.set_job_id("1");
-  std::vector<std::string> nodes1; nodes1.push_back("4");
+  std::vector<std::string> nodes1;
+  nodes1.push_back("4");
   table1.set_job_nodes(nodes1);
   table1.set_start_time(0);
   table2.set_job_id("2");
-  std::vector<std::string> nodes2; nodes2.push_back("3");
+  std::vector<std::string> nodes2;
+  nodes2.push_back("3");
   table2.set_job_nodes(nodes2);
   table2.set_start_time(100);
 
   std::shared_ptr<swm::util::CommandContext> ctx(new swm::util::CommandContext("1"));
   std::vector<const swm::SwmTimetable *> tables;
-  tables.push_back(&table1); tables.push_back(&table2);
+  tables.push_back(&table1);
+  tables.push_back(&table2);
   std::shared_ptr<swm::TimetableInfoInterface> tt(new TimetableInfoForTests(tables));
   std::shared_ptr<swm::util::MetricsSnapshot> m(new swm::util::MetricsSnapshot());
   std::shared_ptr<swm::util::ResponseInterface> resp(new swm::util::TimetableResponse(ctx, tt, m));

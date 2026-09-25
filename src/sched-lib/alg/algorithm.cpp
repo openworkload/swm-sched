@@ -24,13 +24,11 @@ bool Algorithm::create_timetable(const SchedulingInfoInterface *info,
                                  std::shared_ptr<swm::TimetableInfoInterface> *tt,
                                  std::stringstream *error) {
   if (ctx_ == nullptr) {
-    throw std::runtime_error(
-      "Algorithm::create_timetable(): algorithm must be initizalized first");
+    throw std::runtime_error("Algorithm::create_timetable(): algorithm must be initizalized first");
   }
   if (info == nullptr || events == nullptr || tt == nullptr) {
     throw std::runtime_error(
-      "Algorithm::create_timetable(): \"info\", \"events\" and \"tt\" cannot be equal to nullptr"
-    );
+        "Algorithm::create_timetable(): \"info\", \"events\" and \"tt\" cannot be equal to nullptr");
   }
 
   std::stringstream error_;
@@ -54,8 +52,7 @@ bool Algorithm::improve_timetable(const TimetableInfoInterface *old_tt,
                                   std::shared_ptr<swm::TimetableInfoInterface> *new_tt,
                                   std::stringstream *error) {
   if (ctx_ == nullptr) {
-    throw std::runtime_error(
-      "Algorithm::improve_timetable(): algorithm must be initizalized first");
+    throw std::runtime_error("Algorithm::improve_timetable(): algorithm must be initizalized first");
   }
   if (old_tt == nullptr /*|| events == nullptr*/ || new_tt == nullptr) {
     std::stringstream ss;
@@ -70,10 +67,9 @@ bool Algorithm::improve_timetable(const TimetableInfoInterface *old_tt,
 Algorithm::~Algorithm() {
   std::stringstream error;
   if (ctx_ != nullptr && !binding_->release_context(ctx_, &error)) {
-    std::cerr << "Failed to release context of the plugin "
-              << binding_->lib_location().c_str() << ", the reason: "
-              << error.str().c_str() << std::endl;
+    std::cerr << "Failed to release context of the plugin " << binding_->lib_location().c_str()
+              << ", the reason: " << error.str().c_str() << std::endl;
   }
 }
 
-} // swm
+}  // namespace swm

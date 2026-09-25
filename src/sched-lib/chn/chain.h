@@ -1,13 +1,13 @@
 
 #pragma once
 
-#include "defs.h"
+#include "alg/algorithm.h"
 #include "auxl/time_counter.h"
 #include "chain_metrics.h"
-#include "alg/algorithm.h"
+#include "defs.h"
 #include "ifaces/metrics_interface.h"
-#include "ifaces/timetable_info_interface.h"
 #include "ifaces/plugin_events_interface.h"
+#include "ifaces/timetable_info_interface.h"
 
 namespace swm {
 
@@ -17,14 +17,14 @@ namespace swm {
 class Chain : private PluginEventsInterface {
  public:
   enum StatusType {
-    NOT_STARTED   = 0,      // init() must be called
-    WORKING       = 1,      // constructing tt, doing something useful
-    INTERRUPTED   = 2,      // tt construction process interrupted by someone or due to errors
-    FINISHED      = 3       // tt constructed without errors and can be used
+    NOT_STARTED = 0,  // init() must be called
+    WORKING = 1,      // constructing tt, doing something useful
+    INTERRUPTED = 2,  // tt construction process interrupted by someone or due to errors
+    FINISHED = 3      // tt constructed without errors and can be used
   };
-  
-  Chain() : status_(NOT_STARTED), async_op_(NONE) { }
-  void operator =(const Chain &) = delete;
+
+  Chain() : status_(NOT_STARTED), async_op_(NONE) {}
+  void operator=(const Chain &) = delete;
   ~Chain();
 
   void init(const std::shared_ptr<SchedulingInfoInterface> &info,
@@ -42,15 +42,14 @@ class Chain : private PluginEventsInterface {
   void inject_timetable_async(const std::shared_ptr<TimetableInfoInterface> &tt);
 
  protected:
-  virtual bool forced_to_interrupt() const  override;
-  virtual void commit_intermediate_timetable(
-    const std::shared_ptr<TimetableInfoInterface> &tt) override;
- 
+  virtual bool forced_to_interrupt() const override;
+  virtual void commit_intermediate_timetable(const std::shared_ptr<TimetableInfoInterface> &tt) override;
+
  private:
   enum AsyncOperationType {
-    NONE      = 0,        // nothing to do
-    INTERRUPT = 1,        // chain must be interrupted asap
-    INJECT_TT = 2         // new tt "injected_tt_" must be injected asap
+    NONE = 0,       // nothing to do
+    INTERRUPT = 1,  // chain must be interrupted asap
+    INJECT_TT = 2   // new tt "injected_tt_" must be injected asap
   };
 
   void lock() const;
@@ -66,10 +65,10 @@ class Chain : private PluginEventsInterface {
   std::shared_ptr<SchedulingInfoInterface> info_;
   std::vector<std::shared_ptr<Algorithm> > algorithms_;
   std::vector<const Algorithm *> algorithms_ptrs_;
-  
+
   std::shared_ptr<TimetableInfoInterface> injected_tt_;
   std::shared_ptr<TimetableInfoInterface> intermediate_tt_;
   std::shared_ptr<TimetableInfoInterface> actual_tt_;
 };
 
-} // swm
+}  // namespace swm

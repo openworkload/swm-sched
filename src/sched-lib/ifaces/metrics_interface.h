@@ -10,7 +10,7 @@ namespace swm {
 // Note: std::vector<> returned by value, not by reference, due to thread safety
 class MetricsInterface {
  public:
-  virtual ~MetricsInterface() { }
+  virtual ~MetricsInterface() {}
 
   virtual void register_int_value(uint32_t id, const std::string &name) = 0;
   virtual std::vector<std::pair<uint32_t, std::string> > int_value_indices() const = 0;
@@ -27,5 +27,5 @@ class MetricsInterface {
   virtual std::shared_ptr<MetricsInterface> clone() const = 0;
 };
 
-} // swm
-} // extern "C"
+}  // namespace swm
+}  // extern "C"

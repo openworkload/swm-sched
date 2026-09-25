@@ -52,9 +52,7 @@ void SchedulingInfo::validate_references() {
   }
 }
 
-static inline void print_resource_hierarchy_helper(const RhItem &item,
-                                                   std::ostream *str,
-                                                   size_t shift) {
+static inline void print_resource_hierarchy_helper(const RhItem &item, std::ostream *str, size_t shift) {
   *str << std::string(shift * 2, ' ');
   *str << "{" << item.name() << ", " << item.id() << "}";
   *str << std::endl;
@@ -71,5 +69,5 @@ void SchedulingInfo::print_resource_hierarchy(std::ostream *str) const {
   }
 }
 
-} // util
-} // swm
+}  // namespace util
+}  // namespace swm

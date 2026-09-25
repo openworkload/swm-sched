@@ -13,7 +13,7 @@ class Metrics : public MetricsInterface {
  public:
   Metrics();
   Metrics(const Metrics &);
-  void operator =(const Metrics &) = delete;
+  void operator=(const Metrics &) = delete;
   virtual ~Metrics();
 
   void add_int_value_handler(uint32_t id, const std::function<void(int, int)> &handler);
@@ -25,7 +25,7 @@ class Metrics : public MetricsInterface {
 
   void add_double_value_handler(uint32_t id, const std::function<void(double, double)> &handler);
   virtual void register_double_value(uint32_t id, const std::string &name) override;
-  virtual std::vector<std::pair<uint32_t, std::string > > double_value_indices() const override;
+  virtual std::vector<std::pair<uint32_t, std::string> > double_value_indices() const override;
   virtual double double_value(uint32_t id) const override;
   virtual double update_double_value(uint32_t id, double increment) override;
   virtual void reset_double_value(uint32_t id) override;
@@ -36,12 +36,12 @@ class Metrics : public MetricsInterface {
 
  private:
   // Templated implementation of all logic, located in .cpp
-  template <class T> class OneTypeMetrics;
+  template <class T>
+  class OneTypeMetrics;
 
   OneTypeMetrics<int> *int_values_;
   OneTypeMetrics<double> *double_values_;
 };
 
-} // util
-} // swm
-
+}  // namespace util
+}  // namespace swm

@@ -1,10 +1,10 @@
 #pragma once
 
-#include <gtest/gtest.h>
-
-#include "test_defs.h"
 #include "ctrl.h"
 #include "ctrl/scheduling_info.h"
+#include "test_defs.h"
+
+#include <gtest/gtest.h>
 
 TEST_F(ctrl, scheduling_info_clusters) {
   swm::util::SchedulingInfo sched;

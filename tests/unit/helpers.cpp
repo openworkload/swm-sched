@@ -12,8 +12,7 @@
 #endif
 
 // Returns directory that contains file. Not found - empty string as result
-static inline std::string find_directory_with_file(const std::vector<std::string> &dirs,
-                                                   const std::string &file) {
+static inline std::string find_directory_with_file(const std::vector<std::string> &dirs, const std::string &file) {
   for (size_t i = 0; i < dirs.size(); ++i) {
     if (!dirs[i].empty()) {
       std::ifstream fstr;
@@ -68,8 +67,7 @@ std::string find_win_dir() {
 std::string find_temp_dir() {
 #if defined(WIN32)
   char buf[4 * 1024];
-  if (GetEnvironmentVariableA("TMP", buf, 4 * 1024) == 0 &&
-      GetEnvironmentVariableA("TEMP", buf, 4 * 1024) == 0) {
+  if (GetEnvironmentVariableA("TMP", buf, 4 * 1024) == 0 && GetEnvironmentVariableA("TEMP", buf, 4 * 1024) == 0) {
     throw std::runtime_error("Failed to find suitable directory for temporary objects");
   }
   return buf;
@@ -168,11 +166,9 @@ bool my_exec(const std::string &args, std::string *out, std::string *err) {
   si.hStdOutput = h_out;
 
   if (!failed) {
-    failed = !CreateProcessA(NULL, (char *)("sh -c '" + args + "'").c_str(),
-                             NULL, NULL, TRUE, CREATE_NO_WINDOW,
-                             NULL, NULL, &si, &pi);
+    failed = !CreateProcessA(
+        NULL, (char *)("sh -c '" + args + "'").c_str(), NULL, NULL, TRUE, CREATE_NO_WINDOW, NULL, NULL, &si, &pi);
   }
-
 
   if (!failed) {
     WaitForSingleObject(pi.hProcess, INFINITE);
@@ -212,7 +208,7 @@ bool my_exec(const std::string &args, std::string *out, std::string *err) {
   const auto ret = std::system(cmd.str().c_str());
   if (ret != 0) {
     std::cerr << "Could not run std::system(\"" << cmd.str() << "\"): status=" << WEXITSTATUS(ret)
-              << " signal=" << WSTOPSIG(ret)  << std::endl;
+              << " signal=" << WSTOPSIG(ret) << std::endl;
     return false;
   }
 
@@ -243,7 +239,7 @@ bool my_getcwd(std::string *path) {
     char buf[4 * 1024];
     if (_getcwd(buf, 4 * 1024) == nullptr)
       return false;
-  
+
     *path = buf;
     return true;
   }

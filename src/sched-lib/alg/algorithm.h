@@ -1,14 +1,14 @@
 
 #pragma once
 
+#include "algorithm_metrics.h"
 #include "defs.h"
 #include "hw/compute_unit.h"
 #include "lib_binding.h"
-#include "algorithm_metrics.h"
 
 namespace swm {
 
-//For friendship declaration.
+// For friendship declaration.
 class AlgorithmFactory;
 
 class Algorithm {
@@ -23,9 +23,7 @@ class Algorithm {
                          std::shared_ptr<swm::TimetableInfoInterface> *new_tt,
                          std::stringstream *error = nullptr);
 
-  const AlgorithmDescInterface *description() const {
-    return binding_->get_algorithm_descriptor();
-  }
+  const AlgorithmDescInterface *description() const { return binding_->get_algorithm_descriptor(); }
   const AlgorithmMetrics &algorithm_metrics() const { return algorithm_metrics_; }
   const MetricsInterface &plugin_metrics() const { return plugin_metrics_; }
   const std::string &plugin_location() const { return binding_->lib_location(); }
@@ -34,9 +32,8 @@ class Algorithm {
 
  private:
   Algorithm(const Algorithm &) = delete;
-  Algorithm(const std::shared_ptr<util::LibBinding> &binding)
-      : ctx_(nullptr), binding_(binding) { }
-  void operator =(const Algorithm &) = delete;
+  Algorithm(const std::shared_ptr<util::LibBinding> &binding) : ctx_(nullptr), binding_(binding) {}
+  void operator=(const Algorithm &) = delete;
 
   bool init(std::stringstream *error = nullptr);
 
@@ -44,8 +41,8 @@ class Algorithm {
   std::shared_ptr<util::LibBinding> binding_;
   AlgorithmMetrics algorithm_metrics_;
   util::Metrics plugin_metrics_;
-   
+
   friend class AlgorithmFactory;
 };
 
-}
+}  // namespace swm

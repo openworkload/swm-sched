@@ -1,8 +1,9 @@
 
 #pragma once
 
-#include <chrono>
 #include "defs.h"
+
+#include <chrono>
 
 namespace swm {
 namespace util {
@@ -14,25 +15,27 @@ class TimeCounter {
   class Lock {
    public:
     Lock(const std::shared_ptr<TimeCounter> &counter) : counter_(counter) {
-      if (counter_.get() != nullptr) { counter_->turn_on(); }
+      if (counter_.get() != nullptr) {
+        counter_->turn_on();
+      }
     }
     Lock(const Lock &) = delete;
-    void operator =(const Lock &) = delete;
+    void operator=(const Lock &) = delete;
     ~Lock() {
-      if (counter_.get() != nullptr) { counter_->turn_off(); }
+      if (counter_.get() != nullptr) {
+        counter_->turn_off();
+      }
     }
 
    private:
-     std::shared_ptr<TimeCounter> counter_;
+    std::shared_ptr<TimeCounter> counter_;
   };
 
-  TimeCounter()
-      : start_tp_(my_clock::now()), last_working_tp_(start_tp_),
-        working_time_(0.0), idling_time_(0.0) {
+  TimeCounter() : start_tp_(my_clock::now()), last_working_tp_(start_tp_), working_time_(0.0), idling_time_(0.0) {
     locker_.clear();
   }
   TimeCounter(const TimeCounter &) = delete;
-  void operator =(const TimeCounter &) = delete;
+  void operator=(const TimeCounter &) = delete;
 
   void get_times(double *astronomical, double *idling, double *working);
   void reset();
@@ -55,5 +58,5 @@ class TimeCounter {
   double idling_time_;
 };
 
-} // util
-} // swm
+}  // namespace util
+}  // namespace swm

@@ -1,8 +1,8 @@
 
 #pragma once
 
-#include "defs.h"
 #include "auxl/metrics.h"
+#include "defs.h"
 
 namespace swm {
 
@@ -15,4 +15,4 @@ class ChainMetrics {
   util::Metrics metrics_;
 };
 
-} // swm
+}  // namespace swm

@@ -31,6 +31,7 @@ Jobs submitted to Sky Port are scheduled by the daemon represented by this repos
 * cmake version >= 3.16
 * Erlang/OTP with `ei` (set `_KERL_ACTIVE_DIR` to the Erlang root that contains `usr/include` and `usr/lib/libei.a`)
 * Sibling checkout of [swm-core](https://github.com/openworkload/swm-core) at `../swm-core` (used via `deps/swm-core`)
+* `clang-format-14` (for `make format` / CI format check; other major versions can reshuffle whitespace)
 
 ### Installing GTest (optional)
 
@@ -70,6 +71,16 @@ Defaults (`_KERL_ACTIVE_DIR=/usr/erlang`, `GTEST_ROOT=/usr/local/GTest`) match t
 ```bash
 ./bin/swm-sched-tests
 ```
+
+### Format C++ sources
+Style rules live in [STYLE.md](STYLE.md) and are enforced by [`.clang-format`](.clang-format).
+
+```bash
+make format         # rewrite src/ and tests/ in place
+make format-check   # fail if any file differs from .clang-format
+```
+
+Or without CMake: `./scripts/format-cpp.sh` / `./scripts/format-cpp.sh check`.
 
 ### Run github actions
 ```bash

@@ -4,13 +4,13 @@
 #if defined(WIN32)
 #include <Windows.h>
 #else
-#include <limits.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <unistd.h>
-#include <ftw.h>
 #include <dirent.h>
 #include <fnmatch.h>
+#include <ftw.h>
+#include <limits.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <unistd.h>
 #endif
 
 namespace swm {
@@ -50,25 +50,23 @@ std::string directory_full_path(const std::string &dirname) {
   char buf[PATH_MAX + 1];
   auto subpath = dirname;
   auto started = subpath.length();
-  while (realpath(subpath.data(), buf) == nullptr && 
-    started != 0 && started != std::string::npos) {
+  while (realpath(subpath.data(), buf) == nullptr && started != 0 && started != std::string::npos) {
     started = dirname.find_last_of("/", started - 1);
     subpath = dirname.substr(0, started);
   }
 
-  switch (started)
-  {
+  switch (started) {
     case 0:
       res = dirname;
-    break;
+      break;
     case std::string::npos:
       if (realpath(".", buf) != nullptr) {
         res = std::string(buf) + dirname;
       }
-    break;
+      break;
     default:
       res = std::string(buf) + dirname.substr(started);
-    break;
+      break;
   }
 
 #endif
@@ -83,12 +81,11 @@ std::string directory_full_path(const std::string &dirname) {
 
 #if defined(WIN32)
 #define PATH_SEPARATOR '\\'
-#else 
-#define PATH_SEPARATOR '/' 
+#else
+#define PATH_SEPARATOR '/'
 #endif
 
-void find_files(const std::string &path, const std::string &pattern,
-                std::vector<std::string> *files) {
+void find_files(const std::string &path, const std::string &pattern, std::vector<std::string> *files) {
   if (files == nullptr) {
     throw std::runtime_error("Directory::find_files(): pointer \"files\" is equal to nullptr");
   }
@@ -135,7 +132,7 @@ void find_files(const std::string &path, const std::string &pattern,
   if ((dp = opendir(full_path.c_str())) == NULL) {
     throw std::runtime_error("Directory::find_files(): cannot open directory stream");
   }
-  
+
   struct stat st;
   while ((dirp = readdir(dp)) != NULL) {
     std::string full_name = full_path + dirp->d_name;
@@ -144,14 +141,14 @@ void find_files(const std::string &path, const std::string &pattern,
         std::string filename = dirp->d_name;
         if (filename != "." && filename != "..") {
           files->push_back(full_name);
-        } // if
-      } // if
-    } // if
-  } // while
+        }  // if
+      }    // if
+    }      // if
+  }        // while
 
   closedir(dp);
 #endif
 }
 
-} // util
-} // swm
+}  // namespace util
+}  // namespace swm

@@ -13,8 +13,7 @@ class MyQueue {
  public:
   MyQueue(size_t max_size) : queue_size_(0), queue_pos_(0) {
     if (max_size == 0) {
-      throw std::runtime_error(
-        "MyQueue::MyQueue(): \"max_size\" must be greater than 0");
+      throw std::runtime_error("MyQueue::MyQueue(): \"max_size\" must be greater than 0");
     }
     queue_.resize(max_size);
     queue_locker_.clear();
@@ -84,5 +83,5 @@ class MyQueue {
   std::atomic_flag queue_locker_;
 };
 
-}
-}
+}  // namespace util
+}  // namespace swm

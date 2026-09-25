@@ -1,21 +1,18 @@
 
 #include "processor.h"
 
-#include <algorithm>
-#include <thread> // for sleep
-
-#include "hw/scanner.h"
 #include "alg/algorithm_factory.h"
+#include "hw/scanner.h"
 #include "wm_io.h"
+
+#include <algorithm>
+#include <thread>  // for sleep
 
 namespace swm {
 namespace util {
 
 Processor::Processor()
-    : timeout_(0.0), closed_(false),
-      factory_(nullptr), scanner_(nullptr),
-      in_queue_(nullptr), out_queue_(nullptr) {
-}
+    : timeout_(0.0), closed_(false), factory_(nullptr), scanner_(nullptr), in_queue_(nullptr), out_queue_(nullptr) {}
 
 Processor::~Processor() {
   closed_ = true;
@@ -26,7 +23,7 @@ Processor::~Processor() {
   // Chain's threads were stopped by worker, no need to clear collections
 }
 
-void Processor::init(const AlgorithmFactory *factory, 
+void Processor::init(const AlgorithmFactory *factory,
                      const Scanner *scanner,
                      MyQueue<std::shared_ptr<CommandInterface> > *in_queue,
                      MyQueue<std::shared_ptr<ResponseInterface> > *out_queue,
@@ -36,10 +33,8 @@ void Processor::init(const AlgorithmFactory *factory,
     throw std::runtime_error("Processor::init(): object was already initialized");
   }
 
-  if (in_queue == nullptr || out_queue == nullptr ||
-      scanner == nullptr || factory == nullptr) {
-    throw std::runtime_error(
-      "Processor::init(): factories, in- and out- queues cannot be defined as nullptr");
+  if (in_queue == nullptr || out_queue == nullptr || scanner == nullptr || factory == nullptr) {
+    throw std::runtime_error("Processor::init(): factories, in- and out- queues cannot be defined as nullptr");
   }
 
   if (timeout <= 0.0) {
@@ -91,8 +86,7 @@ bool Processor::create_algorithms(const AlgorithmFactory *factory,
   }
 
   if (factory == nullptr || res == nullptr) {
-    throw std::runtime_error(
-      "Processor::create_algorithms(): \"factory\" and \"res\" cannot be equal to nullptr");
+    throw std::runtime_error("Processor::create_algorithms(): \"factory\" and \"res\" cannot be equal to nullptr");
   }
   if (specs.empty()) {
     *errors << "cannot create algorithm without its specification";
@@ -131,7 +125,7 @@ bool Processor::create_algorithms(const AlgorithmFactory *factory,
     auto it = std::find_if(descriptors.begin(), descriptors.end(), pred);
     if (it == descriptors.end()) {
       *errors << "failed to find implementation for algorithm \"" << specs[i].family() << "\"";
-      
+
       std::string ver;
       if (specs[i].version_specified(&ver)) {
         *errors << ", version=\"" << ver << "\"";
@@ -153,8 +147,7 @@ bool Processor::create_algorithms(const AlgorithmFactory *factory,
   res->resize(selected.size());
   for (size_t i = 0; i < selected.size(); i++) {
     std::shared_ptr<Algorithm> alg;
-    if (!factory->create(selected[i], &alg, errors) ||
-        !alg->bind_to(scanner->cpu(), errors)) {
+    if (!factory->create(selected[i], &alg, errors) || !alg->bind_to(scanner->cpu(), errors)) {
       res->clear();
       return false;
     }
@@ -168,8 +161,7 @@ void Processor::respond_chain_not_found(MyQueue<std::shared_ptr<ResponseInterfac
                                         const SwmUID &chain_id) {
   std::cerr << "Processor::worker_thread(): failed to perform request "
             << "(UID=\"" << context->id() << "\") because "
-            << "target chain (UID=\"" << chain_id << "\") was not found."
-            << std::endl;
+            << "target chain (UID=\"" << chain_id << "\") was not found." << std::endl;
   queue->push(std::shared_ptr<ResponseInterface>(new util::EmptyResponse(context, false)));
 }
 
@@ -178,8 +170,7 @@ void Processor::respond_chain_already_exists(MyQueue<std::shared_ptr<ResponseInt
                                              const SwmUID &chain_id) {
   std::cerr << "Processor::worker_thread(): failed to perform request "
             << "(UID=\"" << context->id() << "\") because "
-            << "chain with UID=\"" << chain_id << "\" already exists."
-            << std::endl;
+            << "chain with UID=\"" << chain_id << "\" already exists." << std::endl;
   queue->push(std::shared_ptr<ResponseInterface>(new util::EmptyResponse(context, false)));
 }
 
@@ -192,7 +183,6 @@ void Processor::worker_thread() {
 
       try {
         switch (req->type()) {
-
           // Create new chain, start the asynchronous construction of timetable
           case SWM_COMMAND_SCHEDULE: {
             auto sreq = static_cast<ScheduleCommand *>(req.get());
@@ -209,10 +199,9 @@ void Processor::worker_thread() {
             std::vector<std::shared_ptr<Algorithm> > algs;
             if (!create_algorithms(factory_, scanner_, sreq->schedulers(), &algs, &errors)) {
               std::cerr << "Processor::worker_thread(): failed to create algorithms for "
-                        << "request with ID=\"" << sreq->context()->id() << "\", details: "
-                        << errors.str() << std::endl;
-              out_queue_->push(std::shared_ptr<ResponseInterface>(
-                new EmptyResponse(sreq->context(), false)));
+                        << "request with ID=\"" << sreq->context()->id() << "\", details: " << errors.str()
+                        << std::endl;
+              out_queue_->push(std::shared_ptr<ResponseInterface>(new EmptyResponse(sreq->context(), false)));
               break;
             }
             std::shared_ptr<Chain> chain;
@@ -220,16 +209,13 @@ void Processor::worker_thread() {
             chain->init(sreq->scheduling_info(), algs, sreq->context()->timer());
 
             std::shared_ptr<ChainController> controller;
-            auto clb = [queue = out_queue_,
-                        ctx = sreq->context()]
-                       (bool succeeded,
-                        const std::shared_ptr<TimetableInfoInterface> &tt,
-                        const std::shared_ptr<MetricsSnapshot> &m) -> void {
+            auto clb = [queue = out_queue_, ctx = sreq->context()](bool succeeded,
+                                                                   const std::shared_ptr<TimetableInfoInterface> &tt,
+                                                                   const std::shared_ptr<MetricsSnapshot> &m) -> void {
               std::shared_ptr<ResponseInterface> resp;
               if (succeeded) {
                 resp.reset(new util::TimetableResponse(ctx, tt, m));
-              }
-              else {
+              } else {
                 resp.reset(new util::EmptyResponse(ctx, false));
               }
               queue->push(resp);
@@ -250,13 +236,13 @@ void Processor::worker_thread() {
               break;
             }
 
-            it->second->invoke_interrupt([queue = out_queue_, ctx = ireq->context()]
-                                         (bool succeeded,
-                                          const std::shared_ptr<TimetableInfoInterface> &,
-                                          const std::shared_ptr<MetricsSnapshot> &) -> void {
-              queue->push(std::shared_ptr<ResponseInterface>(
-                new util::EmptyResponse(ctx, succeeded)));
-            }, ireq->context()->timer());
+            it->second->invoke_interrupt(
+                [queue = out_queue_, ctx = ireq->context()](bool succeeded,
+                                                            const std::shared_ptr<TimetableInfoInterface> &,
+                                                            const std::shared_ptr<MetricsSnapshot> &) -> void {
+                  queue->push(std::shared_ptr<ResponseInterface>(new util::EmptyResponse(ctx, succeeded)));
+                },
+                ireq->context()->timer());
 
             break;
           }
@@ -271,19 +257,18 @@ void Processor::worker_thread() {
               break;
             }
 
-            it->second->invoke_stats([queue = out_queue_,
-                                      ctx = mreq->context()]
-                                     (bool succeeded,
-                                      const std::shared_ptr<MetricsSnapshot> &m) -> void {
-              std::shared_ptr<ResponseInterface> resp;
-              if (succeeded) {
-                resp.reset(new util::MetricsResponse(ctx, m));
-              }
-              else {
-                resp.reset(new util::EmptyResponse(ctx, false));
-              }
-              queue->push(resp);
-            }, mreq->context()->timer());
+            it->second->invoke_stats(
+                [queue = out_queue_, ctx = mreq->context()](bool succeeded,
+                                                            const std::shared_ptr<MetricsSnapshot> &m) -> void {
+                  std::shared_ptr<ResponseInterface> resp;
+                  if (succeeded) {
+                    resp.reset(new util::MetricsResponse(ctx, m));
+                  } else {
+                    resp.reset(new util::EmptyResponse(ctx, false));
+                  }
+                  queue->push(resp);
+                },
+                mreq->context()->timer());
 
             break;
           }
@@ -303,32 +288,33 @@ void Processor::worker_thread() {
               break;
             }
 
-            src->second->invoke_exchange(trg->second.get(),
-                                         [q = out_queue_,
-                                          ctx = ereq->context()](bool succeeded) -> void {
-              q->push(std::shared_ptr<ResponseInterface>(new EmptyResponse(ctx, succeeded)));
-            }, ereq->context()->timer());
-            trg->second->invoke_exchange(src->second.get(), [](bool) -> void {}, ereq->context()->timer());
+            src->second->invoke_exchange(
+                trg->second.get(),
+                [q = out_queue_, ctx = ereq->context()](bool succeeded) -> void {
+                  q->push(std::shared_ptr<ResponseInterface>(new EmptyResponse(ctx, succeeded)));
+                },
+                ereq->context()->timer());
+            trg->second->invoke_exchange(
+                src->second.get(), [](bool) -> void {}, ereq->context()->timer());
 
             break;
           }
 
           // Command was not parsed, just notify about it
           case SWM_COMMAND_CORRUPTED: {
-            out_queue_->push(std::shared_ptr<ResponseInterface>(
-              new util::EmptyResponse(req->context(), false)));
+            out_queue_->push(std::shared_ptr<ResponseInterface>(new util::EmptyResponse(req->context(), false)));
             break;
           }
-        } // switch
-      } // try
+        }  // switch
+      }    // try
       catch (std::exception &ex) {
         std::cerr << "Exception from Processor::worker_thread():"
-                  << "failed to process request with UID=\"" << req->context()->id()
-                  << "\", details: " << ex.what() << std::endl;
+                  << "failed to process request with UID=\"" << req->context()->id() << "\", details: " << ex.what()
+                  << std::endl;
       }
 
       metrics_->update_requests(1);
-    } // if
+    }  // if
 
     // To kill zombies: remove and release chains with stopped threads
     // Assuming that the total number of chains is small enough
@@ -336,20 +322,20 @@ void Processor::worker_thread() {
     while (it != chains_.end()) {
       auto chain = it->second.get();
       if (chain->finished()) {
-        try { it = chains_.erase(it); }
-        catch (std::exception &ex) {
+        try {
+          it = chains_.erase(it);
+        } catch (std::exception &ex) {
           std::cerr << "Exception from Processor::worker_thread(): failed to release chain, " << ex.what() << std::endl;
         }
-      }
-      else {
+      } else {
         ++it;
       }
-    } // while
+    }  // while
 
     std::this_thread::sleep_for(std::chrono::milliseconds(2));  // TODO: wait for some event / conditional variable?
     std::this_thread::yield();
-  } // while
+  }  // while
 }
 
-} // util
-} // swm
+}  // namespace util
+}  // namespace swm

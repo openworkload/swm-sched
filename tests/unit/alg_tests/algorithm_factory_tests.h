@@ -1,9 +1,9 @@
 #pragma once
 
-#include <gtest/gtest.h>
-
-#include "test_defs.h"
 #include "alg/algorithm_factory.h"
+#include "test_defs.h"
+
+#include <gtest/gtest.h>
 
 TEST(alg, algorithm_factory_load_plugins_default) {
   swm::AlgorithmFactory factory;
@@ -30,8 +30,8 @@ TEST(alg, algorithm_factory_load_plugins_wrong_plugins) {
 #else
   std::string plugin_dir = "/usr/lib/sudo";
 #endif
-  //TODO: this call breaks ctrl.* tests: std::system can't find files
-  // ASSERT_FALSE(factory.load_plugins(plugin_dir));
+  // TODO: this call breaks ctrl.* tests: std::system can't find files
+  //  ASSERT_FALSE(factory.load_plugins(plugin_dir));
 }
 
 TEST(alg, algorithm_factory_known_algorithms_default) {
@@ -44,9 +44,9 @@ TEST(alg, algorithm_factory_default_algorithms_found) {
   swm::AlgorithmFactory factory;
   ASSERT_TRUE(factory.load_plugins(find_plugin_dir()));
   const auto &algs = factory.known_algorithms();
-  std::vector<std::string> ids = { "swm-fcfs" };
+  std::vector<std::string> ids = {"swm-fcfs"};
   auto pred = [&algs](std::string &id) {
-    for (const auto &alg: algs)
+    for (const auto &alg : algs)
       if (id == alg->family_id()) {
         return true;
       }
@@ -59,9 +59,7 @@ TEST(alg, algorithm_factory_create_fcfs) {
   swm::AlgorithmFactory factory;
   ASSERT_TRUE(factory.load_plugins(find_plugin_dir()));
   const auto &algs = factory.known_algorithms();
-  auto pred = [](const swm::AlgorithmDescInterface* alg) { 
-    return alg->family_id() == "swm-fcfs"; 
-  };
+  auto pred = [](const swm::AlgorithmDescInterface *alg) { return alg->family_id() == "swm-fcfs"; };
   auto fcfs_lib = std::find_if(algs.begin(), algs.end(), pred);
   ASSERT_TRUE(fcfs_lib != algs.end());
   std::stringstream error;

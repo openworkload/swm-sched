@@ -1,25 +1,25 @@
 
 #pragma once
 
-#include <tuple>
-
 #include "defs.h"
 
+#include <tuple>
 
 namespace swm {
 namespace util {
 
 class CliArgsParser {
  public:
-  CliArgsParser() { }
+  CliArgsParser() {}
   CliArgsParser(CliArgsParser &) = delete;
-  void operator =(CliArgsParser &) = delete;
+  void operator=(CliArgsParser &) = delete;
 
-  void register_flag(const std::string &short_name, const std::string &long_name,
-                     bool *flag_ptr, std::string *value_ptr = nullptr);
+  void register_flag(const std::string &short_name,
+                     const std::string &long_name,
+                     bool *flag_ptr,
+                     std::string *value_ptr = nullptr);
 
-  bool parse(int argc, const char * const argv[], std::stringstream *output = nullptr,
-             size_t *flag_num = nullptr);
+  bool parse(int argc, const char *const argv[], std::stringstream *output = nullptr, size_t *flag_num = nullptr);
 
  private:
   typedef std::tuple<std::string, std::string, bool *> SimpleFlag;
@@ -32,5 +32,5 @@ class CliArgsParser {
   std::vector<ValuedFlag> valued_flags_;
 };
 
-} // util
-} // swm
+}  // namespace util
+}  // namespace swm

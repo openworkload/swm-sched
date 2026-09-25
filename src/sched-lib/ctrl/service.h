@@ -1,22 +1,27 @@
 
 #pragma once
 
-#include <iostream>
-
-#include "defs.h"
 #include "alg/algorithm_factory.h"
+#include "defs.h"
 #include "hw/scanner.h"
+
+#include <iostream>
 
 namespace swm {
 
 class Service {
  public:
   Service(const AlgorithmFactory *factory, const Scanner *scanner)
-      : factory_(factory), scanner_(scanner), debug_mode_(false),
-        input_(&std::cin), output_(&std::cout),
-        in_queue_size_(4), out_queue_size_(4), timeout_(10.0) { }
+      : factory_(factory),
+        scanner_(scanner),
+        debug_mode_(false),
+        input_(&std::cin),
+        output_(&std::cout),
+        in_queue_size_(4),
+        out_queue_size_(4),
+        timeout_(10.0) {}
   Service(const Service &) = delete;
-  void operator =(const Service &) = delete;
+  void operator=(const Service &) = delete;
 
   bool is_debug_mode() const { return debug_mode_; }
   void set_debug_mode(bool enabled) { debug_mode_ = enabled; }
@@ -27,13 +32,13 @@ class Service {
   void set_output(std::ostream *output) { output_ = output; }
   std::ostream *get_output() const { return output_; }
 
-  void   set_in_queue_size(size_t size) { in_queue_size_ = size; }
+  void set_in_queue_size(size_t size) { in_queue_size_ = size; }
   size_t get_in_queue_size() const { return in_queue_size_; }
 
-  void   set_out_queue_size(size_t size) { out_queue_size_ = size; }
+  void set_out_queue_size(size_t size) { out_queue_size_ = size; }
   size_t get_out_queue_size() const { return out_queue_size_; }
 
-  void   set_timeout(double seconds) { timeout_ = seconds; }
+  void set_timeout(double seconds) { timeout_ = seconds; }
   double get_timeout() const { return timeout_; }
 
   void main_loop();
@@ -49,4 +54,4 @@ class Service {
   double timeout_;
 };
 
-} // swm
+}  // namespace swm

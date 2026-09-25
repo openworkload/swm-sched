@@ -1,10 +1,10 @@
 
 #include "cli_args.h"
 
-#include <stdexcept>
-
-#include "auxl/file.h"
 #include "auxl/directory.h"
+#include "auxl/file.h"
+
+#include <stdexcept>
 
 namespace swm {
 
@@ -23,8 +23,10 @@ CliArgs::CliArgs() {
 bool CliArgs::try_parse(const std::string &val, size_t *pval) {
   std::istringstream ss(val);
   int ival;
-  if (!(ss >> ival) || !ss.eof() || ival < 0) { return false; }
-  
+  if (!(ss >> ival) || !ss.eof() || ival < 0) {
+    return false;
+  }
+
   *pval = (size_t)ival;
   return true;
 }
@@ -32,13 +34,15 @@ bool CliArgs::try_parse(const std::string &val, size_t *pval) {
 bool CliArgs::try_parse(const std::string &val, double *pval) {
   std::istringstream ss(val);
   double dval;
-  if (!(ss >> dval) || !ss.eof()) { return false; }
+  if (!(ss >> dval) || !ss.eof()) {
+    return false;
+  }
 
   *pval = dval;
   return true;
 }
 
-bool CliArgs::init(int argc, const char * const argv[], std::stringstream *errors) {
+bool CliArgs::init(int argc, const char *const argv[], std::stringstream *errors) {
   std::stringstream errors_;
   if (errors == nullptr) {
     errors = &errors_;
@@ -60,7 +64,7 @@ bool CliArgs::init(int argc, const char * const argv[], std::stringstream *error
     *errors << "input file defined by flag \"-i\" not exists";
     return false;
   }
-  
+
   if (plugins_flag_ && !util::directory_exist(plugins_value_)) {
     *errors << "plug-in directory defined by flag \"-p\" not exists";
     return false;
@@ -68,20 +72,17 @@ bool CliArgs::init(int argc, const char * const argv[], std::stringstream *error
 
   // step 3 - parsing integer and double values
   if (in_queue_flag_ && !try_parse(in_queue_value_, &in_queue_pvalue_)) {
-    *errors << "value \"" << in_queue_value_
-            << "\" defined by flag \"--in-queue\" cannot be casted to size_t";
+    *errors << "value \"" << in_queue_value_ << "\" defined by flag \"--in-queue\" cannot be casted to size_t";
     return false;
   }
 
   if (out_queue_flag_ && !try_parse(out_queue_value_, &out_queue_pvalue_)) {
-    *errors << "value \"" << out_queue_value_
-            << "\" defined by flag \"--out-queue\" cannot be casted to size_t";
+    *errors << "value \"" << out_queue_value_ << "\" defined by flag \"--out-queue\" cannot be casted to size_t";
     return false;
   }
 
   if (timeout_flag_ && (!try_parse(timeout_value_, &timeout_pvalue_) || timeout_pvalue_ <= 0.0)) {
-    *errors << "value \"" << timeout_value_
-            << "\" defined by flag \"--timeout\" cannot be casted to positive double";
+    *errors << "value \"" << timeout_value_ << "\" defined by flag \"--timeout\" cannot be casted to positive double";
     return false;
   }
 
@@ -126,4 +127,4 @@ void CliArgs::format_help_message(std::ostream *stream) {
   *stream << "          SWM_COMMAND_COMMAND. In seconds, the default value is 10.0" << std::endl;
 }
 
-} // swm
+}  // namespace swm

@@ -1,13 +1,13 @@
 
 #pragma once
 
-#include <gtest/gtest.h>
-#include <fstream>
-
-#include "test_defs.h"
 #include "ctrl.h"
 #include "ctrl/receiver.h"
+#include "test_defs.h"
 
+#include <gtest/gtest.h>
+
+#include <fstream>
 
 TEST_F(ctrl, receiver_wrong_init) {
   swm::util::MyQueue<std::shared_ptr<swm::util::CommandInterface> > queue(1);
@@ -99,8 +99,7 @@ TEST_F(ctrl, receiver_parse_partitions) {
   auto sched = scmd->scheduling_info();
   ASSERT_EQ(sched->parts().size(), 2);
   auto parts = sched->parts();
-  std::sort(parts.begin(), parts.end(),
-            id_comparator<const swm::SwmPartition *>());
+  std::sort(parts.begin(), parts.end(), id_comparator<const swm::SwmPartition *>());
   auto part1 = parts[0];
   ASSERT_EQ(part1->get_id(), "1");
   ASSERT_EQ(part1->get_state(), "down");
@@ -123,8 +122,7 @@ TEST_F(ctrl, receiver_parse_nodes) {
   auto sched = scmd->scheduling_info();
   ASSERT_EQ(sched->nodes().size(), 2);
   auto nodes = sched->nodes();
-  std::sort(nodes.begin(), nodes.end(),
-            id_comparator<const swm::SwmNode *>());
+  std::sort(nodes.begin(), nodes.end(), id_comparator<const swm::SwmNode *>());
 
   auto node1 = nodes[0];
   ASSERT_EQ(node1->get_id(), "1");
@@ -139,8 +137,7 @@ TEST_F(ctrl, receiver_parse_nodes) {
   auto node1_res2 = resources[1];
   ASSERT_EQ(node1_res2.get_name(), "mem");
   ASSERT_EQ(node1_res2.get_count(), 68719476736);
-  std::sort(nodes.begin(), nodes.end(),
-            id_comparator<const swm::SwmNode *>());
+  std::sort(nodes.begin(), nodes.end(), id_comparator<const swm::SwmNode *>());
   auto node2 = nodes[1];
   ASSERT_EQ(node2->get_id(), "3");
   ASSERT_EQ(node2->get_state_power(), "down");

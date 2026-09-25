@@ -10,10 +10,10 @@ Chain::~Chain() {
       std::this_thread::yield();
     }
 
-    try { interrupt_async(); }
-    catch (std::exception &ex) {
-      std::cerr << "Internal error at Chain::~Chain(): failed to stop worker (\""
-                << ex.what() << "\")";
+    try {
+      interrupt_async();
+    } catch (std::exception &ex) {
+      std::cerr << "Internal error at Chain::~Chain(): failed to stop worker (\"" << ex.what() << "\")";
       return;
     }
 
@@ -93,8 +93,7 @@ std::shared_ptr<TimetableInfoInterface> Chain::actual_timetable() const {
 
 bool Chain::ready_for_async_operation() const {
   if (status_ == NOT_STARTED) {
-    throw std::runtime_error(
-      "Chain::ready_for_async_operation(): object must be initialized first");
+    throw std::runtime_error("Chain::ready_for_async_operation(): object must be initialized first");
   }
 
   bool res = false;
@@ -106,8 +105,7 @@ bool Chain::ready_for_async_operation() const {
 
 void Chain::interrupt_async() {
   if (status_ == NOT_STARTED) {
-    throw std::runtime_error(
-      "Chain::interrupt_async(): object must be initialized first");
+    throw std::runtime_error("Chain::interrupt_async(): object must be initialized first");
   }
 
   lock();
@@ -123,27 +121,23 @@ void Chain::interrupt_async() {
 
 void Chain::inject_timetable_async(const std::shared_ptr<TimetableInfoInterface> &tt) {
   if (status_ == NOT_STARTED) {
-    throw std::runtime_error(
-      "Chain::inject_timetable_async(): object must be initialized first");
+    throw std::runtime_error("Chain::inject_timetable_async(): object must be initialized first");
   }
 
   lock();
   if (async_op_ != NONE) {
     unlock();
-    throw std::runtime_error(
-      "Chain::inject_timetable_async(): chain is not ready for async operation");
+    throw std::runtime_error("Chain::inject_timetable_async(): chain is not ready for async operation");
   }
 
   if (!stopped()) {
     async_op_ = INJECT_TT;
     injected_tt_ = tt;
-  }
-  else {
+  } else {
     actual_tt_ = tt;
   }
   unlock();
 }
-
 
 bool Chain::forced_to_interrupt() const {
   bool res = false;
@@ -173,11 +167,11 @@ void Chain::worker_loop(const std::shared_ptr<util::TimeCounter> &timer) {
   if (algorithms_.empty()) {
     return;
   }
-  
+
   util::TimeCounter::Lock time_lock(timer);
   status_ = WORKING;
   std::stringstream errors;
-  const int BUFFER_NUMBER = 2;      // buffers for ping-pong scheme, must be equal to 2
+  const int BUFFER_NUMBER = 2;  // buffers for ping-pong scheme, must be equal to 2
   size_t tt_cur = 0;
   std::shared_ptr<TimetableInfoInterface> tt[BUFFER_NUMBER];
 
@@ -185,17 +179,15 @@ void Chain::worker_loop(const std::shared_ptr<util::TimeCounter> &timer) {
   bool succeeded = false;
   bool injected = false;
   for (size_t i = 0; i < algorithms_.size(); i += succeeded ? 1 : 0) {
-    succeeded = (i == 0 && !injected)
-            ? algorithms_[0]->create_timetable(info_.get(), this,
-                                               &tt[(tt_cur + 1) % BUFFER_NUMBER], &errors)
-            : algorithms_[i]->improve_timetable(tt[tt_cur].get(), this,
-                                                &tt[(tt_cur + 1) % BUFFER_NUMBER], &errors);
-    
+    succeeded =
+        (i == 0 && !injected)
+            ? algorithms_[0]->create_timetable(info_.get(), this, &tt[(tt_cur + 1) % BUFFER_NUMBER], &errors)
+            : algorithms_[i]->improve_timetable(tt[tt_cur].get(), this, &tt[(tt_cur + 1) % BUFFER_NUMBER], &errors);
+
     lock();
-    if (!succeeded && async_op_ == NONE) { // wasn't interrupted by async op?
-      std::cerr << "Failed to " << (i == 0 ? "construct" : "improve") << " timetable: "
-                << errors.str() << std::endl;
-      async_op_ = NONE;         // ignoring current operation
+    if (!succeeded && async_op_ == NONE) {  // wasn't interrupted by async op?
+      std::cerr << "Failed to " << (i == 0 ? "construct" : "improve") << " timetable: " << errors.str() << std::endl;
+      async_op_ = NONE;  // ignoring current operation
       status_ = INTERRUPTED;
       unlock();
       return;
@@ -232,4 +224,4 @@ void Chain::worker_loop(const std::shared_ptr<util::TimeCounter> &timer) {
   status_ = FINISHED;
 }
 
-} // swm
+}  // namespace swm

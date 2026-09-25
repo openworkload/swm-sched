@@ -1,10 +1,9 @@
 
 #include "responses.h"
 
-#include "constants.h"
 #include "chn/metrics_snapshot.h"
+#include "constants.h"
 #include "wm_io.h"
-
 
 namespace swm {
 namespace util {
@@ -23,10 +22,8 @@ void ResponseInterface::refresh_timers() {
   result_.set_work_time(working);
 }
 
-ei_x_buff ResponseInterface::make_timetables_ei_buffer(
-    const std::vector<SwmTimetable> &timetables,
-    std::stringstream *errors) const {
-
+ei_x_buff ResponseInterface::make_timetables_ei_buffer(const std::vector<SwmTimetable> &timetables,
+                                                       std::stringstream *errors) const {
   ei_x_buff x;
   if (ei_x_new(&x)) {
     *errors << "Can't create new ei_x_buff for timetables" << std::endl;
@@ -38,7 +35,7 @@ ei_x_buff ResponseInterface::make_timetables_ei_buffer(
     return x;
   }
 
-  for (const auto& table: timetables) {
+  for (const auto &table : timetables) {
     const auto &nodes = table.get_job_nodes();
     if (nodes.empty()) {
       continue;
@@ -91,10 +88,8 @@ ei_x_buff ResponseInterface::make_timetables_ei_buffer(
   return x;
 }
 
-ei_x_buff ResponseInterface::make_metrics_ei_buffer(
-    const std::vector<SwmMetric> &metrics,
-    std::stringstream *errors) const {
-
+ei_x_buff ResponseInterface::make_metrics_ei_buffer(const std::vector<SwmMetric> &metrics,
+                                                    std::stringstream *errors) const {
   ei_x_buff x;
   if (ei_x_new(&x)) {
     *errors << "Can't create new ei_x_buff for metrics" << std::endl;
@@ -106,7 +101,7 @@ ei_x_buff ResponseInterface::make_metrics_ei_buffer(
     return x;
   }
 
-  for (const auto& metric: metrics) {
+  for (const auto &metric : metrics) {
     if (ei_x_encode_tuple_header(&x, 4)) {
       *errors << "Can't create metric: can't encode tuple header" << std::endl;
       ei_x_free(&x);
@@ -146,7 +141,7 @@ ei_x_buff ResponseInterface::make_scheduler_result_ei_buffer(const std::vector<S
                                                              const std::vector<SwmMetric> &metrics,
                                                              std::stringstream *errors) const {
   ei_x_buff timetables_buff = make_timetables_ei_buffer(timetables, errors);
-  ei_x_buff metrics_buff  = make_metrics_ei_buffer(metrics, errors);
+  ei_x_buff metrics_buff = make_metrics_ei_buffer(metrics, errors);
 
   ei_x_buff x;
   if (ei_x_new(&x)) {
@@ -214,27 +209,23 @@ ei_x_buff ResponseInterface::make_scheduler_result_ei_buffer(const std::vector<S
 TimetableResponse::TimetableResponse(const std::shared_ptr<CommandContext> &context,
                                      const std::shared_ptr<swm::TimetableInfoInterface> &tables_info,
                                      const std::shared_ptr<MetricsSnapshot> &metrics)
-      : context_(context), metrics_(metrics) {
+    : context_(context), metrics_(metrics) {
   result_.set_request_id(context_->id());
 
   const auto ttp = tables_info->tables();
   std::vector<SwmTimetable> tt;
   tt.reserve(ttp.size());
-  for(const auto &t: ttp) {
+  for (const auto &t : ttp) {
     tt.push_back(*t);
   }
   result_.set_timetable(tt);
   result_.set_status(succeeded());
-  swm_logi("schedule done request_id=%s jobs=%zu",
-           context_->id().c_str(), tt.size());
+  swm_logi("schedule done request_id=%s jobs=%zu", context_->id().c_str(), tt.size());
 }
 
-bool TimetableResponse::serialize(std::unique_ptr<char[]> *data,
-                                  size_t *size,
-                                  std::stringstream *errors) {
+bool TimetableResponse::serialize(std::unique_ptr<char[]> *data, size_t *size, std::stringstream *errors) {
   if (data == nullptr || size == nullptr) {
-    throw std::runtime_error(
-      "TimetableResponse::serialize(): \"data\" and \"size\" cannot be equal to nullptr");
+    throw std::runtime_error("TimetableResponse::serialize(): \"data\" and \"size\" cannot be equal to nullptr");
   }
   std::stringstream errors_;
   if (errors == nullptr) {
@@ -257,14 +248,14 @@ bool MetricsResponse::serialize(std::unique_ptr<char[]> *data, size_t *size, std
     throw std::runtime_error("MetricsResponse::serialize(): \"data\" and \"size\" cannot be equal to nullptr");
   }
 
-  //TODO: we need to serialize request with metrics only
-  //auto alg_metrics = metrics_->algorithm_metrics(); // per algorithm metrics
-  //auto chain_metrics = metrics_->chain_metrics();   // chain metrics
-  //auto serv_metrics = metrics_->service_metrics();  // global service metrics
+  // TODO: we need to serialize request with metrics only
+  // auto alg_metrics = metrics_->algorithm_metrics(); // per algorithm metrics
+  // auto chain_metrics = metrics_->chain_metrics();   // chain metrics
+  // auto serv_metrics = metrics_->service_metrics();  // global service metrics
 
   // Enumeration can be implemented as:
-  //auto en = chain_metrics.int_value_indices();
-  //for (const auto rec : en) {
+  // auto en = chain_metrics.int_value_indices();
+  // for (const auto rec : en) {
   //  auto ival = chain_metrics.int_value(rec.first);
   //  auto name = rec.second;
   //}
@@ -279,18 +270,15 @@ bool MetricsResponse::serialize(std::unique_ptr<char[]> *data, size_t *size, std
 //--- EmptyResponse ---
 //---------------------
 
-bool EmptyResponse::serialize(std::unique_ptr<char[]> *data,
-                              size_t *size,
-                              std::stringstream *errors) {
+bool EmptyResponse::serialize(std::unique_ptr<char[]> *data, size_t *size, std::stringstream *errors) {
   if (data == nullptr || size == nullptr) {
-    throw std::runtime_error(
-      "EmptyResponse::serialize(): \"data\" and \"size\" cannot be equal to nullptr");
+    throw std::runtime_error("EmptyResponse::serialize(): \"data\" and \"size\" cannot be equal to nullptr");
   }
-  const ei_x_buff x =  make_scheduler_result_ei_buffer({}, {}, errors);
+  const ei_x_buff x = make_scheduler_result_ei_buffer({}, {}, errors);
   data->reset(x.buff);
   *size = x.index;
   return x.buff != nullptr;
 }
 
-} // util
-} // swm
+}  // namespace util
+}  // namespace swm

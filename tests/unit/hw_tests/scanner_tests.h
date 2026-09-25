@@ -1,9 +1,9 @@
 #pragma once
 
-#include <gtest/gtest.h>
-
-#include "test_defs.h"
 #include "hw/scanner.h"
+#include "test_defs.h"
+
+#include <gtest/gtest.h>
 
 TEST(hw, scanner_cpu_without_scan) {
   swm::Scanner sc;
@@ -26,9 +26,9 @@ TEST(hw, scanner_cpu_name_test) {
   sc.scan();
   auto cpu_name = sc.cpu()->name();
   std::transform(cpu_name.begin(), cpu_name.end(), cpu_name.begin(), ::toupper);
-  ASSERT_TRUE(cpu_name.find("INTEL") != std::string::npos ||
-              cpu_name.find("AMD") != std::string::npos ||
-              cpu_name.find("UNKNOWN CPU") != std::string::npos) << cpu_name;
+  ASSERT_TRUE(cpu_name.find("INTEL") != std::string::npos || cpu_name.find("AMD") != std::string::npos ||
+              cpu_name.find("UNKNOWN CPU") != std::string::npos)
+      << cpu_name;
 }
 
 TEST(hw, scanner_cpu_core_test) {

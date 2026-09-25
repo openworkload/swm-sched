@@ -179,3 +179,16 @@ add_custom_target(act-unittests
     USES_TERMINAL
     COMMENT "Running unittests job with act"
 )
+
+# C++ formatting via clang-format (.clang-format + scripts/format-cpp.sh)
+add_custom_target(format
+    COMMAND ${PROJECT_SOURCE_DIR}/scripts/format-cpp.sh format
+    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+    COMMENT "Formatting C++ sources with clang-format"
+)
+
+add_custom_target(format-check
+    COMMAND ${PROJECT_SOURCE_DIR}/scripts/format-cpp.sh check
+    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+    COMMENT "Checking C++ sources against .clang-format"
+)

@@ -1,11 +1,11 @@
 
 #pragma once
 
+#include "extended_rh.h"
+#include "ifaces/plugin_events_interface.h"
 #include "plugin_defs.h"
 
 #include <set>
-#include "extended_rh.h"
-#include "ifaces/plugin_events_interface.h"
 
 namespace swm {
 
@@ -29,7 +29,7 @@ class FcfsImplementation {
   FcfsImplementation() = default;
   FcfsImplementation(const FcfsImplementation &) = delete;
   ~FcfsImplementation() { close(); }
-  void operator =(const FcfsImplementation &) = delete;
+  void operator=(const FcfsImplementation &) = delete;
 
   bool init(const SchedulingInfoInterface *sched_info, std::stringstream *error = nullptr);
   bool schedule(const std::vector<const SwmJob *> &jobs,
@@ -44,8 +44,8 @@ class FcfsImplementation {
   // Equal to std::pair but simplifies the understanding of scheduling code
   class NodeRef {
    public:
-    NodeRef() : node_(nullptr), when_free_(0) { }
-    NodeRef(const SwmNode *node) : node_(node), when_free_(0) { }
+    NodeRef() : node_(nullptr), when_free_(0) {}
+    NodeRef(const SwmNode *node) : node_(node), when_free_(0) {}
     NodeRef(const NodeRef &) = default;
 
     const SwmNode *node() const { return node_; }
@@ -61,8 +61,8 @@ class FcfsImplementation {
   // Such structure is used for gang alignment, to avoid excessive find operations
   class JobRef {
    public:
-    JobRef() : tt_(nullptr), job_(nullptr) { }
-    JobRef(SwmTimetable *tt, const SwmJob *job) : tt_(tt), job_(job) { }
+    JobRef() : tt_(nullptr), job_(nullptr) {}
+    JobRef(SwmTimetable *tt, const SwmJob *job) : tt_(tt), job_(job) {}
     JobRef(const JobRef &) = default;
 
     SwmTimetable *tt() const { return tt_; }
@@ -89,12 +89,11 @@ class FcfsImplementation {
                            JobRef *job_ref = nullptr,
                            std::stringstream *error = nullptr);
 
-  bool is_node_owned_by_other_job(const SwmJob &job,
-                                  const std::vector<SwmResource> &resources) const;
+  bool is_node_owned_by_other_job(const SwmJob &job, const std::vector<SwmResource> &resources) const;
 
   // Active nodes that are always sorted by "when_free" time, distributed by clusters
   std::unordered_map<std::string, std::vector<NodeRef *> > nodes_per_cluster_;
   ExtendedRH rh_;
 };
 
-} // swm
+}  // namespace swm

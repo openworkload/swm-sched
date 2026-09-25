@@ -37,6 +37,5 @@ bool my_chdir(const std::string &path);
 class EmptyPluginEvents : public swm::PluginEventsInterface {
  public:
   virtual bool forced_to_interrupt() const override { return false; }
-  virtual void commit_intermediate_timetable(
-    const std::shared_ptr<swm::TimetableInfoInterface> &) override { }
+  virtual void commit_intermediate_timetable(const std::shared_ptr<swm::TimetableInfoInterface> &) override {}
 };

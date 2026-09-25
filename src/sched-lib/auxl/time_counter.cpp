@@ -93,8 +93,7 @@ void TimeCounter::turn_off() {
 
   bool i_am_the_last = true;
   bool found_my_record = false;
-  for (auto &it : thread_tps_)
-  {
+  for (auto &it : thread_tps_) {
     if (it.first == std::this_thread::get_id()) {
       if (!it.second.first) {
         locker_.clear();
@@ -121,5 +120,5 @@ void TimeCounter::turn_off() {
   locker_.clear();
 }
 
-} // util
-} // swm
+}  // namespace util
+}  // namespace swm

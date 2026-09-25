@@ -1,9 +1,9 @@
 #pragma once
 
-#include <gtest/gtest.h>
-
-#include "test_defs.h"
 #include "auxl/directory.h"
+#include "test_defs.h"
+
+#include <gtest/gtest.h>
 
 TEST(auxl, directory_exist_default) {
   std::string test_path;
@@ -37,8 +37,7 @@ TEST(auxl, directory_exist_wrong_path) {
 
 TEST(auxl, directory_full_path) {
   auto full_test_path = swm::util::directory_full_path("abc");
-  ASSERT_TRUE(full_test_path.find("abc") != std::string::npos &&
-              full_test_path.find("swm-sched") != std::string::npos);
+  ASSERT_TRUE(full_test_path.find("abc") != std::string::npos && full_test_path.find("swm-sched") != std::string::npos);
 }
 
 TEST(auxl, directory_find_files_default) {
@@ -57,8 +56,7 @@ TEST(auxl, directory_find_files_default) {
 #endif
   swm::util::find_files(test_path, test_pattern, &find_files);
   ASSERT_FALSE(find_files.empty());
-  for (auto &exp_file: expected_files) {
+  for (auto &exp_file : expected_files) {
     ASSERT_TRUE(std::find(find_files.begin(), find_files.end(), exp_file) != find_files.end());
   }
 }
-

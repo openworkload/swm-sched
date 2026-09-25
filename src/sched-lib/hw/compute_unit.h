@@ -2,12 +2,11 @@
 #pragma once
 
 #include "defs.h"
-
 #include "ifaces/compute_unit_interface.h"
 
 namespace swm {
 
-class Scanner; // to be defined as a friend
+class Scanner;  // to be defined as a friend
 
 class ComputeUnit : public ComputeUnitInterface {
  public:
@@ -21,7 +20,7 @@ class ComputeUnit : public ComputeUnitInterface {
   ComputeUnit(const ComputeUnit &) = delete;
   ComputeUnit(Type type, int num, const std::string &name, size_t cores, double freq)
       : type_(type), num_(num), name_(name), cores_(cores), freq_(freq) {}
-  void operator =(const ComputeUnit &) = delete;
+  void operator=(const ComputeUnit &) = delete;
 
   Type type_;
   int num_;
@@ -31,4 +30,4 @@ class ComputeUnit : public ComputeUnitInterface {
   friend class Scanner;
 };
 
-} // swm
+}  // namespace swm

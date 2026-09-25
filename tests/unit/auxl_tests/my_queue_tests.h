@@ -1,9 +1,9 @@
 #pragma once
 
-#include <gtest/gtest.h>
-
-#include "test_defs.h"
 #include "auxl/my_queue.h"
+#include "test_defs.h"
+
+#include <gtest/gtest.h>
 
 TEST(auxl, my_queue_logic) {
   swm::util::MyQueue<int> q(4);
@@ -49,14 +49,16 @@ TEST(auxl, my_queue_concurrency) {
   swm::util::MyQueue<int> queue(1024);
   std::set<int> values;
   bool go_flag = false;
-  
+
   auto writer = [go = &go_flag, q = &queue, n](bool odd) -> void {
-    while (!*go) std::this_thread::yield();
+    while (!*go)
+      std::this_thread::yield();
     for (int i = (odd ? 1 : 0); i < n; i += 2)
       q->push(i);
   };
   auto reader = [go = &go_flag, q = &queue, vals = &values, n]() -> void {
-    while (!*go) std::this_thread::yield();
+    while (!*go)
+      std::this_thread::yield();
     for (int i = 0; i < n; ++i)
       vals->emplace(q->pop());
   };

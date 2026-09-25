@@ -1,10 +1,9 @@
 
+#include "plugin_context.h"
 #include "plugin_defs.h"
 #include "plugin_desc.h"
 #include "plugin_exports.h"
-#include "plugin_context.h"
 #include "timetable_info.h"
-
 
 bool swm_create_context(swm::MetricsInterface *metrics, void **ctx, std::stringstream *) {
   *ctx = new PluginContext(metrics);
@@ -32,8 +31,8 @@ bool swm_construct_timetable(void *,
 
     timetable.set_start_time(0);
     timetable.set_job_id(jobs[0]->get_id());
-    timetable.set_job_nodes({ nodes[0]->get_id() });
-    
+    timetable.set_job_nodes({nodes[0]->get_id()});
+
     tables.push_back(timetable);
     tt_info->reset(new TimetableInfo(&tables));
     ev->commit_intermediate_timetable(*tt_info);
@@ -44,12 +43,10 @@ bool swm_construct_timetable(void *,
       }
 
       return false;
-    }
-    else {
+    } else {
       return true;
     }
-  }
-  else {
+  } else {
     return false;
   }
 }
@@ -64,7 +61,7 @@ bool swm_improve_timetable(void *,
     return false;
   }
 
-  //std::vector<swm::SwmTimetable> tts(old_tt->tables());
+  // std::vector<swm::SwmTimetable> tts(old_tt->tables());
   new_tt->reset(new TimetableInfo(old_tt));
   ev->commit_intermediate_timetable(*new_tt);
 
@@ -73,15 +70,12 @@ bool swm_improve_timetable(void *,
       std::this_thread::yield();
     }
     return false;
-  }
-  else {
+  } else {
     return true;
   }
 }
 
-bool swm_bind_compute_unit(void *,
-                           const swm::ComputeUnitInterface *,
-                           std::stringstream *) {
+bool swm_bind_compute_unit(void *, const swm::ComputeUnitInterface *, std::stringstream *) {
   return true;
 }
 

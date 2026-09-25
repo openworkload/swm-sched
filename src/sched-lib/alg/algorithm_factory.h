@@ -1,15 +1,15 @@
 
 #pragma once
 
-#include "defs.h"
 #include "algorithm.h"
+#include "defs.h"
 
 namespace swm {
 
 class AlgorithmFactory {
  public:
-  AlgorithmFactory() { }
-  ~AlgorithmFactory() { }
+  AlgorithmFactory() {}
+  ~AlgorithmFactory() {}
 
   bool load_plugins(const std::string &path, std::stringstream *error = nullptr);
   bool create(const AlgorithmDescInterface *desc,
@@ -20,9 +20,9 @@ class AlgorithmFactory {
 
  private:
   std::vector<std::shared_ptr<util::LibBinding> > lib_bindings_;  // all loaded plugins
-  std::vector<const AlgorithmDescInterface *> alg_ptrs_;    // references to actual and working
-                                                            // plugins only. But, currently, all
-                                                            // loaded plugins are marked as working
+  std::vector<const AlgorithmDescInterface *> alg_ptrs_;          // references to actual and working
+                                                                  // plugins only. But, currently, all
+                                                                  // loaded plugins are marked as working
 };
 
-} // swm
+}  // namespace swm

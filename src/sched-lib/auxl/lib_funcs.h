@@ -12,5 +12,5 @@ void *load_library(const std::string &lib);
 void *get_library_function(void *lib, const std::string &name);
 bool free_library(void *lib);
 
-} // util
-} // swm
+}  // namespace util
+}  // namespace swm

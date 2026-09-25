@@ -1,7 +1,7 @@
 
 #include "sender.h"
 
-#include <thread> // for sleep
+#include <thread>  // for sleep
 
 namespace swm {
 namespace util {
@@ -18,8 +18,7 @@ void Sender::init(MyQueue<std::shared_ptr<ResponseInterface> > *queue, std::ostr
     throw std::runtime_error("Sender::init(): object was already initialized");
   }
   if (queue == nullptr || output == nullptr) {
-    throw std::runtime_error(
-      "Sender::init(): \"queue\" and \"output\" cannot be equal to nullptr");
+    throw std::runtime_error("Sender::init(): \"queue\" and \"output\" cannot be equal to nullptr");
   }
 
   queue_ = queue;
@@ -63,8 +62,8 @@ void Sender::worker_thread() {
         size_t size = 0;
         std::stringstream errors;
         if (!resp->serialize(&data, &size, &errors)) {
-          std::cerr << "Sender::worker_thread(): failed to serialize response (UID="
-                    << resp->context()->id() << "): " << errors.str().c_str() << std::endl;
+          std::cerr << "Sender::worker_thread(): failed to serialize response (UID=" << resp->context()->id()
+                    << "): " << errors.str().c_str() << std::endl;
           size = 0;
         }
 
@@ -80,9 +79,9 @@ void Sender::worker_thread() {
     } else {
       std::this_thread::yield();
     }
-    std::this_thread::sleep_for (std::chrono::seconds(1)); // FIXME
+    std::this_thread::sleep_for(std::chrono::seconds(1));  // FIXME
   }
 }
 
-} // util
-} // swm
+}  // namespace util
+}  // namespace swm

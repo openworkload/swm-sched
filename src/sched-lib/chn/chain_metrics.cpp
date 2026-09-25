@@ -7,4 +7,4 @@ ChainMetrics::ChainMetrics() {
   // Currently, nothing
 }
 
-} // swm
+}  // namespace swm

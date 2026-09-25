@@ -1,9 +1,9 @@
 #pragma once
 
-#include <gtest/gtest.h>
-
-#include "test_defs.h"
 #include "auxl/lib_funcs.h"
+#include "test_defs.h"
+
+#include <gtest/gtest.h>
 
 TEST(auxl, lib_funcs_load_and_free_library) {
 #if defined(WIN32)
@@ -54,7 +54,7 @@ TEST(auxl, lib_funcs_load_func) {
   std::string test_lib = "/usr/libexec/sudo/sudoers.so";
   std::string test_func = "sudoers_io";
 #endif
-  void* lib = swm::util::load_library(test_lib);
+  void *lib = swm::util::load_library(test_lib);
   auto success_load = swm::util::get_library_function(lib, test_func) != nullptr;
   auto error_load = swm::util::get_library_error();
   swm::util::free_library(lib);
@@ -68,7 +68,7 @@ TEST(auxl, lib_funcs_load_unknkown_func) {
 #else
   std::string test_lib = "/usr/libexec/sudo/sudoers.so";
 #endif
-  void* lib = swm::util::load_library(test_lib);
+  void *lib = swm::util::load_library(test_lib);
   auto success_load = swm::util::get_library_function(lib, test_func) != nullptr;
   auto error_load = swm::util::get_library_error();
   swm::util::free_library(lib);

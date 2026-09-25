@@ -1,8 +1,8 @@
 
 #pragma once
 
-#include "defs.h"
 #include "compute_unit.h"
+#include "defs.h"
 
 namespace swm {
 
@@ -10,14 +10,10 @@ class Scanner {
  public:
   Scanner() : inited_(false) {}
   bool scan();
-    
-  const ComputeUnit *cpu() const {
-    return cpu_.get();
-  }
-    
-  const std::vector<const ComputeUnit *> &gpus() const {
-    return gpus_ptrs_;
-  }
+
+  const ComputeUnit *cpu() const { return cpu_.get(); }
+
+  const std::vector<const ComputeUnit *> &gpus() const { return gpus_ptrs_; }
 
  private:
   static std::string find_cpu_name();
@@ -30,4 +26,4 @@ class Scanner {
   std::vector<const ComputeUnit *> gpus_ptrs_;
 };
 
-} // swm
+}  // namespace swm

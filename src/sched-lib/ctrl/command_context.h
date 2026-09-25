@@ -1,8 +1,8 @@
 
 #pragma once
 
-#include "defs.h"
 #include "auxl/time_counter.h"
+#include "defs.h"
 
 namespace swm {
 namespace util {
@@ -11,9 +11,9 @@ namespace util {
 class CommandContext {
  public:
   CommandContext() = delete;
-  CommandContext(const SwmUID &id) : id_(id), timer_(new TimeCounter()) { }
+  CommandContext(const SwmUID &id) : id_(id), timer_(new TimeCounter()) {}
   CommandContext(const CommandContext &) = delete;
-  void operator =(const CommandContext &) = delete;
+  void operator=(const CommandContext &) = delete;
 
   const SwmUID &id() const { return id_; }
   const std::shared_ptr<TimeCounter> &timer() { return timer_; }  // can be separated from context
@@ -23,5 +23,5 @@ class CommandContext {
   std::shared_ptr<TimeCounter> timer_;
 };
 
-} // util
-} // swm
+}  // namespace util
+}  // namespace swm

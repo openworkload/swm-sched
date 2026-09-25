@@ -1,21 +1,20 @@
 
 #pragma once
 
-#include <stdint.h>
-
-#include "defs.h"
-#include "commands.h"
 #include "auxl/my_queue.h"
+#include "commands.h"
+#include "defs.h"
 
+#include <stdint.h>
 
 namespace swm {
 namespace util {
 
 class Receiver {
- public:  
-  Receiver() : closed_(false), finished_(false), input_(nullptr), queue_(nullptr) { }
+ public:
+  Receiver() : closed_(false), finished_(false), input_(nullptr), queue_(nullptr) {}
   Receiver(const Receiver &) = delete;
-  void operator =(const Receiver &) = delete;
+  void operator=(const Receiver &) = delete;
   ~Receiver();
 
   void init(MyQueue<std::shared_ptr<CommandInterface>> *queue, std::istream *input);
@@ -28,12 +27,12 @@ class Receiver {
                 std::stringstream *errors = nullptr);
   void worker_loop();
 
-  volatile bool closed_;              // forces the worker thread to stop
-  volatile bool finished_;            // all data were wrapped into commands
+  volatile bool closed_;    // forces the worker thread to stop
+  volatile bool finished_;  // all data were wrapped into commands
   std::istream *input_;
-  MyQueue<std::shared_ptr<CommandInterface> > *queue_;
+  MyQueue<std::shared_ptr<CommandInterface>> *queue_;
   std::thread worker_;
 };
 
-} // util
-} // swm
+}  // namespace util
+}  // namespace swm

@@ -11,7 +11,6 @@
 #include <unistd.h>
 #endif
 
-
 namespace swm {
 namespace util {
 
@@ -38,24 +37,22 @@ std::string file_full_path(const std::string &filename) {
   char buf[PATH_MAX + 1];
   auto subpath = filename;
   auto started = subpath.length();
-  while (realpath(subpath.data(), buf) == nullptr &&
-    started != 0 && started != std::string::npos) {
+  while (realpath(subpath.data(), buf) == nullptr && started != 0 && started != std::string::npos) {
     started = filename.find_last_of("/", started - 1);
     subpath = filename.substr(0, started);
   }
 
-  switch (started)
-  {
+  switch (started) {
     case 0:
       res = filename;
-    break;
+      break;
     case std::string::npos:
       if (realpath(".", buf) != nullptr)
         res = std::string(buf) + filename;
-    break;
+      break;
     default:
       res = std::string(buf) + filename.substr(started);
-    break;
+      break;
   }
 #endif
   if (res.empty()) {
@@ -66,5 +63,5 @@ std::string file_full_path(const std::string &filename) {
   return res;
 }
 
-} // util
-} // swm
+}  // namespace util
+}  // namespace swm

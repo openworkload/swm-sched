@@ -8,12 +8,9 @@ namespace swm {
 
 class ComputeUnitInterface {
  public:
-  enum Type {
-    Cpu = 0,
-    Gpu = 1
-  };
+  enum Type { Cpu = 0, Gpu = 1 };
 
-  virtual ~ComputeUnitInterface() { }
+  virtual ~ComputeUnitInterface() {}
 
   virtual Type device_type() const = 0;
   virtual int device_number() const = 0;
@@ -22,5 +19,5 @@ class ComputeUnitInterface {
   virtual double frequency_mhz() const = 0;
 };
 
-} // swm
-} // extern "C"
+}  // namespace swm
+}  // extern "C"

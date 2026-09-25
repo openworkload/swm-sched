@@ -1,14 +1,14 @@
 #pragma once
 
-#include <gtest/gtest.h>
-
-#include "test_defs.h"
 #include "alg/algorithm_factory.h"
 #include "chn/chain_controller.h"
 #include "ctrl/scheduling_info.h"
+#include "test_defs.h"
+
+#include <gtest/gtest.h>
 
 class chn : public ::testing::Test {
-protected:
+ protected:
   void SetUp() {
     std::stringstream errors;
     ASSERT_TRUE(factory_.load_plugins(find_plugin_dir(), &errors)) << errors.str();
@@ -25,7 +25,7 @@ protected:
     ASSERT_NE(fcfs_desc_, nullptr);
     ASSERT_NE(dummy_desc_, nullptr);
   }
-  void TearDown() { }
+  void TearDown() {}
 
   bool create_dummy_algorithms(std::vector<std::shared_ptr<swm::Algorithm> > *algs, size_t count) {
     return create_algorithms(dummy_desc_, algs, count);
@@ -35,26 +35,26 @@ protected:
     return create_algorithms(fcfs_desc_, algs, count);
   }
 
-  swm::util::ChainController::finish_callback empty_finish_callback(volatile bool *success
-                                                                                   = nullptr) {
+  swm::util::ChainController::finish_callback empty_finish_callback(volatile bool *success = nullptr) {
     return [flag = success](bool success,
                             const std::shared_ptr<swm::TimetableInfoInterface> &,
                             const std::shared_ptr<swm::util::MetricsSnapshot> &) -> void {
-      if (flag != nullptr) { *flag = success; }
+      if (flag != nullptr) {
+        *flag = success;
+      }
     };
   }
 
-private:
+ private:
   bool create_algorithms(const swm::AlgorithmDescInterface *desc,
-    std::vector<std::shared_ptr<swm::Algorithm> > *algs,
-    size_t count) {
+                         std::vector<std::shared_ptr<swm::Algorithm> > *algs,
+                         size_t count) {
     algs->resize(count);
     for (size_t i = 0; i < count; i++) {
       std::shared_ptr<swm::Algorithm> alg;
       if (factory_.create(desc, &alg)) {
         (*algs)[i] = alg;
-      }
-      else {
+      } else {
         algs->clear();
         return false;
       }

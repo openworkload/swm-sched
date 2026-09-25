@@ -29,13 +29,18 @@ jobs:
     - name: Prepare gtest
       run: |
         sudo apt-get update -y
-        sudo apt-get -y install cmake g++ libgtest-dev
+        sudo apt-get -y install cmake g++ libgtest-dev clang-format-14
         cd /usr/src/gtest
         sudo cmake CMakeLists.txt
         sudo make
         sudo cp lib/*.a /usr/lib 2>/dev/null || sudo find . -name 'libgtest*.a' -exec cp {} /usr/lib \;
         sudo ln -sf /usr/lib/libgtest.a /usr/local/lib/libgtest.a
         sudo ln -sf /usr/lib/libgtest_main.a /usr/local/lib/libgtest_main.a
+
+    - name: Check C++ formatting
+      run: |
+        export CLANG_FORMAT=clang-format-14
+        ./scripts/format-cpp.sh check
 
     - name: Configure the scheduler build
       run: |

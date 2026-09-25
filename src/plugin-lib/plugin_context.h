@@ -8,8 +8,8 @@ class PluginContext {
  public:
   PluginContext() = delete;
   PluginContext(const PluginContext &) = delete;
-  PluginContext(swm::MetricsInterface *metrics) : metrics_(metrics) { }
-  void operator =(const PluginContext &) = delete;
+  PluginContext(swm::MetricsInterface *metrics) : metrics_(metrics) {}
+  void operator=(const PluginContext &) = delete;
 
   swm::MetricsInterface *metrics() { return metrics_; }
 

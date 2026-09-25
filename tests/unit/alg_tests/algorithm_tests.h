@@ -1,17 +1,15 @@
 #pragma once
 
-#include <gtest/gtest.h>
-
-#include "test_defs.h"
 #include "alg/algorithm.h"
 #include "alg/algorithm_factory.h"
 #include "ctrl/scheduling_info.h"
 #include "scheduling_info_configurator.h"
+#include "test_defs.h"
+
+#include <gtest/gtest.h>
 
 class alg_sched : public ::testing::Test {
-
  protected:
-
   void SetUp() {
     ASSERT_TRUE(factory_.load_plugins(find_plugin_dir()));
     const auto &plugins = factory_.known_algorithms();
@@ -23,7 +21,7 @@ class alg_sched : public ::testing::Test {
       }
     }
   }
-  void TearDown() { }
+  void TearDown() {}
 
   swm::PluginEventsInterface *events() { return &events_; }
   bool create_algorithms(std::vector<std::shared_ptr<swm::Algorithm> > *algs) {
@@ -44,8 +42,7 @@ class alg_sched : public ::testing::Test {
       return false;
     }
 
-    std::sort(tts->begin(), tts->end(), [](const swm::SwmTimetable *t1,
-                                           const swm::SwmTimetable *t2) -> bool {
+    std::sort(tts->begin(), tts->end(), [](const swm::SwmTimetable *t1, const swm::SwmTimetable *t2) -> bool {
       return t1->get_job_id() < t2->get_job_id();
     });
     for (size_t i = 0; i < tts->size(); i++) {
@@ -67,7 +64,7 @@ class alg_sched : public ::testing::Test {
 TEST_F(alg_sched, algorithm_empty_sched) {
   std::vector<std::shared_ptr<swm::Algorithm> > algs;
   ASSERT_TRUE(create_algorithms(&algs));
-  
+
   SchedulingInfoConfigurator config;
   std::shared_ptr<swm::SchedulingInfoInterface> info;
   config.construct(&info);
@@ -82,12 +79,12 @@ TEST_F(alg_sched, algorithm_empty_sched) {
 TEST_F(alg_sched, algorithm_no_job) {
   std::vector<std::shared_ptr<swm::Algorithm> > algs;
   ASSERT_TRUE(create_algorithms(&algs));
-  
+
   SchedulingInfoConfigurator config;
   auto cluster = config.create_cluster("1", "up");
   auto part = cluster->create_partition("1", "up");
   auto node = part->create_node("1", "up", "idle");
-  node->create_resources({ { "cpu", 32 },{ "mem", 68719476736 } });
+  node->create_resources({{"cpu", 32}, {"mem", 68719476736}});
   std::shared_ptr<swm::SchedulingInfoInterface> info;
   config.construct(&info);
 
@@ -126,7 +123,7 @@ TEST_F(alg_sched, algorithm_default) {
   auto cluster = config.create_cluster("1", "up");
   auto part = cluster->create_partition("1", "up");
   auto node = part->create_node("1", "up", "idle");
-  node->create_resources({ { "cpu", 32 },{ "mem", 68719476736 } });
+  node->create_resources({{"cpu", 32}, {"mem", 68719476736}});
   auto job = config.create_job("1", "1", 0);
   job->create_request("node", 1);
   std::shared_ptr<swm::SchedulingInfoInterface> info;
@@ -154,7 +151,7 @@ TEST_F(alg_sched, algorithm_no_resource) {
   auto node = part->create_node("1", "up", "idle");
   node->create_resource("cpu", 32);
   auto job = config.create_job("1", "1", 0);
-  job->create_requests( { { "node", 1 }, { "mem", 68719476736 } } );
+  job->create_requests({{"node", 1}, {"mem", 68719476736}});
   std::shared_ptr<swm::SchedulingInfoInterface> info;
   config.construct(&info);
 
@@ -174,9 +171,9 @@ TEST_F(alg_sched, algorithm_not_enough_memory) {
   auto cluster = config.create_cluster("1", "up");
   auto part = cluster->create_partition("1", "up");
   auto node = part->create_node("1", "up", "idle");
-  node->create_resources( { { "cpu", 32 },{ "mem", 34359738368 } } );
+  node->create_resources({{"cpu", 32}, {"mem", 34359738368}});
   auto job = config.create_job("1", "1", 0);
-  job->create_requests( { { "node", 1 }, { "mem", 68719476736 } } );
+  job->create_requests({{"node", 1}, {"mem", 68719476736}});
   std::shared_ptr<swm::SchedulingInfoInterface> info;
   config.construct(&info);
 
@@ -196,7 +193,7 @@ TEST_F(alg_sched, algorithm_not_enough_nodes) {
   auto cluster = config.create_cluster("1", "up");
   auto part = cluster->create_partition("1", "up");
   auto node = part->create_node("1", "up", "idle");
-  node->create_resources( { { "cpu", 32 }, { "mem", 68719476736 } } );
+  node->create_resources({{"cpu", 32}, {"mem", 68719476736}});
   auto job = config.create_job("1", "1", 0);
   job->create_request("node", 2);
   std::shared_ptr<swm::SchedulingInfoInterface> info;
@@ -218,7 +215,7 @@ TEST_F(alg_sched, algorithm_empty_job_request) {
   auto cluster = config.create_cluster("1", "up");
   auto part = cluster->create_partition("1", "up");
   auto node = part->create_node("1", "up", "idle");
-  node->create_resources( { { "cpu", 32 }, { "mem", 34359738368 } } );
+  node->create_resources({{"cpu", 32}, {"mem", 34359738368}});
   config.create_job("1", "1", 0);
   std::shared_ptr<swm::SchedulingInfoInterface> info;
   config.construct(&info);
@@ -238,9 +235,14 @@ TEST_F(alg_sched, algorithm_not_queued_jobs) {
   auto cluster = config.create_cluster("1", "up");
   auto part = cluster->create_partition("1", "up");
   part->create_node("1", "up", "idle");
-  auto job1 = config.create_job("1", "1", 0); job1->create_request("node", 1); job1->set_state("S");
-  auto job2 = config.create_job("2", "1", 0); job2->create_request("node", 1);
-  auto job3 = config.create_job("3", "1", 0); job3->create_request("node", 1); job3->set_state("C");
+  auto job1 = config.create_job("1", "1", 0);
+  job1->create_request("node", 1);
+  job1->set_state("S");
+  auto job2 = config.create_job("2", "1", 0);
+  job2->create_request("node", 1);
+  auto job3 = config.create_job("3", "1", 0);
+  job3->create_request("node", 1);
+  job3->set_state("C");
   std::shared_ptr<swm::SchedulingInfoInterface> info;
   config.construct(&info);
 
@@ -249,7 +251,8 @@ TEST_F(alg_sched, algorithm_not_queued_jobs) {
     ASSERT_TRUE(alg->create_timetable(info.get(), events(), &tt));
     auto tts = tt->tables();
     ASSERT_TRUE(all_jobs_scheduled(&tts, 1));
-    ASSERT_EQ(tts[0]->get_job_id(), "2"); ASSERT_EQ(tts[0]->get_job_nodes().size(), 1);
+    ASSERT_EQ(tts[0]->get_job_id(), "2");
+    ASSERT_EQ(tts[0]->get_job_nodes().size(), 1);
   }
 }
 
@@ -263,9 +266,11 @@ TEST_F(alg_sched, algorithm_failed_and_succeeded_jobs) {
   auto node = part->create_node("1", "up", "idle");
   node->create_resource("mem", 1);
   auto job1 = config.create_job("1", "1", 1);
-  job1->create_request("node", 1); job1->create_request("mem", 1);
+  job1->create_request("node", 1);
+  job1->create_request("mem", 1);
   auto job2 = config.create_job("2", "1", 1);
-  job2->create_request("node", 1); job2->create_request("mem", 2);
+  job2->create_request("node", 1);
+  job2->create_request("mem", 2);
   std::shared_ptr<swm::SchedulingInfoInterface> info;
   config.construct(&info);
 
@@ -312,12 +317,18 @@ TEST_F(alg_sched, algorithm_5_jobs_2_nodes) {
   SchedulingInfoConfigurator config;
   auto cluster = config.create_cluster("1", "up");
   auto part = cluster->create_partition("1", "up");
-  part->create_node("1", "up", "idle"); part->create_node("2", "up", "idle");
-  auto job1 = config.create_job("1", "1", 1); job1->create_request("node", 1);
-  auto job2 = config.create_job("2", "1", 1); job2->create_request("node", 1);
-  auto job3 = config.create_job("3", "1", 1); job3->create_request("node", 2);
-  auto job4 = config.create_job("4", "1", 1); job4->create_request("node", 1);
-  auto job5 = config.create_job("5", "1", 1); job5->create_request("node", 2);
+  part->create_node("1", "up", "idle");
+  part->create_node("2", "up", "idle");
+  auto job1 = config.create_job("1", "1", 1);
+  job1->create_request("node", 1);
+  auto job2 = config.create_job("2", "1", 1);
+  job2->create_request("node", 1);
+  auto job3 = config.create_job("3", "1", 1);
+  job3->create_request("node", 2);
+  auto job4 = config.create_job("4", "1", 1);
+  job4->create_request("node", 1);
+  auto job5 = config.create_job("5", "1", 1);
+  job5->create_request("node", 2);
   std::shared_ptr<swm::SchedulingInfoInterface> info;
   config.construct(&info);
 
@@ -331,7 +342,8 @@ TEST_F(alg_sched, algorithm_5_jobs_2_nodes) {
       nodes_per_tick[job->get_start_time()] += job->get_job_nodes().size();
     }
     for (const auto rec : nodes_per_tick) {
-      ASSERT_GT(rec.second, 0); ASSERT_LE(rec.second, 2);
+      ASSERT_GT(rec.second, 0);
+      ASSERT_LE(rec.second, 2);
     }
   }
 }
@@ -414,10 +426,14 @@ TEST_F(alg_sched, algorithm_different_clusters) {
   auto cluster2 = config.create_cluster("2", "up");
   auto part2 = cluster2->create_partition("2", "up");
   part2->create_node("2", "up", "idle");
-  auto job1 = config.create_job("1", "1", 1); job1->create_request("node", 1);
-  auto job2 = config.create_job("2", "2", 2); job2->create_request("node", 1);
-  auto job3 = config.create_job("3", "2", 1); job3->create_request("node", 1);
-  auto job4 = config.create_job("4", "1", 1); job4->create_request("node", 1);
+  auto job1 = config.create_job("1", "1", 1);
+  job1->create_request("node", 1);
+  auto job2 = config.create_job("2", "2", 2);
+  job2->create_request("node", 1);
+  auto job3 = config.create_job("3", "2", 1);
+  job3->create_request("node", 1);
+  auto job4 = config.create_job("4", "1", 1);
+  job4->create_request("node", 1);
   std::shared_ptr<swm::SchedulingInfoInterface> info;
   config.construct(&info);
 
@@ -426,11 +442,17 @@ TEST_F(alg_sched, algorithm_different_clusters) {
     ASSERT_TRUE(alg->create_timetable(info.get(), events(), &tt));
     auto tts = tt->tables();
     ASSERT_TRUE(all_jobs_scheduled(&tts, 4));
-    for (const auto table : tts) { ASSERT_EQ(table->get_job_nodes().size(), 1); }
-    ASSERT_EQ(tts[0]->get_job_nodes()[0], "1"); ASSERT_EQ(tts[0]->get_start_time(), 0);
-    ASSERT_EQ(tts[1]->get_job_nodes()[0], "2"); ASSERT_EQ(tts[1]->get_start_time(), 0);
-    ASSERT_EQ(tts[2]->get_job_nodes()[0], "2"); ASSERT_EQ(tts[2]->get_start_time(), 2);
-    ASSERT_EQ(tts[3]->get_job_nodes()[0], "1"); ASSERT_EQ(tts[3]->get_start_time(), 1);
+    for (const auto table : tts) {
+      ASSERT_EQ(table->get_job_nodes().size(), 1);
+    }
+    ASSERT_EQ(tts[0]->get_job_nodes()[0], "1");
+    ASSERT_EQ(tts[0]->get_start_time(), 0);
+    ASSERT_EQ(tts[1]->get_job_nodes()[0], "2");
+    ASSERT_EQ(tts[1]->get_start_time(), 0);
+    ASSERT_EQ(tts[2]->get_job_nodes()[0], "2");
+    ASSERT_EQ(tts[2]->get_start_time(), 2);
+    ASSERT_EQ(tts[3]->get_job_nodes()[0], "1");
+    ASSERT_EQ(tts[3]->get_start_time(), 1);
   }
 }
 
@@ -443,8 +465,10 @@ TEST_F(alg_sched, algorithm_job_dependencies) {
   auto part1 = cluster1->create_partition("1", "up");
   part1->create_node("1", "up", "idle");
   part1->create_node("2", "up", "idle");
-  auto job1 = config.create_job("1", "1", 2); job1->create_request("node", 1);
-  auto job2 = config.create_job("2", "1", 2); job2->create_request("node", 1);
+  auto job1 = config.create_job("1", "1", 2);
+  job1->create_request("node", 1);
+  auto job2 = config.create_job("2", "1", 2);
+  job2->create_request("node", 1);
   job2->set_dependency("1");
   std::shared_ptr<swm::SchedulingInfoInterface> info;
   config.construct(&info);
@@ -468,11 +492,20 @@ TEST_F(alg_sched, algorithm_gang_id) {
   auto part = cluster->create_partition("1", "up");
   part->create_node("1", "up", "idle");
   part->create_node("2", "up", "idle");
-  auto job1 = config.create_job("1", "1", 1);job1->create_request("node", 1);
-  auto job2 = config.create_job("2", "1", 2);job2->create_request("node", 1);job2->set_gang_id("1");
-  auto job3 = config.create_job("3", "1", 3);job3->create_request("node", 1);job3->set_gang_id("1");
-  auto job4 = config.create_job("4", "1", 1);job4->create_request("node", 1);job4->set_gang_id("2");
-  auto job5 = config.create_job("5", "1", 1);job5->create_request("node", 1);job5->set_gang_id("2");
+  auto job1 = config.create_job("1", "1", 1);
+  job1->create_request("node", 1);
+  auto job2 = config.create_job("2", "1", 2);
+  job2->create_request("node", 1);
+  job2->set_gang_id("1");
+  auto job3 = config.create_job("3", "1", 3);
+  job3->create_request("node", 1);
+  job3->set_gang_id("1");
+  auto job4 = config.create_job("4", "1", 1);
+  job4->create_request("node", 1);
+  job4->set_gang_id("2");
+  auto job5 = config.create_job("5", "1", 1);
+  job5->create_request("node", 1);
+  job5->set_gang_id("2");
 
   std::shared_ptr<swm::SchedulingInfoInterface> info;
   config.construct(&info);
@@ -499,7 +532,7 @@ TEST_F(alg_sched, algorithm_metrics) {
   auto cluster = config.create_cluster("1", "up");
   auto part = cluster->create_partition("1", "up");
   auto node = part->create_node("1", "up", "idle");
-  node->create_resources( { { "cpu", 32 }, { "mem", 68719476736 } } );
+  node->create_resources({{"cpu", 32}, {"mem", 68719476736}});
   auto job = config.create_job("1", "1", 0);
   job->create_request("node", 1);
   std::shared_ptr<swm::SchedulingInfoInterface> info;
@@ -522,13 +555,13 @@ TEST_F(alg_sched, preset_job_nodes_available) {
   auto part = cluster->create_partition("1", "up");
 
   auto node1 = part->create_node("1", "up", "idle");
-  node1->create_resources({ { "cpu", 32 },{ "mem", 68719476736 } });
+  node1->create_resources({{"cpu", 32}, {"mem", 68719476736}});
   auto node2 = part->create_node("2", "up", "idle");
-  node2->create_resources({ { "cpu", 8 },{ "mem", 68719476736 } });
+  node2->create_resources({{"cpu", 8}, {"mem", 68719476736}});
   auto node3 = part->create_node("3", "up", "busy");
-  node3->create_resources({ { "cpu", 8 },{ "mem", 68719476736 } });
+  node3->create_resources({{"cpu", 8}, {"mem", 68719476736}});
   auto node4 = part->create_node("4", "up", "idle");
-  node4->create_resources({ { "cpu", 8 },{ "mem", 68719476736 } });
+  node4->create_resources({{"cpu", 8}, {"mem", 68719476736}});
 
   auto job = config.create_job("1", "1", 0);
   job->create_request("node", 2);
@@ -559,13 +592,13 @@ TEST_F(alg_sched, preset_job_nodes_not_available) {
   auto part = cluster->create_partition("1", "up");
 
   auto node1 = part->create_node("1", "up", "idle");
-  node1->create_resources({ { "cpu", 32 },{ "mem", 68719476736 } });
+  node1->create_resources({{"cpu", 32}, {"mem", 68719476736}});
   auto node2 = part->create_node("2", "up", "idle");
-  node2->create_resources({ { "cpu", 8 },{ "mem", 68719476736 } });
+  node2->create_resources({{"cpu", 8}, {"mem", 68719476736}});
   auto node3 = part->create_node("3", "up", "busy");
-  node3->create_resources({ { "cpu", 8 },{ "mem", 68719476736 } });
+  node3->create_resources({{"cpu", 8}, {"mem", 68719476736}});
   auto node4 = part->create_node("4", "up", "idle");
-  node4->create_resources({ { "cpu", 8 },{ "mem", 68719476736 } });
+  node4->create_resources({{"cpu", 8}, {"mem", 68719476736}});
 
   auto job = config.create_job("1", "1", 0);
   job->create_request("node", 2);
@@ -592,11 +625,11 @@ TEST_F(alg_sched, jobs_with_same_preset_nodes) {
   auto part = cluster->create_partition("1", "up");
 
   auto node1 = part->create_node("1", "up", "idle");
-  node1->create_resources({ { "cpu", 32 },{ "mem", 68719476736 } });
+  node1->create_resources({{"cpu", 32}, {"mem", 68719476736}});
   auto node2 = part->create_node("2", "up", "idle");
-  node2->create_resources({ { "cpu", 8 },{ "mem", 68719476736 } });
+  node2->create_resources({{"cpu", 8}, {"mem", 68719476736}});
   auto node3 = part->create_node("3", "up", "idle");
-  node3->create_resources({ { "cpu", 8 },{ "mem", 68719476736 } });
+  node3->create_resources({{"cpu", 8}, {"mem", 68719476736}});
 
   auto job1 = config.create_job("1", "1", 1000);
   job1->create_request("node", 1);

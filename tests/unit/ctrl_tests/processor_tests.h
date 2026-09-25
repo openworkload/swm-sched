@@ -1,12 +1,12 @@
 
 #pragma once
 
-#include <gtest/gtest.h>
-
-#include "test_defs.h"
-#include "scheduling_info_presets.h"
 #include "ctrl.h"
 #include "ctrl/processor.h"
+#include "scheduling_info_presets.h"
+#include "test_defs.h"
+
+#include <gtest/gtest.h>
 
 TEST_F(ctrl, processor_no_init) {
   swm::util::Processor processor;
@@ -29,8 +29,8 @@ TEST_F(ctrl, processor_unknown_algorithm) {
   {
     swm::util::Processor processor;
     ASSERT_NO_THROW(processor.init(factory(), scanner(), &in_queue, &out_queue, 10.0));
-    auto req = create_schedule_request("#unknown_algorithm", { "swm-unknown" },
-                                       SchedulingInfoPresets::one_node_one_job("1"));
+    auto req =
+        create_schedule_request("#unknown_algorithm", {"swm-unknown"}, SchedulingInfoPresets::one_node_one_job("1"));
     in_queue.push(req);
     ASSERT_NO_THROW(processor.close());
     ASSERT_EQ(out_queue.element_count(), 1);
@@ -47,7 +47,7 @@ TEST_F(ctrl, processor_corrupted_data) {
     swm::util::Processor processor;
     ASSERT_NO_THROW(processor.init(factory(), scanner(), &in_queue, &out_queue, 10.0));
     in_queue.push(std::shared_ptr<swm::util::CommandInterface>(
-                              new swm::util::CorruptedCommand(create_context("#corrupted_data"))));
+        new swm::util::CorruptedCommand(create_context("#corrupted_data"))));
     ASSERT_NO_THROW(processor.close());
     ASSERT_EQ(out_queue.element_count(), 1);
     auto resp = out_queue.pop();
@@ -62,8 +62,7 @@ TEST_F(ctrl, processor_schedule) {
   {
     swm::util::Processor processor;
     ASSERT_NO_THROW(processor.init(factory(), scanner(), &in_queue, &out_queue, 10.0));
-    in_queue.push(create_schedule_request("#schedule", { "swm-fcfs" },
-                                          SchedulingInfoPresets::one_node_one_job("1")));
+    in_queue.push(create_schedule_request("#schedule", {"swm-fcfs"}, SchedulingInfoPresets::one_node_one_job("1")));
     ASSERT_NO_THROW(processor.close());
 
     ASSERT_EQ(out_queue.element_count(), 1);
@@ -80,16 +79,14 @@ TEST_F(ctrl, processor_interrupt) {
   {
     swm::util::Processor processor;
     ASSERT_NO_THROW(processor.init(factory(), scanner(), &in_queue, &out_queue, 10.0));
-    in_queue.push(create_schedule_request("#schedule1", { "swm-dummy" },
-                                          SchedulingInfoPresets::one_node_one_job("hold_on")));
-    in_queue.push(create_schedule_request("#schedule2", { "swm-fcfs", "swm-fcfs", "swm-dummy" },
-                                          SchedulingInfoPresets::one_node_one_job("hold_on")));
+    in_queue.push(
+        create_schedule_request("#schedule1", {"swm-dummy"}, SchedulingInfoPresets::one_node_one_job("hold_on")));
+    in_queue.push(create_schedule_request(
+        "#schedule2", {"swm-fcfs", "swm-fcfs", "swm-dummy"}, SchedulingInfoPresets::one_node_one_job("hold_on")));
 
-    in_queue.push(std::shared_ptr<swm::util::CommandInterface>(
-                                          create_interrupt_request("#interrupt1", "#schedule2")));
-    in_queue.push(std::shared_ptr<swm::util::CommandInterface>(
-                                          create_interrupt_request("#interrupt2", "#schedule1")));
-    
+    in_queue.push(std::shared_ptr<swm::util::CommandInterface>(create_interrupt_request("#interrupt1", "#schedule2")));
+    in_queue.push(std::shared_ptr<swm::util::CommandInterface>(create_interrupt_request("#interrupt2", "#schedule1")));
+
     ASSERT_NO_THROW(processor.close());
     ASSERT_EQ(out_queue.element_count(), 4);
     while (out_queue.element_count() > 0) {
@@ -97,11 +94,9 @@ TEST_F(ctrl, processor_interrupt) {
       // Responses are not sorted, so we use if's to differ them
       if (resp->context()->id() == "#schedule1" || resp->context()->id() == "#schedule2") {
         ASSERT_FALSE(resp->succeeded());
-      }
-      else if (resp->context()->id() == "#interrupt1" || resp->context()->id() == "#interrupt2") {
+      } else if (resp->context()->id() == "#interrupt1" || resp->context()->id() == "#interrupt2") {
         ASSERT_TRUE(resp->succeeded());
-      }
-      else {
+      } else {
         ASSERT_TRUE(false) << "Wrong SwmUID";
       }
     }
@@ -114,8 +109,8 @@ TEST_F(ctrl, processor_metrics) {
   {
     swm::util::Processor processor;
     ASSERT_NO_THROW(processor.init(factory(), scanner(), &in_queue, &out_queue, 10.0));
-    in_queue.push(create_schedule_request("#schedule", { "swm-dummy" },
-                                          SchedulingInfoPresets::one_node_one_job("hold_on")));
+    in_queue.push(
+        create_schedule_request("#schedule", {"swm-dummy"}, SchedulingInfoPresets::one_node_one_job("hold_on")));
     in_queue.push(create_metrics_request("#metrics", "#schedule"));
     in_queue.push(create_interrupt_request("#interrupt", "#schedule"));
   }
@@ -124,12 +119,9 @@ TEST_F(ctrl, processor_metrics) {
     auto resp = out_queue.pop();
     if (resp->context()->id() == "#schedule") {
       ASSERT_FALSE(resp->succeeded());
-    }
-    else if (resp->context()->id() == "#metrics" ||
-             resp->context()->id() == "#interrupt") {
+    } else if (resp->context()->id() == "#metrics" || resp->context()->id() == "#interrupt") {
       ASSERT_TRUE(resp->succeeded());
-    }
-    else {
+    } else {
       ASSERT_TRUE(false) << "Wrong SwmUID";
     }
   }
@@ -141,10 +133,10 @@ TEST_F(ctrl, processor_exchange) {
   {
     swm::util::Processor processor;
     ASSERT_NO_THROW(processor.init(factory(), scanner(), &in_queue, &out_queue, 10.0));
-    in_queue.push(create_schedule_request("#schedule1", { "swm-fcfs", "swm-dummy" },
-                                          SchedulingInfoPresets::one_node_one_job("hold_on")));
-    in_queue.push(create_schedule_request("#schedule2", { "swm-fcfs", "swm-dummy" },
-                                          SchedulingInfoPresets::one_node_one_job("hold_on")));
+    in_queue.push(create_schedule_request(
+        "#schedule1", {"swm-fcfs", "swm-dummy"}, SchedulingInfoPresets::one_node_one_job("hold_on")));
+    in_queue.push(create_schedule_request(
+        "#schedule2", {"swm-fcfs", "swm-dummy"}, SchedulingInfoPresets::one_node_one_job("hold_on")));
     std::this_thread::sleep_for(std::chrono::milliseconds(10));
     in_queue.push(create_exchange_request("#exchange", "#schedule1", "#schedule2"));
     in_queue.push(create_interrupt_request("#interrupt1", "#schedule1"));
@@ -155,10 +147,8 @@ TEST_F(ctrl, processor_exchange) {
     auto resp = out_queue.pop();
     if (resp->context()->id() == "#schedule1" || resp->context()->id() == "#schedule2") {
       ASSERT_FALSE(resp->succeeded());
-    }
-    else if (resp->context()->id() == "#exchange" ||
-             resp->context()->id() == "#interrupt1" ||
-             resp->context()->id() == "#interrupt2") {
+    } else if (resp->context()->id() == "#exchange" || resp->context()->id() == "#interrupt1" ||
+               resp->context()->id() == "#interrupt2") {
       ASSERT_TRUE(resp->succeeded());
     }
   }
@@ -170,10 +160,10 @@ TEST_F(ctrl, processor_uid_conflict) {
   {
     swm::util::Processor processor;
     ASSERT_NO_THROW(processor.init(factory(), scanner(), &in_queue, &out_queue, 10.0));
-    in_queue.push(create_schedule_request("#schedule", { "swm-dummy" },
-                                          SchedulingInfoPresets::one_node_one_job("hold_on")));
-    in_queue.push(create_schedule_request("#schedule", { "swm-dummy" },
-                                          SchedulingInfoPresets::one_node_one_job("hold_on")));
+    in_queue.push(
+        create_schedule_request("#schedule", {"swm-dummy"}, SchedulingInfoPresets::one_node_one_job("hold_on")));
+    in_queue.push(
+        create_schedule_request("#schedule", {"swm-dummy"}, SchedulingInfoPresets::one_node_one_job("hold_on")));
     std::this_thread::sleep_for(std::chrono::milliseconds(50));
     in_queue.push(create_interrupt_request("#interrupt", "#schedule"));
   }
@@ -182,11 +172,9 @@ TEST_F(ctrl, processor_uid_conflict) {
     auto resp = out_queue.pop();
     if (resp->context()->id() == "#schedule") {
       ASSERT_FALSE(resp->succeeded());
-    }
-    else if (resp->context()->id() == "#interrupt") {
+    } else if (resp->context()->id() == "#interrupt") {
       ASSERT_TRUE(resp->succeeded());
-    }
-    else {
+    } else {
       ASSERT_TRUE(false) << "Wrong SwmUID";
     }
   }
@@ -217,8 +205,8 @@ TEST_F(ctrl, processor_time_counting) {
   {
     swm::util::Processor processor;
     ASSERT_NO_THROW(processor.init(factory(), scanner(), &in_queue, &out_queue, 10.0));
-    in_queue.push(create_schedule_request("#schedule", { "swm-dummy" },
-                                          SchedulingInfoPresets::one_node_one_job("hold_on")));
+    in_queue.push(
+        create_schedule_request("#schedule", {"swm-dummy"}, SchedulingInfoPresets::one_node_one_job("hold_on")));
     std::this_thread::sleep_for(std::chrono::milliseconds(50));
     in_queue.push(create_interrupt_request("#interrupt", "#schedule"));
   }
@@ -261,4 +249,3 @@ TEST_F(ctrl, processor_time_counting) {
   ASSERT_LT(interrupt_astro, schedule_astro);
   ASSERT_LT(interrupt_working, schedule_working);
 }
-

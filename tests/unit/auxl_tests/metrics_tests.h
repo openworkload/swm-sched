@@ -1,10 +1,10 @@
 
 #pragma once
 
-#include <gtest/gtest.h>
-
-#include "test_defs.h"
 #include "auxl/metrics.h"
+#include "test_defs.h"
+
+#include <gtest/gtest.h>
 
 TEST(auxl, metrics_register_get_set) {
   swm::util::Metrics metrics;
@@ -32,7 +32,7 @@ TEST(auxl, metrics_wrong_register) {
   ASSERT_NO_THROW(metrics.register_int_value(0, "test"));
   ASSERT_ANY_THROW(metrics.register_int_value(0, "new value"));
   ASSERT_ANY_THROW(metrics.double_value(0));
-  ASSERT_ANY_THROW(metrics.add_double_value_handler(0, [](double, double) -> void { }));
+  ASSERT_ANY_THROW(metrics.add_double_value_handler(0, [](double, double) -> void {}));
 }
 
 TEST(auxl, metrics_enumeration) {
@@ -79,12 +79,14 @@ TEST(auxl, metrics_events) {
 TEST(auxl, metrics_concurrency) {
   swm::util::Metrics metrics;
   ASSERT_NO_THROW(metrics.register_int_value(0, "just a record"));
-  
+
   bool go = false;
   std::atomic<int> prep_threads(0);
   auto func = [m = &metrics, go_flag = &go, counter = &prep_threads]() -> void {
     counter->fetch_add(1);
-    while (*go_flag) { std::this_thread::yield(); }
+    while (*go_flag) {
+      std::this_thread::yield();
+    }
     for (int i = 0; i < 10000; ++i) {
       m->update_int_value(0, 1);
     }
@@ -92,10 +94,14 @@ TEST(auxl, metrics_concurrency) {
 
   std::thread t1(func);
   std::thread t2(func);
-  while (prep_threads.load() != 2) { std::this_thread::yield(); }
+  while (prep_threads.load() != 2) {
+    std::this_thread::yield();
+  }
   go = true;
-  if (t1.joinable()) t1.join();
-  if (t2.joinable()) t2.join();
+  if (t1.joinable())
+    t1.join();
+  if (t2.joinable())
+    t2.join();
   ASSERT_EQ(metrics.int_value(0), 20000);
 }
 
@@ -107,9 +113,7 @@ TEST(auxl, metrics_cloning) {
   ASSERT_NO_THROW(m.update_double_value(2, 3.0));
 
   int extracted_value = 0;
-  ASSERT_NO_THROW(m.add_int_value_handler(1, [ev = &extracted_value](int, int new_v) -> void{
-    *ev = new_v;
-  }));
+  ASSERT_NO_THROW(m.add_int_value_handler(1, [ev = &extracted_value](int, int new_v) -> void { *ev = new_v; }));
 
   std::shared_ptr<swm::MetricsInterface> cloned;
   ASSERT_NO_THROW(cloned = m.clone());

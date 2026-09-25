@@ -1,10 +1,10 @@
 
 #pragma once
 
-#include <gtest/gtest.h>
-
-#include "defs.h"
 #include "auxl/cli_args_parser.h"
+#include "defs.h"
+
+#include <gtest/gtest.h>
 
 TEST(auxl, args_parser_two_empty_flags) {
   swm::util::CliArgsParser parser;
@@ -17,7 +17,7 @@ TEST(auxl, args_parser_one_empty_flag) {
   bool tmp1 = false, tmp2 = false;
   ASSERT_NO_THROW(parser.register_flag("-f", "", &tmp1));
   ASSERT_NO_THROW(parser.register_flag(std::string(), "--flag", &tmp2));
-  const char *args[] = { "", "-f", "--flag" };
+  const char *args[] = {"", "-f", "--flag"};
   ASSERT_TRUE(parser.parse(3, args));
   ASSERT_TRUE(tmp1);
   ASSERT_TRUE(tmp2);
@@ -66,7 +66,7 @@ TEST(auxl, args_parser_parse_double_flag) {
   swm::util::CliArgsParser parser;
   bool tmp;
   parser.register_flag("-h", "--help", &tmp);
-  const char * argv[] = { "test", "-h", "-h" };
+  const char *argv[] = {"test", "-h", "-h"};
   std::stringstream stream;
   bool res = parser.parse(3, argv, &stream);
   ASSERT_FALSE(res);
@@ -77,7 +77,7 @@ TEST(auxl, args_parser_parse_short_and_long_flag) {
   swm::util::CliArgsParser parser;
   bool tmp;
   parser.register_flag("-h", "--help", &tmp);
-  const char * argv[] = { "test", "-h" , "--help" };
+  const char *argv[] = {"test", "-h", "--help"};
   std::stringstream stream;
   bool res = parser.parse(3, argv, &stream);
   ASSERT_FALSE(res);
@@ -88,7 +88,7 @@ TEST(auxl, args_parser_parse_undefined_flag) {
   swm::util::CliArgsParser parser;
   bool tmp;
   parser.register_flag("-h", "--help", &tmp);
-  const char * argv[] = { "test", "-v" };
+  const char *argv[] = {"test", "-v"};
   std::stringstream stream;
   bool res = parser.parse(2, argv, &stream);
   ASSERT_FALSE(res);
@@ -100,7 +100,7 @@ TEST(auxl, args_parser_parse_value_expected) {
   bool tmp;
   std::string value;
   parser.register_flag("-v", "--value", &tmp, &value);
-  const char * argv[] = { "test", "-v" };
+  const char *argv[] = {"test", "-v"};
   std::stringstream stream;
   bool res = parser.parse(2, argv, &stream);
   ASSERT_FALSE(res);
@@ -111,7 +111,7 @@ TEST(auxl, args_parser_parse_default_simple_flag) {
   swm::util::CliArgsParser parser;
   bool tmp;
   parser.register_flag("-h", "--help", &tmp);
-  const char * argv[] = { "test", "-h" };
+  const char *argv[] = {"test", "-h"};
   size_t flag_num;
   bool res = parser.parse(2, argv, nullptr, &flag_num);
   ASSERT_TRUE(res);
@@ -124,7 +124,7 @@ TEST(auxl, args_parser_parse_default_value_flag) {
   bool tmp;
   std::string value;
   parser.register_flag("-v", "--value", &tmp, &value);
-  const char * argv[] = { "test", "-v", "foo" };
+  const char *argv[] = {"test", "-v", "foo"};
   size_t flag_num = 0;
   bool res = parser.parse(3, argv, nullptr, &flag_num);
   ASSERT_TRUE(res);

@@ -1,30 +1,30 @@
 
 #include "extended_rh.h"
+
 #include <set>
 
 namespace swm {
 
 // Helper that performs some checks for RH and extracts the related
 // item (node, partition or cluster), significantly reduces duplicated code
-template <class ITEM> static inline
-const ITEM *check_rh_and_extract_item(const swm::RhItem &rh,
-                                      const std::unordered_map<std::string, const ITEM *> &m,
-                                      const std::string &item_name,
-                                      std::set<std::string> *met_ids,
-                                      std::stringstream *error) {
+template <class ITEM>
+static inline const ITEM *check_rh_and_extract_item(const swm::RhItem &rh,
+                                                    const std::unordered_map<std::string, const ITEM *> &m,
+                                                    const std::string &item_name,
+                                                    std::set<std::string> *met_ids,
+                                                    std::stringstream *error) {
   auto iter = m.find(rh.id());
   if (iter == m.end()) {
-    *error << item_name << " with id=" << rh.id() << " was referenced in RH but cannot be found in \""<< item_name <<"s\"";
+    *error << item_name << " with id=" << rh.id() << " was referenced in RH but cannot be found in \"" << item_name
+           << "s\"";
     return nullptr;
   }
   if (rh.name() != item_name) {
-    *error << "wrong structure of RH, met \"" << rh.name()
-           << "\" instead of \"" << item_name <<"\"";
+    *error << "wrong structure of RH, met \"" << rh.name() << "\" instead of \"" << item_name << "\"";
     return nullptr;
   }
   if (met_ids->find(rh.id()) != met_ids->end()) {
-    *error << "wrong structure of RH, "
-           << item_name << " #" << rh.id() << " was referenced twice";
+    *error << "wrong structure of RH, " << item_name << " #" << rh.id() << " was referenced twice";
     return nullptr;
   }
   met_ids->insert(rh.id());
@@ -36,8 +36,7 @@ bool ExtendedRH::parse_node(const RhItem &item,
                             const swm::SwmCluster *cluster,
                             const swm::SwmPartition *part,
                             std::stringstream *error) {
-  auto node = check_rh_and_extract_item(item, ids_to_nodes_,
-                                        "node", known_nodes, error);
+  auto node = check_rh_and_extract_item(item, ids_to_nodes_, "node", known_nodes, error);
   if (node == nullptr) {
     return false;
   }
@@ -52,10 +51,11 @@ bool ExtendedRH::parse_node(const RhItem &item,
 }
 
 bool ExtendedRH::parse_part(const RhItem &item,
-                            std::set<std::string> *known_parts, std::set<std::string> *known_nodes,
-                            const swm::SwmCluster *cluster, std::stringstream *error) {
-  auto part = check_rh_and_extract_item(item, ids_to_parts_,
-                                        "partition", known_parts, error);
+                            std::set<std::string> *known_parts,
+                            std::set<std::string> *known_nodes,
+                            const swm::SwmCluster *cluster,
+                            std::stringstream *error) {
+  auto part = check_rh_and_extract_item(item, ids_to_parts_, "partition", known_parts, error);
   if (part == nullptr) {
     return false;
   }
@@ -65,8 +65,7 @@ bool ExtendedRH::parse_part(const RhItem &item,
       if (!parse_part(child, known_parts, known_nodes, cluster, error)) {
         return false;
       }
-    }
-    else if (!parse_node(child, known_nodes, cluster, part, error)) {
+    } else if (!parse_node(child, known_nodes, cluster, part, error)) {
       return false;
     }
   }
@@ -75,11 +74,12 @@ bool ExtendedRH::parse_part(const RhItem &item,
   return true;
 }
 
-bool ExtendedRH::parse_cluster(const RhItem &item, std::set<std::string> *known_clusters,
-                               std::set<std::string> *known_parts, std::set<std::string> *known_nodes,
+bool ExtendedRH::parse_cluster(const RhItem &item,
+                               std::set<std::string> *known_clusters,
+                               std::set<std::string> *known_parts,
+                               std::set<std::string> *known_nodes,
                                std::stringstream *error) {
-  auto cluster = check_rh_and_extract_item(item, ids_to_clusters_,
-                                           "cluster", known_clusters, error);
+  auto cluster = check_rh_and_extract_item(item, ids_to_clusters_, "cluster", known_clusters, error);
   if (!cluster) {
     return false;
   }
@@ -133,4 +133,4 @@ bool ExtendedRH::init(const swm::SchedulingInfoInterface *sched_info, std::strin
   return true;
 }
 
-} // swm
+}  // namespace swm

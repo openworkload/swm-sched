@@ -1,13 +1,12 @@
 
 #pragma once
 
-#include <gtest/gtest.h>
-
-#include "test_defs.h"
-#include "scheduling_info_presets.h"
 #include "chn.h"
 #include "chn/chain.h"
+#include "scheduling_info_presets.h"
+#include "test_defs.h"
 
+#include <gtest/gtest.h>
 
 TEST_F(chn, chain_wrong_init) {
   std::vector<std::shared_ptr<swm::Algorithm> > alg;
@@ -30,7 +29,7 @@ TEST_F(chn, chain_no_init) {
   swm::Chain chain;
   ASSERT_EQ(chain.status(), swm::Chain::NOT_STARTED);
   ASSERT_EQ(chain.stopped(), true);
-  
+
   const std::shared_ptr<swm::TimetableInfoInterface> tt;
   ASSERT_ANY_THROW(chain.ready_for_async_operation());
   ASSERT_ANY_THROW(chain.interrupt_async());
@@ -55,7 +54,9 @@ TEST_F(chn, chain_simple_tt) {
 
   swm::Chain chain;
   ASSERT_NO_THROW(chain.init(SchedulingInfoPresets::one_node_one_job("1"), alg));
-  while (!chain.stopped()) { std::this_thread::yield(); }
+  while (!chain.stopped()) {
+    std::this_thread::yield();
+  }
 
   ASSERT_EQ(chain.status(), swm::Chain::FINISHED);
   ASSERT_EQ(chain.intermediate_timetable().get(), nullptr);
@@ -70,14 +71,18 @@ TEST_F(chn, chain_interrupt_async) {
 
   swm::Chain chain;
   ASSERT_NO_THROW(chain.init(SchedulingInfoPresets::one_node_one_job("hold_on"), alg));
-  while (chain.intermediate_timetable().get() == nullptr) { std::this_thread::yield(); }
+  while (chain.intermediate_timetable().get() == nullptr) {
+    std::this_thread::yield();
+  }
   ASSERT_FALSE(chain.intermediate_timetable()->empty());
 
   std::this_thread::sleep_for(std::chrono::milliseconds(50));
   ASSERT_EQ(chain.status(), swm::Chain::WORKING);
   ASSERT_TRUE(chain.ready_for_async_operation());
   ASSERT_NO_THROW(chain.interrupt_async());
-  while (!chain.stopped()) { std::this_thread::yield(); }
+  while (!chain.stopped()) {
+    std::this_thread::yield();
+  }
   ASSERT_EQ(chain.status(), swm::Chain::INTERRUPTED);
 }
 
@@ -86,24 +91,27 @@ TEST_F(chn, chain_inject_timetable_async) {
   ASSERT_TRUE(create_fcfs_algorithms(&alg, 1));
   swm::Chain fcfs_chain;
   ASSERT_NO_THROW((fcfs_chain.init(SchedulingInfoPresets::one_node_one_job("1"), alg)));
-  while (!fcfs_chain.stopped()) { std::this_thread::yield(); }
+  while (!fcfs_chain.stopped()) {
+    std::this_thread::yield();
+  }
   ASSERT_EQ(fcfs_chain.status(), swm::Chain::FINISHED);
   ASSERT_NE(fcfs_chain.actual_timetable().get(), nullptr);
   ASSERT_FALSE(fcfs_chain.actual_timetable()->empty());
 
   ASSERT_TRUE(create_dummy_algorithms(&alg, 1));
   swm::Chain dummy_chain;
-  ASSERT_NO_THROW((dummy_chain.init(SchedulingInfoPresets::one_node_one_job("hold_on"),
-                                    alg)));
+  ASSERT_NO_THROW((dummy_chain.init(SchedulingInfoPresets::one_node_one_job("hold_on"), alg)));
   std::this_thread::sleep_for(std::chrono::milliseconds(50));
   ASSERT_EQ(dummy_chain.status(), swm::Chain::WORKING);
   ASSERT_NE(dummy_chain.intermediate_timetable().get(), nullptr);
   ASSERT_FALSE(dummy_chain.intermediate_timetable()->tables().empty());
   ASSERT_EQ(dummy_chain.intermediate_timetable()->tables()[0]->get_job_id(), "hold_on");
-  
+
   ASSERT_TRUE(dummy_chain.ready_for_async_operation());
   ASSERT_NO_THROW(dummy_chain.inject_timetable_async(fcfs_chain.actual_timetable()));
-  while (!dummy_chain.stopped()) { std::this_thread::yield(); }
+  while (!dummy_chain.stopped()) {
+    std::this_thread::yield();
+  }
   ASSERT_EQ(dummy_chain.status(), swm::Chain::FINISHED);
   ASSERT_NE(dummy_chain.actual_timetable().get(), nullptr);
   ASSERT_FALSE(dummy_chain.actual_timetable()->empty());
@@ -117,18 +125,19 @@ TEST_F(chn, chain_with_three_algs) {
     ASSERT_TRUE(create_fcfs_algorithms(&algs, 3));
     swm::Chain fcfs_chain;
     ASSERT_NO_THROW(fcfs_chain.init(SchedulingInfoPresets::one_node_one_job("1"), algs));
-    while (!fcfs_chain.stopped()) { std::this_thread::yield(); }
+    while (!fcfs_chain.stopped()) {
+      std::this_thread::yield();
+    }
     ASSERT_EQ(fcfs_chain.status(), swm::Chain::FINISHED);
   }
 
   {
     ASSERT_TRUE(create_dummy_algorithms(&algs, 3));
     swm::Chain dummy_chain;
-    ASSERT_NO_THROW(dummy_chain.init(SchedulingInfoPresets::one_node_one_job("hold_on"),
-                                     algs));
+    ASSERT_NO_THROW(dummy_chain.init(SchedulingInfoPresets::one_node_one_job("hold_on"), algs));
     std::this_thread::sleep_for(std::chrono::milliseconds(50));
     ASSERT_EQ(dummy_chain.status(), swm::Chain::WORKING);
-  } // chain must be stopped by destructor
+  }  // chain must be stopped by destructor
 }
 
 TEST_F(chn, chain_time_counting) {
@@ -138,8 +147,7 @@ TEST_F(chn, chain_time_counting) {
   {
     swm::Chain dummy_chain;
     counter->reset();
-    ASSERT_NO_THROW(dummy_chain.init(SchedulingInfoPresets::one_node_one_job("hold_on"),
-                                     algs, counter));
+    ASSERT_NO_THROW(dummy_chain.init(SchedulingInfoPresets::one_node_one_job("hold_on"), algs, counter));
     std::this_thread::sleep_for(std::chrono::milliseconds(50));
   }
   double working = 0.0;

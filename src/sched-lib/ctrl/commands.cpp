@@ -30,21 +30,18 @@ bool ScheduleCommand::AlgorithmSpec::version_specified(std::string *version) con
       *version = version_;
     }
     return true;
-  }
-  else {
+  } else {
     return false;
   }
 }
 
-bool ScheduleCommand::AlgorithmSpec
-                    ::compute_unit_specified(ComputeUnitInterface::Type *cu_type) const {
+bool ScheduleCommand::AlgorithmSpec ::compute_unit_specified(ComputeUnitInterface::Type *cu_type) const {
   if (has_cu_) {
     if (cu_type != nullptr) {
       *cu_type = cu_;
     }
     return true;
-  }
-  else {
+  } else {
     return false;
   }
 }
@@ -60,8 +57,7 @@ bool ScheduleCommand::init(const std::vector<std::unique_ptr<char[]>> &data, std
   }
 
   if (data.size() != DataTypeCount) {
-    *errors << "not enough data slices (" << data.size() << " provided, "
-            << DataTypeCount << " expected)";
+    *errors << "not enough data slices (" << data.size() << " provided, " << DataTypeCount << " expected)";
     return false;
   }
 
@@ -69,7 +65,7 @@ bool ScheduleCommand::init(const std::vector<std::unique_ptr<char[]>> &data, std
   sched_info_ptr_.reset(sched_info_ = new SchedulingInfo());
 
   for (size_t i = 0; i < data.size(); ++i) {
-    char* buf = data[i].get();
+    char *buf = data[i].get();
     if (!buf) {
       *errors << "The " << i << "-th data slice is empty";
       return false;
@@ -82,8 +78,8 @@ bool ScheduleCommand::init(const std::vector<std::unique_ptr<char[]>> &data, std
       return false;
     }
     if (version != ERLANG_BINARY_FORMAT_VERSION) {
-      std::cerr << "Wrong erlang binary format version: " << version
-                << ", expected: " << ERLANG_BINARY_FORMAT_VERSION << std::endl;
+      std::cerr << "Wrong erlang binary format version: " << version << ", expected: " << ERLANG_BINARY_FORMAT_VERSION
+                << std::endl;
       return false;
     }
 
@@ -156,17 +152,15 @@ bool ScheduleCommand::init(const std::vector<std::unique_ptr<char[]>> &data, std
 }
 
 bool ScheduleCommand::apply_schedulers(char *, int &, std::stringstream *) {
-  //TODO: read schedulers, something like that:
+  // TODO: read schedulers, something like that:
   size_t nalgs = 1;
   for (size_t i = 0; i < nalgs; ++i) {
-    std::string family  = "swm-fcfs";
-    bool has_version    = true;
+    std::string family = "swm-fcfs";
+    bool has_version = true;
     std::string version = "1.0";
-    bool cu_specified   = true;
-    auto cu             = ComputeUnitInterface::Cpu;
-    schedulers_.emplace_back(AlgorithmSpec(family,
-                                           has_version ? &version : nullptr,
-                                           cu_specified ? &cu : nullptr));
+    bool cu_specified = true;
+    auto cu = ComputeUnitInterface::Cpu;
+    schedulers_.emplace_back(AlgorithmSpec(family, has_version ? &version : nullptr, cu_specified ? &cu : nullptr));
   }
   return true;
 }
@@ -230,7 +224,6 @@ static inline bool apply_rh_helper(char *buf, int &index, std::vector<RhItem> *r
     ei_skip_term(buf, &index);  // last element of a list is empty list
 
   } else if (term_type == ERL_SMALL_TUPLE_EXT || term_type == ERL_LARGE_TUPLE_EXT) {
-
     int arity = 0;
     if (ei_decode_tuple_header(buf, &index, &arity)) {
       *error << "Could not decode RH tuple header" << std::endl;
@@ -399,9 +392,8 @@ bool ScheduleCommand::apply_nodes(char *buf, int &index, std::stringstream *erro
 //--- InterruptCommand ---
 //------------------------
 
-bool InterruptCommand::init(const std::vector<std::unique_ptr<char[]> > &,
-                            std::stringstream *) {
-  //TODO: read chain id
+bool InterruptCommand::init(const std::vector<std::unique_ptr<char[]>> &, std::stringstream *) {
+  // TODO: read chain id
   chain_ = "42";
   return true;
 }
@@ -410,9 +402,8 @@ bool InterruptCommand::init(const std::vector<std::unique_ptr<char[]> > &,
 //--- MetricsCommand ---
 //----------------------
 
-bool MetricsCommand::init(const std::vector<std::unique_ptr<char[]> > &,
-                          std::stringstream *) {
-  //TODO: read chain id
+bool MetricsCommand::init(const std::vector<std::unique_ptr<char[]>> &, std::stringstream *) {
+  // TODO: read chain id
   chain_ = "42";
   return true;
 }
@@ -421,13 +412,12 @@ bool MetricsCommand::init(const std::vector<std::unique_ptr<char[]> > &,
 //--- ExchangeCommand ---
 //-----------------------
 
-bool ExchangeCommand::init(const std::vector<std::unique_ptr<char[]> > &,
-                           std::stringstream *) {
-  //TODO: read chain identifiers
+bool ExchangeCommand::init(const std::vector<std::unique_ptr<char[]>> &, std::stringstream *) {
+  // TODO: read chain identifiers
   source_chain_ = "42";
   target_chain_ = "42";
   return true;
 }
 
-} // util
-} // swm
+}  // namespace util
+}  // namespace swm

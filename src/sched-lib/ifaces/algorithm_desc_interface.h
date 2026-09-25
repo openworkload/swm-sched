@@ -1,9 +1,9 @@
 
 #pragma once
 
-#include <string>
-
 #include "compute_unit_interface.h"
+
+#include <string>
 
 extern "C" {
 namespace swm {
@@ -17,5 +17,5 @@ class AlgorithmDescInterface {
   virtual ComputeUnitInterface::Type device_type() const = 0;
 };
 
-} // swm
-} // extern "C"
+}  // namespace swm
+}  // extern "C"

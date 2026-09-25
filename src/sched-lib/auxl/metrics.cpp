@@ -11,9 +11,7 @@ namespace util {
 template <class T>
 class Metrics::OneTypeMetrics {
  public:
-  OneTypeMetrics() {
-    locker_.clear();
-  }
+  OneTypeMetrics() { locker_.clear(); }
   OneTypeMetrics(const OneTypeMetrics &obj) {
     locker_.clear();
     obj.lock();
@@ -21,7 +19,7 @@ class Metrics::OneTypeMetrics {
     indices_ = obj.indices_;
     obj.unlock();
   }
-  void operator =(const OneTypeMetrics &) = delete;
+  void operator=(const OneTypeMetrics &) = delete;
 
   void register_value(uint32_t id, const std::string &name) {
     lock();
@@ -30,7 +28,7 @@ class Metrics::OneTypeMetrics {
       unlock();
       throw std::runtime_error("OneTypeMetrics<T>::register_value(): value already registered");
     }
-    values_.insert( { id, MetricsRecord() } );
+    values_.insert({id, MetricsRecord()});
     indices_.push_back(std::pair<uint32_t, std::string>(id, name));
     unlock();
   }
@@ -50,7 +48,7 @@ class Metrics::OneTypeMetrics {
     }
     unlock();
   }
-  
+
   T value(uint32_t id) const {
     auto &record = lock_and_retrieve(id);
     T res = record.value;
@@ -90,7 +88,7 @@ class Metrics::OneTypeMetrics {
   struct MetricsRecord {
     T value;
     std::vector<std::function<void(T, T)> > handlers;
-    MetricsRecord() : value(T()) { }
+    MetricsRecord() : value(T()) {}
   };
 
   void lock() const {
@@ -99,9 +97,7 @@ class Metrics::OneTypeMetrics {
     }
   }
 
-  void unlock() const {
-    locker_.clear();
-  }
+  void unlock() const { locker_.clear(); }
 
   const MetricsRecord &lock_and_retrieve(uint32_t id) const {
     lock();
@@ -124,7 +120,7 @@ class Metrics::OneTypeMetrics {
   };
 
   mutable std::atomic_flag locker_;
-  std::unordered_map<uint32_t, MetricsRecord > values_;
+  std::unordered_map<uint32_t, MetricsRecord> values_;
   std::vector<std::pair<uint32_t, std::string> > indices_;
 };
 
@@ -162,7 +158,6 @@ void Metrics::register_double_value(uint32_t id, const std::string &name) {
   double_values_->register_value(id, name);
 }
 
-
 void Metrics::add_int_value_handler(uint32_t id, const std::function<void(int, int)> &handler) {
   int_values_->add_event_handler(id, handler);
 }
@@ -171,19 +166,17 @@ void Metrics::add_double_value_handler(uint32_t id, const std::function<void(dou
   double_values_->add_event_handler(id, handler);
 }
 
-
 std::vector<std::pair<uint32_t, std::string> > Metrics::int_value_indices() const {
   std::vector<std::pair<uint32_t, std::string> > res;
   int_values_->export_indices(&res);
   return res;
 }
 
-std::vector<std::pair<uint32_t, std::string > > Metrics::double_value_indices() const {
-  std::vector<std::pair<uint32_t, std::string > > res;
+std::vector<std::pair<uint32_t, std::string> > Metrics::double_value_indices() const {
+  std::vector<std::pair<uint32_t, std::string> > res;
   double_values_->export_indices(&res);
   return res;
 }
-
 
 int32_t Metrics::int_value(uint32_t id) const {
   return int_values_->value(id);
@@ -193,7 +186,6 @@ double Metrics::double_value(uint32_t id) const {
   return double_values_->value(id);
 }
 
-
 int32_t Metrics::update_int_value(uint32_t id, int32_t increment) {
   return int_values_->update_value(id, increment);
 }
@@ -201,7 +193,6 @@ int32_t Metrics::update_int_value(uint32_t id, int32_t increment) {
 double Metrics::update_double_value(uint32_t id, double increment) {
   return double_values_->update_value(id, increment);
 }
-
 
 void Metrics::reset_int_value(uint32_t id) {
   int_values_->reset_value(id);
@@ -211,5 +202,5 @@ void Metrics::reset_double_value(uint32_t id) {
   double_values_->reset_value(id);
 }
 
-} // util
-} // swm
+}  // namespace util
+}  // namespace swm

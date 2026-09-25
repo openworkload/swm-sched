@@ -2,7 +2,6 @@
 #pragma once
 
 #include "defs.h"
-
 #include "ifaces/metrics_interface.h"
 
 namespace swm {
@@ -29,18 +28,16 @@ class MetricsSnapshot {
     std::shared_ptr<MetricsInterface> internal_metrics_;
     std::shared_ptr<MetricsInterface> external_metrics_;
 
-   friend class MetricsSnapshot;
+    friend class MetricsSnapshot;
   };
 
-  MetricsSnapshot();         // empty metrics for unit tests
+  MetricsSnapshot();  // empty metrics for unit tests
   MetricsSnapshot(const MetricsInterface &service_metrics, const Chain &chain);
-  void operator =(const MetricsSnapshot &) = delete;
+  void operator=(const MetricsSnapshot &) = delete;
 
   const MetricsInterface &service_metrics() const { return *service_metrics_.get(); }
   const MetricsInterface &chain_metrics() const { return *chain_metrics_.get(); }
-  const std::vector<AlgorithmMetricsSnapshot> &algorithm_metrics() const {
-    return algorithm_metrics_;
-  }
+  const std::vector<AlgorithmMetricsSnapshot> &algorithm_metrics() const { return algorithm_metrics_; }
 
  private:
   std::shared_ptr<MetricsInterface> service_metrics_;
@@ -48,5 +45,5 @@ class MetricsSnapshot {
   std::vector<AlgorithmMetricsSnapshot> algorithm_metrics_;
 };
 
-} // util
-} // swm
+}  // namespace util
+}  // namespace swm

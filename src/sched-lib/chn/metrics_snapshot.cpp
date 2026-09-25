@@ -9,8 +9,7 @@ namespace util {
 MetricsSnapshot::AlgorithmMetricsSnapshot::AlgorithmMetricsSnapshot(const Algorithm &algorithm)
     : name_(algorithm.description()->family_id()),
       internal_metrics_(algorithm.algorithm_metrics().object().clone()),
-      external_metrics_(algorithm.plugin_metrics().clone()) {
-}
+      external_metrics_(algorithm.plugin_metrics().clone()) {}
 
 MetricsSnapshot::MetricsSnapshot() {
   Metrics empty_metrics;
@@ -19,9 +18,7 @@ MetricsSnapshot::MetricsSnapshot() {
 }
 
 MetricsSnapshot::MetricsSnapshot(const MetricsInterface &service_metrics, const Chain &chain)
-    : service_metrics_(service_metrics.clone()),
-      chain_metrics_(chain.metrics().object().clone()) {
-
+    : service_metrics_(service_metrics.clone()), chain_metrics_(chain.metrics().object().clone()) {
   const auto &algs = chain.algorithms();
   algorithm_metrics_.resize(algs.size());
   for (size_t i = 0; i < algs.size(); ++i) {
@@ -29,5 +26,5 @@ MetricsSnapshot::MetricsSnapshot(const MetricsInterface &service_metrics, const 
   }
 }
 
-} // util
-} // swm
+}  // namespace util
+}  // namespace swm

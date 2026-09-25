@@ -1,8 +1,8 @@
 
 #pragma once
 
-#include "defs.h"
 #include "auxl/metrics.h"
+#include "defs.h"
 
 namespace swm {
 namespace util {
@@ -12,7 +12,7 @@ class ServiceMetrics {
  public:
   ServiceMetrics();
   ServiceMetrics(const ServiceMetrics &) = delete;
-  void operator =(const ServiceMetrics &) = delete;
+  void operator=(const ServiceMetrics &) = delete;
   const MetricsInterface &object() const { return metrics_; }
 
   size_t requests() const { return (size_t)metrics_.int_value(REQUESTS_ID); }
@@ -25,5 +25,5 @@ class ServiceMetrics {
   Metrics metrics_;
 };
 
-} // util
-} // swm
+}  // namespace util
+}  // namespace swm

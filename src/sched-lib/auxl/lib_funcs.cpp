@@ -22,8 +22,13 @@ std::string get_library_error() {
 #if defined(WIN32)
   const int buf_size = 4 * 1024;
   std::unique_ptr<char[]> buf(new char[buf_size]);
-  FormatMessageA(FORMAT_MESSAGE_FROM_SYSTEM, NULL, GetLastError(),
-    MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), buf.get(), buf_size, NULL);
+  FormatMessageA(FORMAT_MESSAGE_FROM_SYSTEM,
+                 NULL,
+                 GetLastError(),
+                 MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+                 buf.get(),
+                 buf_size,
+                 NULL);
   return std::string(buf.get());
 #else
   auto res = dlerror();
@@ -37,7 +42,7 @@ void *load_library(const std::string &lib) {
 #else
   const auto ret = dlopen(lib.c_str(), RTLD_NOW);
   if (!ret) {
-    const char* error = dlerror();
+    const char *error = dlerror();
     std::cerr << "Syscall dlopen failed: " << (error ? error : "Unknown error") << std::endl;
   }
   return ret;
@@ -60,5 +65,5 @@ bool free_library(void *lib) {
 #endif
 }
 
-} // util
-} // swm
+}  // namespace util
+}  // namespace swm

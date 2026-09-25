@@ -1,11 +1,10 @@
 
+#include "fcfs_implementation.h"
+#include "plugin_context.h"
 #include "plugin_defs.h"
 #include "plugin_desc.h"
 #include "plugin_exports.h"
-#include "plugin_context.h"
 #include "timetable_info.h"
-#include "fcfs_implementation.h"
-
 
 bool swm_create_context(swm::MetricsInterface *metrics, void **ctx, std::stringstream *) {
   // TODO: plugin can have its own metrics - just use injected instance "metrics"
@@ -31,8 +30,7 @@ bool swm_construct_timetable(void *,
 
   swm::FcfsImplementation fcfs;
   std::vector<swm::SwmTimetable> tts;
-  if (!fcfs.init(sched_info, error) ||
-      !fcfs.schedule(sched_info->jobs(), events, &tts, true, error)) {
+  if (!fcfs.init(sched_info, error) || !fcfs.schedule(sched_info->jobs(), events, &tts, true, error)) {
     return false;
   }
 
@@ -49,9 +47,7 @@ bool swm_improve_timetable(void *,
   return true;
 }
 
-bool swm_bind_compute_unit(void *,
-                           const swm::ComputeUnitInterface *cu,
-                           std::stringstream *error) {
+bool swm_bind_compute_unit(void *, const swm::ComputeUnitInterface *cu, std::stringstream *error) {
   std::stringstream error_;
   if (error == nullptr) {
     error = &error_;

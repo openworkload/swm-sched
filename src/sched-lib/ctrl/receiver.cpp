@@ -11,13 +11,12 @@ Receiver::~Receiver() {
   }
 }
 
-void Receiver::init(MyQueue<std::shared_ptr<CommandInterface> > *queue, std::istream *input) {
+void Receiver::init(MyQueue<std::shared_ptr<CommandInterface>> *queue, std::istream *input) {
   if (queue_ != nullptr || input_ != nullptr) {
     throw std::runtime_error("Receiver::init(): object was already initialized");
   }
   if (queue == nullptr || input == nullptr) {
-    throw std::runtime_error(
-      "Receiver::init(): \"queue\" and \"input\" cannot be equal to nullptr");
+    throw std::runtime_error("Receiver::init(): \"queue\" and \"input\" cannot be equal to nullptr");
   }
 
   if (worker_.joinable()) {
@@ -44,8 +43,7 @@ bool Receiver::get_data(std::vector<std::unique_ptr<char[]>> *data,
                         SwmUID *uid,
                         std::stringstream *errors) {
   if (data == nullptr || cmd == nullptr || uid == nullptr) {
-    throw std::runtime_error(
-      "Receiver::get_data(): \"data\", \"cmd\", \"uid\" cannot be equal to nullptr");
+    throw std::runtime_error("Receiver::get_data(): \"data\", \"cmd\", \"uid\" cannot be equal to nullptr");
   }
   data->clear();
 
@@ -59,14 +57,14 @@ bool Receiver::get_data(std::vector<std::unique_ptr<char[]>> *data,
     *errors << "could not read command";
     return false;
   }
-  if (command != SWM_COMMAND_SCHEDULE && command != SWM_COMMAND_INTERRUPT &&
-      command != SWM_COMMAND_METRICS  && command != SWM_COMMAND_EXCHANGE) {
+  if (command != SWM_COMMAND_SCHEDULE && command != SWM_COMMAND_INTERRUPT && command != SWM_COMMAND_METRICS &&
+      command != SWM_COMMAND_EXCHANGE) {
     *errors << "unknown command #" << int(command);
     return false;
   }
   *cmd = (CommandType)command;
 
-  //TODO: read uid
+  // TODO: read uid
   *uid = 1;
 
   char total = 0;
@@ -74,7 +72,7 @@ bool Receiver::get_data(std::vector<std::unique_ptr<char[]>> *data,
     *errors << "could not read total data count";
     return false;
   }
-  
+
   data->resize(total);
   for (unsigned char i = 0; i < total; ++i) {
     char type = 0;
@@ -88,7 +86,7 @@ bool Receiver::get_data(std::vector<std::unique_ptr<char[]>> *data,
     }
 
     uint32_t len = 0;
-    if(!swm_read_length(input_, &len)) {
+    if (!swm_read_length(input_, &len)) {
       *errors << "data length is 0 (type=" << type << ")";
       return false;
     }
@@ -126,12 +124,10 @@ void Receiver::worker_loop() {
     // We cannot recover stream after any error
     try {
       if (!get_data(&data, &cmd_type, &uid, &errors)) {
-        std::cerr << "Receiver::worker_loop(): failed to read command's data, details: "
-                  << errors.str() << std::endl;
+        std::cerr << "Receiver::worker_loop(): failed to read command's data, details: " << errors.str() << std::endl;
         break;
       }
-    }
-    catch (std::runtime_error &ex) {
+    } catch (std::runtime_error &ex) {
       std::cerr << "Exception from Receiver::worker_loop(): " << ex.what() << ". "
                 << "Aborting." << std::endl;
     }
@@ -160,23 +156,22 @@ void Receiver::worker_loop() {
           break;
         }
         default: {
-          std::cerr << "Receiver::worker_loop(): received unknown command (UID="
-                    << uid << ", type=#" << (int)cmd_type << "), ignoring it." << std::endl;
+          std::cerr << "Receiver::worker_loop(): received unknown command (UID=" << uid << ", type=#" << (int)cmd_type
+                    << "), ignoring it." << std::endl;
           command.reset(new CorruptedCommand(context));
         }
       }
 
       if (!command->init(data, &errors)) {
-        std::cerr << "Receiver::worker_loop(): failed to parse command's data (UID="
-                  << uid << "), ignoring it." << std::endl;
+        std::cerr << "Receiver::worker_loop(): failed to parse command's data (UID=" << uid << "), ignoring it."
+                  << std::endl;
         std::cerr << "Errors: " << errors.str() << std::endl;
         command.reset(new CorruptedCommand(context));
       }
 
       context->timer()->turn_off();
       queue_->push(command);
-    }
-    catch (std::runtime_error &ex) {
+    } catch (std::runtime_error &ex) {
       std::cerr << "Exception from Receiver::worker_loop(): " << ex.what() << ". "
                 << "Ignoring corrupted command." << std::endl;
     }
@@ -185,5 +180,5 @@ void Receiver::worker_loop() {
   finished_ = true;
 }
 
-} // util
-} // swm
+}  // namespace util
+}  // namespace swm

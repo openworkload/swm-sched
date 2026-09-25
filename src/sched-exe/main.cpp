@@ -1,14 +1,14 @@
 
+#include "alg/algorithm_factory.h"
+#include "cli_args.h"
+#include "ctrl/service.h"
+#include "hw/scanner.h"
+#include "wm_io.h"
+
 #include <fstream>
 #include <iostream>
 
-#include "hw/scanner.h"
-#include "alg/algorithm_factory.h"
-#include "ctrl/service.h"
-#include "cli_args.h"
-#include "wm_io.h"
-
-int main(int argc, char* const argv[]) {
+int main(int argc, char *const argv[]) {
   size_t ivalue;
   double dvalue;
   std::string svalue;
@@ -66,7 +66,7 @@ int main(int argc, char* const argv[]) {
     if (args.has_timeout_flag(&dvalue)) {
       service.set_timeout(dvalue);
     }
-    
+
     std::ifstream input;
     if (args.has_input_flag(&svalue)) {
       input.open(svalue.c_str());
@@ -81,8 +81,7 @@ int main(int argc, char* const argv[]) {
     // Done! Starting service, current thread will be blocked
     service.main_loop();
     return 0;
-  }
-  catch (std::exception &err) {
+  } catch (std::exception &err) {
     std::cerr << "Exception thrown: " << err.what() << std::endl;
     return -42;
   }

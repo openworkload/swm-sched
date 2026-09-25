@@ -5,6 +5,8 @@ C++ CODE STYLE
 These guidelines should be followed for all new C++ code in this repository.
 
 The rules are based on some Google style rules.
+Mechanical formatting is applied with `clang-format` using [`.clang-format`](.clang-format)
+(`make format` / `./scripts/format-cpp.sh`). Prefer that over hand-editing whitespace.
 
 Reviewers will be enforcing them, so please obey them.
 

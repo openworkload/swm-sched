@@ -19,9 +19,8 @@ SchedulingInfoConfigurator::NodeConfigurator::NodeConfigurator(const std::string
   });
 }
 
-void SchedulingInfoConfigurator::NodeConfigurator::create_resources(const std::vector<
-                                                                     std::pair<std::string,
-                                                                               uint64_t> > &vals) {
+void SchedulingInfoConfigurator::NodeConfigurator::create_resources(
+    const std::vector<std::pair<std::string, uint64_t> > &vals) {
   std::vector<swm::SwmResource> resources;
   for (auto &val : vals) {
     swm::SwmResource r;
@@ -38,13 +37,11 @@ void SchedulingInfoConfigurator::NodeConfigurator::create_resources(const std::v
 }
 
 void SchedulingInfoConfigurator::NodeConfigurator::set_is_template(bool is_template) {
-  setters_.emplace_back([is_template](swm::SwmNode *node) -> void {
-    node->set_is_template(is_template ? "true" : "false");
-  });
+  setters_.emplace_back(
+      [is_template](swm::SwmNode *node) -> void { node->set_is_template(is_template ? "true" : "false"); });
 }
 
-const swm::SwmNode *
-    SchedulingInfoConfigurator::NodeConfigurator::build(swm::util::SchedulingInfo *obj) {
+const swm::SwmNode *SchedulingInfoConfigurator::NodeConfigurator::build(swm::util::SchedulingInfo *obj) {
   swm::SwmNode node;
   for (const auto &setter : setters_) {
     setter(&node);
@@ -69,17 +66,14 @@ SchedulingInfoConfigurator::PartitionConfigurator::PartitionConfigurator(const s
   });
 }
 
-SchedulingInfoConfigurator::NodeConfigurator *
-SchedulingInfoConfigurator::PartitionConfigurator::create_node(const std::string &id,
-                                                               const std::string &state_power,
-                                                               const std::string &state_alloc) {
+SchedulingInfoConfigurator::NodeConfigurator *SchedulingInfoConfigurator::PartitionConfigurator::create_node(
+    const std::string &id, const std::string &state_power, const std::string &state_alloc) {
   nodes_.emplace_back(new SchedulingInfoConfigurator::NodeConfigurator(id, state_power, state_alloc));
   return nodes_[nodes_.size() - 1].get();
 }
 
-const swm::SwmPartition *
-    SchedulingInfoConfigurator::PartitionConfigurator::build(swm::util::SchedulingInfo *obj,
-  std::vector<swm::RhItem> *child_rh) {
+const swm::SwmPartition *SchedulingInfoConfigurator::PartitionConfigurator::build(swm::util::SchedulingInfo *obj,
+                                                                                  std::vector<swm::RhItem> *child_rh) {
   swm::SwmPartition part;
   for (const auto &setter : setters_) {
     setter(&part);
@@ -105,8 +99,7 @@ const swm::SwmPartition *
 //--- SchedulingInfoConfigurator::ClusterConfigurator ---
 //-------------------------------------------------------
 
-SchedulingInfoConfigurator::ClusterConfigurator::ClusterConfigurator(const std::string &id,
-                                                                     const std::string &state) {
+SchedulingInfoConfigurator::ClusterConfigurator::ClusterConfigurator(const std::string &id, const std::string &state) {
   setters_.emplace_back([id, state](swm::SwmCluster *cluster) -> void {
     std::stringstream ss;
     ss << "cluster #" << id;
@@ -116,16 +109,14 @@ SchedulingInfoConfigurator::ClusterConfigurator::ClusterConfigurator(const std::
   });
 }
 
-SchedulingInfoConfigurator::PartitionConfigurator *
-    SchedulingInfoConfigurator::ClusterConfigurator::create_partition(const std::string &id,
-  const std::string &state) {
+SchedulingInfoConfigurator::PartitionConfigurator *SchedulingInfoConfigurator::ClusterConfigurator::create_partition(
+    const std::string &id, const std::string &state) {
   parts_.emplace_back(new PartitionConfigurator(id, state));
   return parts_[parts_.size() - 1].get();
 }
 
-swm::SwmCluster *
-    SchedulingInfoConfigurator::ClusterConfigurator::build(swm::util::SchedulingInfo *obj,
-  std::vector<swm::RhItem> *child_rh) {
+swm::SwmCluster *SchedulingInfoConfigurator::ClusterConfigurator::build(swm::util::SchedulingInfo *obj,
+                                                                        std::vector<swm::RhItem> *child_rh) {
   swm::SwmCluster res;
   for (const auto &setter : setters_) {
     setter(&res);
@@ -168,9 +159,8 @@ SchedulingInfoConfigurator::JobConfigurator::JobConfigurator(const std::string &
   });
 }
 
-void SchedulingInfoConfigurator::JobConfigurator::create_requests(const std::vector<
-                                                                    std::pair<std::string,
-                                                                              uint64_t> > &vals) {
+void SchedulingInfoConfigurator::JobConfigurator::create_requests(
+    const std::vector<std::pair<std::string, uint64_t> > &vals) {
   std::vector<swm::SwmResource> resources;
   for (auto &val : vals) {
     swm::SwmResource r;
@@ -190,8 +180,7 @@ void SchedulingInfoConfigurator::JobConfigurator::set_state(const std::string &s
   setters_.emplace_back([state](swm::SwmJob *job) -> void { job->set_state(state); });
 }
 
-void SchedulingInfoConfigurator::JobConfigurator
-    ::set_dependencies(const std::vector<std::string> &job_ids) {
+void SchedulingInfoConfigurator::JobConfigurator ::set_dependencies(const std::vector<std::string> &job_ids) {
   setters_.emplace_back([job_ids](swm::SwmJob *job) -> void {
     std::vector<swm::SwmTupleAtomStr> deps(job_ids.size());
     for (size_t i = 0; i < job_ids.size(); ++i) {
@@ -202,25 +191,18 @@ void SchedulingInfoConfigurator::JobConfigurator
 }
 
 void SchedulingInfoConfigurator::JobConfigurator::set_priority(uint64_t priority) {
-  setters_.emplace_back([priority](swm::SwmJob *job) -> void {
-    job->set_priority(priority);
-  });
+  setters_.emplace_back([priority](swm::SwmJob *job) -> void { job->set_priority(priority); });
 }
 
 void SchedulingInfoConfigurator::JobConfigurator::set_gang_id(const std::string &gang_id) {
-  setters_.emplace_back([gang_id](swm::SwmJob *job) -> void {
-    job->set_gang_id(gang_id);
-  });
+  setters_.emplace_back([gang_id](swm::SwmJob *job) -> void { job->set_gang_id(gang_id); });
 }
 
 void SchedulingInfoConfigurator::JobConfigurator::set_node_ids(const std::vector<std::string> &node_ids) {
-  setters_.emplace_back([node_ids](swm::SwmJob *job) -> void {
-    job->set_nodes(std::move(node_ids));
-  });
+  setters_.emplace_back([node_ids](swm::SwmJob *job) -> void { job->set_nodes(std::move(node_ids)); });
 }
 
-const swm::SwmJob *
-    SchedulingInfoConfigurator::JobConfigurator::build(swm::util::SchedulingInfo *obj) {
+const swm::SwmJob *SchedulingInfoConfigurator::JobConfigurator::build(swm::util::SchedulingInfo *obj) {
   swm::SwmJob job;
   for (const auto &setter : setters_) {
     setter(&job);
@@ -235,16 +217,15 @@ const swm::SwmJob *
 //--- SchedulingInfoConfigurator ----
 //-----------------------------------
 
-SchedulingInfoConfigurator::JobConfigurator *
-    SchedulingInfoConfigurator::create_job(const std::string &job_id,
-                                           const std::string &cluster_id,
-                                           uint64_t duration) {
+SchedulingInfoConfigurator::JobConfigurator *SchedulingInfoConfigurator::create_job(const std::string &job_id,
+                                                                                    const std::string &cluster_id,
+                                                                                    uint64_t duration) {
   jobs_.emplace_back(new JobConfigurator(job_id, cluster_id, duration));
   return jobs_[jobs_.size() - 1].get();
 }
 
-SchedulingInfoConfigurator::ClusterConfigurator *
-    SchedulingInfoConfigurator::create_cluster(const std::string &id, const std::string &state) {
+SchedulingInfoConfigurator::ClusterConfigurator *SchedulingInfoConfigurator::create_cluster(const std::string &id,
+                                                                                            const std::string &state) {
   clusters_.emplace_back(new ClusterConfigurator(id, state));
   return clusters_[clusters_.size() - 1].get();
 }

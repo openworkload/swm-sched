@@ -1,48 +1,41 @@
 
 #pragma once
 
-#include <gtest/gtest.h>
-#include <fstream>
-
-#include "test_defs.h"
+#include "alg/algorithm_factory.h"
 #include "ctrl/commands.h"
 #include "ctrl/receiver.h"
+#include "hw/scanner.h"
 #include "ifaces/timetable_info_interface.h"
+#include "test_defs.h"
+
+#include <gtest/gtest.h>
+
+#include <fstream>
 
 // Universal test fixture for Receiver, Sender and Service
 class ctrl : public ::testing::Test {
  protected:
-
   // To sort jobs, nodes and partitions (by numeric id)
   template <class T>
   struct id_comparator {
-    bool operator()(const T &v1, const T &v2) const {
-      return v1->get_id() < v2->get_id();
-    }
+    bool operator()(const T &v1, const T &v2) const { return v1->get_id() < v2->get_id(); }
   };
 
   // To sort resources (by names)
   template <class T>
   struct name_comparator {
-    bool operator()(const T &v1, const T &v2) const {
-      return v1.get_name().compare(v2.get_name());
-    }
+    bool operator()(const T &v1, const T &v2) const { return v1.get_name().compare(v2.get_name()); }
   };
 
   // The Original implementation is located in plugin's code. So, defining our own
   class TimetableInfoForTests : public swm::TimetableInfoInterface {
    public:
-    TimetableInfoForTests(const swm::SwmTimetable *table) {
-      tables_.push_back(table);
-    }
-    TimetableInfoForTests(const std::vector<const swm::SwmTimetable *> &tables)
-      : tables_(tables) { }
+    TimetableInfoForTests(const swm::SwmTimetable *table) { tables_.push_back(table); }
+    TimetableInfoForTests(const std::vector<const swm::SwmTimetable *> &tables) : tables_(tables) {}
 
-    virtual ~TimetableInfoForTests() { }
+    virtual ~TimetableInfoForTests() {}
 
-    virtual const std::vector<const swm::SwmTimetable *> &tables() const override {
-      return tables_;
-    }
+    virtual const std::vector<const swm::SwmTimetable *> &tables() const override { return tables_; }
     virtual bool empty() const override { return tables_.empty(); }
 
    private:
@@ -55,7 +48,7 @@ class ctrl : public ::testing::Test {
     ASSERT_TRUE(factory_.load_plugins(find_plugin_dir(), &errors)) << errors.str();
     ASSERT_TRUE(scanner_.scan());
   }
-  void TearDown() { }
+  void TearDown() {}
 
   const swm::AlgorithmFactory *factory() const { return &factory_; }
   const swm::Scanner *scanner() const { return &scanner_; }
@@ -65,9 +58,9 @@ class ctrl : public ::testing::Test {
   }
 
   std::shared_ptr<swm::util::CommandInterface> create_schedule_request(
-                                      const SwmUID &uid,
-                                      const std::vector<std::string> &algs,
-                                      const std::shared_ptr<swm::SchedulingInfoInterface> &info) {
+      const SwmUID &uid,
+      const std::vector<std::string> &algs,
+      const std::shared_ptr<swm::SchedulingInfoInterface> &info) {
     std::vector<swm::util::ScheduleCommand::AlgorithmSpec> alg_specs;
     alg_specs.reserve(algs.size());
     for (size_t i = 0; i < algs.size(); i++) {
@@ -79,15 +72,13 @@ class ctrl : public ::testing::Test {
     return res;
   }
 
-  std::shared_ptr<swm::util::CommandInterface> create_interrupt_request(const SwmUID &uid,
-                                                                        const SwmUID &chain) {
+  std::shared_ptr<swm::util::CommandInterface> create_interrupt_request(const SwmUID &uid, const SwmUID &chain) {
     std::shared_ptr<swm::util::CommandInterface> resp;
     resp.reset(new swm::util::InterruptCommand(create_context(uid), chain));
     return resp;
   }
 
-  std::shared_ptr<swm::util::CommandInterface> create_metrics_request(const SwmUID &uid,
-                                                                      const SwmUID &chain) {
+  std::shared_ptr<swm::util::CommandInterface> create_metrics_request(const SwmUID &uid, const SwmUID &chain) {
     std::shared_ptr<swm::util::CommandInterface> resp;
     resp.reset(new swm::util::MetricsCommand(create_context(uid), chain));
     return resp;
@@ -123,22 +114,20 @@ class ctrl : public ::testing::Test {
       args << find_converter() << " " << temp_file;
       std::string err_string = "escript: exception error";
       if (!my_exec(args.str(), &output, &error) ||
-        (output.size() >= err_string.size() && output.substr(0, err_string.size()) == err_string)) {
+          (output.size() >= err_string.size() && output.substr(0, err_string.size()) == err_string)) {
         throw std::runtime_error("Failed to launch \"" + args.str() + "\": " + error + ", " + output);
       }
       istr->str(output);
       my_chdir(cur_dir);
       *failed = false;
-    }
-    catch (std::exception &ex) {
+    } catch (std::exception &ex) {
       my_chdir(cur_dir);
       ASSERT_TRUE(false) << ex.what();
     }
   }
 
   // With provided JSON config, tries to extract only one schedule command
-  void receive_single_sched_command(const std::string &json,
-                                    std::shared_ptr<swm::util::CommandInterface> *cmd) {
+  void receive_single_sched_command(const std::string &json, std::shared_ptr<swm::util::CommandInterface> *cmd) {
     ASSERT_TRUE(cmd != nullptr);
     std::istringstream istr;
     bool failed;
