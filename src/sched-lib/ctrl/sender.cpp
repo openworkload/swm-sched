@@ -1,13 +1,14 @@
 
 #include "sender.h"
 
-#include <thread>  // for sleep
-
 namespace swm {
 namespace util {
 
 Sender::~Sender() {
   closed_ = true;
+  if (queue_ != nullptr) {
+    queue_->wake();
+  }
   if (worker_.joinable()) {
     worker_.join();
   }
@@ -33,6 +34,7 @@ void Sender::close() {
   }
 
   closed_ = true;
+  queue_->wake();
   if (worker_.joinable()) {
     worker_.join();
   }
@@ -43,43 +45,43 @@ void Sender::close() {
 
 void Sender::worker_thread() {
   while (!closed_ || queue_->element_count() > 0) {
-    if (queue_->element_count() > 0) {
-      try {
-        auto resp = queue_->pop();
-        if (resp.get() == nullptr) {
-          std::cerr << "Sender::worker_thread(): received nullptr instead of response, "
-                    << "looks like it's a bug" << std::endl;
-          continue;
-        }
-
-        if (!resp->succeeded()) {
-          std::cerr << "Sender::worker_thread(): response was not successfully formed "
-                    << "(UID=" << resp->context()->id() << ")" << std::endl;
-          continue;
-        }
-
-        std::unique_ptr<char[]> data;
-        size_t size = 0;
-        std::stringstream errors;
-        if (!resp->serialize(&data, &size, &errors)) {
-          std::cerr << "Sender::worker_thread(): failed to serialize response (UID=" << resp->context()->id()
-                    << "): " << errors.str().c_str() << std::endl;
-          size = 0;
-        }
-
-        if (size != 0) {
-          if (!swm_write_exact(output_, data.get(), size)) {
-            std::cerr << "Sender::worker_thread(): failed to send serialized response data (UID="
-                      << resp->context()->id() << ")" << std::endl;
-          }
-        }
-      } catch (std::exception &ex) {
-        std::cerr << "Exception from Sender::worker_thread(): " << ex.what() << std::endl;
-      }
-    } else {
-      std::this_thread::yield();
+    std::shared_ptr<ResponseInterface> resp;
+    if (!queue_->pop_or([this] { return closed_.load(); }, &resp)) {
+      // Stop requested and queue is empty.
+      continue;
     }
-    std::this_thread::sleep_for(std::chrono::seconds(1));  // FIXME
+
+    try {
+      if (resp.get() == nullptr) {
+        std::cerr << "Sender::worker_thread(): received nullptr instead of response, "
+                  << "looks like it's a bug" << std::endl;
+        continue;
+      }
+
+      if (!resp->succeeded()) {
+        std::cerr << "Sender::worker_thread(): response was not successfully formed "
+                  << "(UID=" << resp->context()->id() << ")" << std::endl;
+        continue;
+      }
+
+      std::unique_ptr<char[]> data;
+      size_t size = 0;
+      std::stringstream errors;
+      if (!resp->serialize(&data, &size, &errors)) {
+        std::cerr << "Sender::worker_thread(): failed to serialize response (UID=" << resp->context()->id()
+                  << "): " << errors.str().c_str() << std::endl;
+        size = 0;
+      }
+
+      if (size != 0) {
+        if (!swm_write_exact(output_, data.get(), size)) {
+          std::cerr << "Sender::worker_thread(): failed to send serialized response data (UID=" << resp->context()->id()
+                    << ")" << std::endl;
+        }
+      }
+    } catch (std::exception &ex) {
+      std::cerr << "Exception from Sender::worker_thread(): " << ex.what() << std::endl;
+    }
   }
 }
 

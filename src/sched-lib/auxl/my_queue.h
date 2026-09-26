@@ -3,11 +3,12 @@
 
 #include "defs.h"
 
+#include <condition_variable>
+
 namespace swm {
 namespace util {
 
-// Thread-safe fixed-size version of queue. Blocks caller if it's overflowed.
-// Will be used for command storing and etc
+// Thread-safe fixed-size queue. Blocks on push when full and on pop when empty.
 template <class T>
 class MyQueue {
  public:
@@ -16,27 +17,22 @@ class MyQueue {
       throw std::runtime_error("MyQueue::MyQueue(): \"max_size\" must be greater than 0");
     }
     queue_.resize(max_size);
-    queue_locker_.clear();
   }
 
-  size_t element_count() const { return queue_size_; };
+  size_t element_count() const {
+    std::lock_guard<std::mutex> lock(mutex_);
+    return queue_size_;
+  }
+
   size_t size() const { return queue_.size(); }
 
   void push(const T &value) {
-    while (true) {
-      while (queue_size_ == size()) {
-        std::this_thread::yield();
-      }
-      lock();
-      if (queue_size_ < size()) {
-        queue_[(queue_pos_ + queue_size_) % size()] = value;
-        queue_size_ += 1;
-        unlock();
-        return;
-      } else {
-        unlock();
-      }
-    }
+    std::unique_lock<std::mutex> lock(mutex_);
+    cv_not_full_.wait(lock, [this] { return queue_size_ < queue_.size(); });
+    queue_[(queue_pos_ + queue_size_) % queue_.size()] = value;
+    queue_size_ += 1;
+    lock.unlock();
+    cv_not_empty_.notify_one();
   }
 
   bool try_peek(T *value) {
@@ -44,43 +40,58 @@ class MyQueue {
       throw std::runtime_error("MyQueue::try_peek(): \"value\" cannot be equal to nullptr");
     }
 
-    bool res = false;
-    lock();
+    std::lock_guard<std::mutex> lock(mutex_);
     if (queue_size_ > 0) {
       *value = queue_[queue_pos_];
-      res = true;
+      return true;
     }
-    unlock();
-    return res;
+    return false;
   }
 
   T pop() {
-    while (true) {
-      while (queue_size_ == 0) {
-        std::this_thread::yield();
-      }
-      lock();
-      if (queue_size_ > 0) {
-        auto value = queue_[queue_pos_];
-        queue_pos_ = (queue_pos_ + 1) % size();
-        queue_size_ -= 1;
-        unlock();
-        return value;
-      }
-      unlock();
+    std::unique_lock<std::mutex> lock(mutex_);
+    cv_not_empty_.wait(lock, [this] { return queue_size_ > 0; });
+    auto value = queue_[queue_pos_];
+    queue_pos_ = (queue_pos_ + 1) % queue_.size();
+    queue_size_ -= 1;
+    lock.unlock();
+    cv_not_full_.notify_one();
+    return value;
+  }
+
+  // Blocks until an element is available or stop() is true.
+  // Returns true and stores the element in *value when one was popped.
+  template <typename StopPred>
+  bool pop_or(StopPred stop, T *value) {
+    if (value == nullptr) {
+      throw std::runtime_error("MyQueue::pop_or(): \"value\" cannot be equal to nullptr");
     }
+
+    std::unique_lock<std::mutex> lock(mutex_);
+    cv_not_empty_.wait(lock, [this, &stop] { return queue_size_ > 0 || stop(); });
+    if (queue_size_ == 0) {
+      return false;
+    }
+    *value = queue_[queue_pos_];
+    queue_pos_ = (queue_pos_ + 1) % queue_.size();
+    queue_size_ -= 1;
+    lock.unlock();
+    cv_not_full_.notify_one();
+    return true;
+  }
+
+  // Wake waiters (e.g. so a consumer can observe a stop flag and exit).
+  void wake() {
+    cv_not_empty_.notify_all();
+    cv_not_full_.notify_all();
   }
 
  private:
-  void lock() {
-    while (queue_locker_.test_and_set())
-      std::this_thread::yield();
-  }
-  void unlock() { queue_locker_.clear(); }
-
   std::vector<T> queue_;
   size_t queue_size_, queue_pos_;
-  std::atomic_flag queue_locker_;
+  mutable std::mutex mutex_;
+  std::condition_variable cv_not_empty_;
+  std::condition_variable cv_not_full_;
 };
 
 }  // namespace util

@@ -21,7 +21,7 @@ class Sender {
  private:
   void worker_thread();
 
-  volatile bool closed_;  // forces the worker thread to stop
+  std::atomic<bool> closed_;  // forces the worker thread to stop
   std::ostream *output_;
   MyQueue<std::shared_ptr<ResponseInterface> > *queue_;
   std::thread worker_;
