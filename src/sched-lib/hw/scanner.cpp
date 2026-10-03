@@ -36,7 +36,7 @@ std::string Scanner::find_cpu_name() {
   fp = popen("/bin/cat /proc/cpuinfo | grep 'model name'", "r");
   const char *fr = fgets(res, sizeof(res) - 1, fp);
 
-  if (fr == NULL) {
+  if (fr == nullptr) {
     throw std::runtime_error("Scanner::find_cpu_name(): cannot read file");
   }
 
@@ -66,7 +66,7 @@ size_t Scanner::find_cpu_cores() {
   char res[8] = {0};
   static const char *cmd = "/bin/cat /proc/cpuinfo | grep -c '^processor'";
   fp = popen(cmd, "r");
-  if (fp == NULL) {
+  if (fp == nullptr) {
     const std::string err = std::string("Scanner::find_cpu_cores(): cannot run command: ") + cmd;
     throw std::runtime_error(err);
   }

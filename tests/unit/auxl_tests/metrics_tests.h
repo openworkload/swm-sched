@@ -59,8 +59,8 @@ TEST(auxl, metrics_enumeration) {
 
 TEST(auxl, metrics_events) {
   swm::util::Metrics metrics;
-  int old_value = 0, new_value = 0;
-  auto handler = [ov = &old_value, nv = &new_value](int old_value, int new_value) -> void {
+  int32_t old_value = 0, new_value = 0;
+  auto handler = [ov = &old_value, nv = &new_value](int32_t old_value, int32_t new_value) -> void {
     *ov = old_value;
     *nv = new_value;
   };
@@ -112,8 +112,8 @@ TEST(auxl, metrics_cloning) {
   ASSERT_NO_THROW(m.register_double_value(2, "d#2"));
   ASSERT_NO_THROW(m.update_double_value(2, 3.0));
 
-  int extracted_value = 0;
-  ASSERT_NO_THROW(m.add_int_value_handler(1, [ev = &extracted_value](int, int new_v) -> void { *ev = new_v; }));
+  int32_t extracted_value = 0;
+  ASSERT_NO_THROW(m.add_int_value_handler(1, [ev = &extracted_value](int32_t, int32_t new_v) -> void { *ev = new_v; }));
 
   std::shared_ptr<swm::MetricsInterface> cloned;
   ASSERT_NO_THROW(cloned = m.clone());

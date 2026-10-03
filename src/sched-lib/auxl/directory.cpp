@@ -129,12 +129,12 @@ void find_files(const std::string &path, const std::string &pattern, std::vector
 #else
   DIR *dp;
   struct dirent *dirp;
-  if ((dp = opendir(full_path.c_str())) == NULL) {
+  if ((dp = opendir(full_path.c_str())) == nullptr) {
     throw std::runtime_error("Directory::find_files(): cannot open directory stream");
   }
 
   struct stat st;
-  while ((dirp = readdir(dp)) != NULL) {
+  while ((dirp = readdir(dp)) != nullptr) {
     std::string full_name = full_path + dirp->d_name;
     if (stat(full_name.data(), &st) == 0 && S_ISREG(st.st_mode)) {
       if (fnmatch(pattern.c_str(), dirp->d_name, FNM_PATHNAME) == 0) {

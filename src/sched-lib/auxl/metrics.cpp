@@ -39,7 +39,7 @@ class Metrics::OneTypeMetrics {
     unlock();
   }
 
-  void export_indices(std::vector<std::pair<uint32_t, std::string> > *indices) const {
+  void export_indices(std::vector<std::pair<uint32_t, std::string>> *indices) const {
     lock();
     if (indices != nullptr) {
       indices->clear();
@@ -87,7 +87,7 @@ class Metrics::OneTypeMetrics {
  private:
   struct MetricsRecord {
     T value;
-    std::vector<std::function<void(T, T)> > handlers;
+    std::vector<std::function<void(T, T)>> handlers;
     MetricsRecord() : value(T()) {}
   };
 
@@ -121,34 +121,22 @@ class Metrics::OneTypeMetrics {
 
   mutable std::atomic_flag locker_;
   std::unordered_map<uint32_t, MetricsRecord> values_;
-  std::vector<std::pair<uint32_t, std::string> > indices_;
+  std::vector<std::pair<uint32_t, std::string>> indices_;
 };
 
 //---------------
 //--- Metrics ---
 //---------------
 
-Metrics::Metrics() {
-  int_values_ = new OneTypeMetrics<int>();
-  double_values_ = new OneTypeMetrics<double>();
-}
+Metrics::Metrics()
+    : int_values_(std::make_unique<OneTypeMetrics<int32_t>>()),
+      double_values_(std::make_unique<OneTypeMetrics<double>>()) {}
 
-Metrics::Metrics(const Metrics &obj) {
-  int_values_ = new OneTypeMetrics<int>(*obj.int_values_);
-  double_values_ = new OneTypeMetrics<double>(*obj.double_values_);
-}
+Metrics::Metrics(const Metrics &obj)
+    : int_values_(std::make_unique<OneTypeMetrics<int32_t>>(*obj.int_values_)),
+      double_values_(std::make_unique<OneTypeMetrics<double>>(*obj.double_values_)) {}
 
-Metrics::~Metrics() {
-  if (int_values_ != nullptr) {
-    delete int_values_;
-    int_values_ = nullptr;
-  }
-
-  if (double_values_ != nullptr) {
-    delete double_values_;
-    double_values_ = nullptr;
-  }
-}
+Metrics::~Metrics() = default;
 
 void Metrics::register_int_value(uint32_t id, const std::string &name) {
   int_values_->register_value(id, name);
@@ -158,7 +146,7 @@ void Metrics::register_double_value(uint32_t id, const std::string &name) {
   double_values_->register_value(id, name);
 }
 
-void Metrics::add_int_value_handler(uint32_t id, const std::function<void(int, int)> &handler) {
+void Metrics::add_int_value_handler(uint32_t id, const std::function<void(int32_t, int32_t)> &handler) {
   int_values_->add_event_handler(id, handler);
 }
 
@@ -166,14 +154,14 @@ void Metrics::add_double_value_handler(uint32_t id, const std::function<void(dou
   double_values_->add_event_handler(id, handler);
 }
 
-std::vector<std::pair<uint32_t, std::string> > Metrics::int_value_indices() const {
-  std::vector<std::pair<uint32_t, std::string> > res;
+std::vector<std::pair<uint32_t, std::string>> Metrics::int_value_indices() const {
+  std::vector<std::pair<uint32_t, std::string>> res;
   int_values_->export_indices(&res);
   return res;
 }
 
-std::vector<std::pair<uint32_t, std::string> > Metrics::double_value_indices() const {
-  std::vector<std::pair<uint32_t, std::string> > res;
+std::vector<std::pair<uint32_t, std::string>> Metrics::double_value_indices() const {
+  std::vector<std::pair<uint32_t, std::string>> res;
   double_values_->export_indices(&res);
   return res;
 }

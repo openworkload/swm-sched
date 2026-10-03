@@ -1,6 +1,8 @@
 
 #include "lib_funcs.h"
 
+#include <memory>
+
 #if defined(WIN32)
 #include <Windows.h>
 #else
@@ -20,15 +22,15 @@ std::string get_library_extension() {
 
 std::string get_library_error() {
 #if defined(WIN32)
-  const int buf_size = 4 * 1024;
-  std::unique_ptr<char[]> buf(new char[buf_size]);
+  const int32_t buf_size = 4 * 1024;
+  auto buf = std::make_unique<char[]>(buf_size);
   FormatMessageA(FORMAT_MESSAGE_FROM_SYSTEM,
-                 NULL,
+                 nullptr,
                  GetLastError(),
                  MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
                  buf.get(),
                  buf_size,
-                 NULL);
+                 nullptr);
   return std::string(buf.get());
 #else
   auto res = dlerror();

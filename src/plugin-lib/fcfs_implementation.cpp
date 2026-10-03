@@ -5,6 +5,7 @@
 #include "wm_io.h"
 
 #include <algorithm>
+#include <cinttypes>
 #include <set>
 #include <sstream>
 #include <string>
@@ -156,9 +157,9 @@ bool FcfsImplementation::schedule(const std::vector<const SwmJob *> &jobs,
         continue;
       }
 
-      swm_logi("Scheduled job %s start=%llu nodes=%zu",
+      swm_logi("Scheduled job %s start=%" PRIu64 " nodes=%zu",
                job->get_id().c_str(),
-               static_cast<unsigned long long>(tt.get_start_time()),
+               tt.get_start_time(),
                tt.get_job_nodes().size());
 
       jobs_to_endtimes[job->get_id()] = tt.get_start_time() + job->get_duration();
@@ -317,9 +318,9 @@ bool FcfsImplementation::schedule_single_job(const SwmJob *job,
   auto &nodes = nodes_iter->second;
 
   const auto job_nodes_vec = job->get_nodes();
-  swm_logd("FCFS try job %s: request_nodes=%llu cluster=%s preset=%zu pool=%zu",
+  swm_logd("FCFS try job %s: request_nodes=%" PRIu64 " cluster=%s preset=%zu pool=%zu",
            job->get_id().c_str(),
-           static_cast<unsigned long long>(node_num),
+           node_num,
            job->get_cluster_id().c_str(),
            job_nodes_vec.size(),
            nodes.size());
@@ -385,11 +386,11 @@ bool FcfsImplementation::schedule_single_job(const SwmJob *job,
     });
     if (template_it != selected_nodes.end()) {
       const auto *tpl = (*template_it)->node();
-      swm_logd("FCFS template collapse job %s: %s (%s); request_nodes %llu -> 1",
+      swm_logd("FCFS template collapse job %s: %s (%s); request_nodes %" PRIu64 " -> 1",
                job->get_id().c_str(),
                tpl->get_name().c_str(),
                tpl->get_id().c_str(),
-               static_cast<unsigned long long>(node_num));
+               node_num);
       selected_nodes.assign(1, *template_it);
       node_num = 1;
     }
@@ -430,16 +431,16 @@ bool FcfsImplementation::schedule_single_job(const SwmJob *job,
     });
 
     const auto *chosen_part = rh_.node_to_part((*refs.front())[0]->node());
-    swm_logd(
-        "FCFS partition pick job %s: candidates=%zu need=%llu parts=%zu "
-        "chosen=%s (%s) size=%zu",
-        job->get_id().c_str(),
-        selected_nodes.size(),
-        static_cast<unsigned long long>(node_num),
-        parts_to_nodes.size(),
-        chosen_part->get_name().c_str(),
-        chosen_part->get_id().c_str(),
-        refs.front()->size());
+    swm_logd("FCFS partition pick job %s: candidates=%zu need=%" PRIu64
+             " parts=%zu "
+             "chosen=%s (%s) size=%zu",
+             job->get_id().c_str(),
+             selected_nodes.size(),
+             node_num,
+             parts_to_nodes.size(),
+             chosen_part->get_name().c_str(),
+             chosen_part->get_id().c_str(),
+             refs.front()->size());
 
     // Finally, refill vector "selected_nodes" by nodes
     // that are placed in the most populated partitions
@@ -481,10 +482,7 @@ bool FcfsImplementation::schedule_single_job(const SwmJob *job,
   if (selected_nodes.size() > kMaxLoggedNames) {
     node_names += ",+" + std::to_string(selected_nodes.size() - kMaxLoggedNames) + " more";
   }
-  swm_logd("FCFS assign job %s: start=%llu nodes=[%s]",
-           job->get_id().c_str(),
-           static_cast<unsigned long long>(start_time),
-           node_names.c_str());
+  swm_logd("FCFS assign job %s: start=%" PRIu64 " nodes=[%s]", job->get_id().c_str(), start_time, node_names.c_str());
   tt->set_job_nodes(node_ids);
   if (job_ref != nullptr) {
     *job_ref = JobRef(tt, job);
