@@ -8,6 +8,7 @@
 #if defined(WIN32)
 #include <direct.h>
 #else
+#include <sys/wait.h>
 #include <unistd.h>
 #endif
 
@@ -206,24 +207,46 @@ bool my_exec(const std::string &args, std::string *out, std::string *err) {
   cmd << "' ";
 
   const auto ret = std::system(cmd.str().c_str());
+
+  // Always collect redirected streams so callers (and CI logs) can see escript
+  // errors. Erlang escript often exits with status 127 on exceptions.
+  std::string out_buf;
+  std::string err_buf;
+  if (out != nullptr) {
+    read_to_end(out_file, &out_buf);
+    remove(out_file.c_str());
+  }
+  if (err != nullptr) {
+    read_to_end(err_file, &err_buf);
+    remove(err_file.c_str());
+  }
+
   if (ret != 0) {
-    std::cerr << "Could not run std::system(\"" << cmd.str() << "\"): status=" << WEXITSTATUS(ret)
-              << " signal=" << WSTOPSIG(ret) << std::endl;
+    const int exit_status = WIFEXITED(ret) ? WEXITSTATUS(ret) : -1;
+    const int term_signal = WIFSIGNALED(ret) ? WTERMSIG(ret) : 0;
+    std::cerr << "Could not run std::system(\"" << cmd.str() << "\"): status=" << exit_status
+              << " signal=" << term_signal;
+    if (!err_buf.empty()) {
+      std::cerr << " stderr=" << err_buf;
+    }
+    if (!out_buf.empty()) {
+      std::cerr << " stdout=" << out_buf;
+    }
+    std::cerr << std::endl;
+    if (out != nullptr) {
+      *out = std::move(out_buf);
+    }
+    if (err != nullptr) {
+      *err = std::move(err_buf);
+    }
     return false;
   }
 
   if (out != nullptr) {
-    if (!read_to_end(out_file, out)) {
-      return false;
-    }
-    remove(out_file.c_str());
+    *out = std::move(out_buf);
   }
-
   if (err != nullptr) {
-    if (!read_to_end(err_file, err)) {
-      return false;
-    }
-    remove(err_file.c_str());
+    *err = std::move(err_buf);
   }
 
   return true;

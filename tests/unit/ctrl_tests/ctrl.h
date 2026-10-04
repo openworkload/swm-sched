@@ -151,17 +151,17 @@ class ctrl : public ::testing::Test {
   // If you want to change it, do not forget to update the tests!
   void construct_sched_command(std::string *json_config) {
     ASSERT_TRUE(json_config != nullptr);
+    // Resource lists are JSON arrays (stdlib json:decode drops duplicate keys).
     *json_config = R"(
-
      {
        "job": [
          { "id": "10000000-0000-0000-0000-000000000000",
            "cluster_id": "1",
            "state": "Q",
-           "request": {
-             "resource": { "name": "node", "count": 3 },
-             "resource": { "name": "mem", "count": 1073741824 },
-           }
+           "request": [
+             { "name": "node", "count": 3 },
+             { "name": "mem", "count": 1073741824 }
+           ]
          }
        ],
        "cluster": [
@@ -173,24 +173,24 @@ class ctrl : public ::testing::Test {
        "partition": [
          { "id": "1",
            "state": "down",
-           "jobs_per_node": 1,
+           "jobs_per_node": 1
          },
          { "id": "2",
            "state": "up",
-           "jobs_per_node": 2,
+           "jobs_per_node": 2
          }
        ],
        "node": [
          { "id": "1",
            "state_power": "up",
            "state_alloc": "free",
-           "resources": {
-             "resource": {"name": "cpu", "count": 24},
-             "resource": {"name": "mem", "count": 68719476736},
-           },
+           "resources": [
+             {"name": "cpu", "count": 24},
+             {"name": "mem", "count": 68719476736}
+           ]
          },
          { "id": "3",
-           "state_power": "down",
+           "state_power": "down"
          }
        ],
        "rh": [
@@ -213,7 +213,6 @@ class ctrl : public ::testing::Test {
          }
        ]
      }
-
     )";
   }
 
