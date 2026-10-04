@@ -87,8 +87,12 @@ Or without CMake: `./scripts/format-cpp.sh` / `./scripts/format-cpp.sh check`.
 make act-unittests
 ```
 
-This runs `act --job unittests` (requires [nektos/act](https://github.com/nektos/act) and Docker).
-Repo [`.actrc`](.actrc) maps `ubuntu-24.04` to `catthehacker/ubuntu:act-24.04` (includes Node for `setup-beam` and other actions).
+This runs [`scripts/run-act.sh`](scripts/run-act.sh) → `act --job unittests`
+against the host **Podman** Docker-compatible API (not Docker Engine). Requires
+[nektos/act](https://github.com/nektos/act) and a running Podman socket
+(`systemctl --user enable --now podman.socket`).
+Repo [`.actrc`](.actrc) maps `ubuntu-24.04` to `catthehacker/ubuntu:act-24.04`
+(includes Node for `setup-beam` and other actions).
 
 
 ## Contributing
