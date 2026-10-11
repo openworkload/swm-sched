@@ -1,6 +1,8 @@
 
 #include "receiver.h"
 
+#include "receiver_slots.h"
+
 namespace swm {
 namespace util {
 
@@ -67,34 +69,38 @@ bool Receiver::get_data(std::vector<std::unique_ptr<char[]>> *data,
   // TODO: read uid
   *uid = 1;
 
-  char total = 0;
-  if (!swm_read_exact(input_, &total, 1)) {
+  uint8_t total = 0;
+  if (!swm_read_exact(input_, reinterpret_cast<char *>(&total), 1)) {
     *errors << "could not read total data count";
+    return false;
+  }
+  if (!receiver_total_ok(total)) {
+    *errors << "total data count too large: " << static_cast<unsigned>(total);
     return false;
   }
 
   data->resize(total);
-  for (unsigned char i = 0; i < total; ++i) {
-    char type = 0;
-    if (!swm_read_exact(input_, &type, 1)) {
-      *errors << "could not read data type (i=" << i << ")";
+  for (uint8_t i = 0; i < total; ++i) {
+    uint8_t type = 0;
+    if (!swm_read_exact(input_, reinterpret_cast<char *>(&type), 1)) {
+      *errors << "could not read data type (i=" << static_cast<unsigned>(i) << ")";
       return false;
     }
-    if (type >= total) {
-      *errors << "wrong data type: " << type;
+    if (!receiver_slot_ok(type, total)) {
+      *errors << "wrong data type: " << static_cast<unsigned>(type);
       return false;
     }
 
     uint32_t len = 0;
     if (!swm_read_length(input_, &len)) {
-      *errors << "data length is 0 (type=" << type << ")";
+      *errors << "data length is 0 (type=" << static_cast<unsigned>(type) << ")";
       return false;
     }
 
     (*data)[type].reset(new char[len]);
     auto ptr = (*data)[type].get();
     if (!swm_read_exact(input_, ptr, len)) {
-      *errors << "couldn't get " << len << " bytes of data type " << type;
+      *errors << "couldn't get " << len << " bytes of data type " << static_cast<unsigned>(type);
       return false;
     }
   }
