@@ -1,6 +1,7 @@
 
 #include "commands.h"
 
+#include "ei_bounds.h"
 #include "wm_io.h"
 
 #include <string.h>
@@ -50,7 +51,7 @@ bool ScheduleCommand::AlgorithmSpec ::compute_unit_specified(ComputeUnitInterfac
 //--- ScheduleCommand ---
 //-----------------------
 
-bool ScheduleCommand::init(const std::vector<std::unique_ptr<char[]>> &data, std::stringstream *errors) {
+bool ScheduleCommand::init(const std::vector<ReceiverSlice> &data, std::stringstream *errors) {
   std::stringstream errors_;
   if (errors == nullptr) {
     errors = &errors_;
@@ -65,8 +66,9 @@ bool ScheduleCommand::init(const std::vector<std::unique_ptr<char[]>> &data, std
   sched_info_ptr_.reset(sched_info_ = new SchedulingInfo());
 
   for (size_t i = 0; i < data.size(); ++i) {
-    char *buf = data[i].get();
-    if (!buf) {
+    char *buf = data[i].data.get();
+    const uint32_t buf_size = data[i].size;
+    if (!buf || buf_size == 0) {
       *errors << "The " << i << "-th data slice is empty";
       return false;
     }
@@ -77,58 +79,61 @@ bool ScheduleCommand::init(const std::vector<std::unique_ptr<char[]>> &data, std
       *errors << "Could not decode erlang binary version at position " << index << std::endl;
       return false;
     }
+    if (!ei_require_index(index, buf_size, errors, "ei_decode_version")) {
+      return false;
+    }
     if (version != ERLANG_BINARY_FORMAT_VERSION) {
-      std::cerr << "Wrong erlang binary format version: " << version << ", expected: " << ERLANG_BINARY_FORMAT_VERSION
-                << std::endl;
+      *errors << "Wrong erlang binary format version: " << version << ", expected: " << ERLANG_BINARY_FORMAT_VERSION
+              << std::endl;
       return false;
     }
 
     // Do not dump full EI entities; counts are logged after parsing.
     switch (i) {
       case SWM_DATA_TYPE_SCHEDULERS: {
-        if (!apply_schedulers(buf, index, errors)) {
+        if (!apply_schedulers(buf, buf_size, index, errors)) {
           *errors << "Could not parse schedulers information";
           return false;
         }
         break;
       };
       case SWM_DATA_TYPE_JOBS: {
-        if (!apply_jobs(buf, index, errors)) {
+        if (!apply_jobs(buf, buf_size, index, errors)) {
           *errors << "Could not parse jobs information";
           return false;
         }
         break;
       };
       case SWM_DATA_TYPE_RH: {
-        if (!apply_rh(buf, index, errors)) {
+        if (!apply_rh(buf, buf_size, index, errors)) {
           *errors << "Could not parse RH information";
           return false;
         }
         break;
       };
       case SWM_DATA_TYPE_GRID: {
-        if (!apply_grid(buf, index, errors)) {
+        if (!apply_grid(buf, buf_size, index, errors)) {
           *errors << "Could not parse grid information";
           return false;
         }
         break;
       };
       case SWM_DATA_TYPE_CLUSTERS: {
-        if (!apply_clusters(buf, index, errors)) {
+        if (!apply_clusters(buf, buf_size, index, errors)) {
           *errors << "Could not parse clusters information";
           return false;
         }
         break;
       };
       case SWM_DATA_TYPE_PARTITIONS: {
-        if (!apply_partitions(buf, index, errors)) {
+        if (!apply_partitions(buf, buf_size, index, errors)) {
           *errors << "Could not parse partitions information";
           return false;
         }
         break;
       };
       case SWM_DATA_TYPE_NODES: {
-        if (!apply_nodes(buf, index, errors)) {
+        if (!apply_nodes(buf, buf_size, index, errors)) {
           *errors << "Could not parse nodes information";
           return false;
         }
@@ -151,7 +156,7 @@ bool ScheduleCommand::init(const std::vector<std::unique_ptr<char[]>> &data, std
   return true;
 }
 
-bool ScheduleCommand::apply_schedulers(char *, int &, std::stringstream *) {
+bool ScheduleCommand::apply_schedulers(char *, uint32_t, int &, std::stringstream *) {
   // TODO: read schedulers, something like that:
   size_t nalgs = 1;
   for (size_t i = 0; i < nalgs; ++i) {
@@ -165,43 +170,85 @@ bool ScheduleCommand::apply_schedulers(char *, int &, std::stringstream *) {
   return true;
 }
 
-bool ScheduleCommand::apply_jobs(char *buf, int &index, std::stringstream *error) {
-  auto &jobs = sched_info_->jobs_vector();
+namespace {
 
+template <typename Entity>
+bool decode_entity_list(char *buf,
+                        uint32_t buf_size,
+                        int &index,
+                        std::vector<Entity> *out,
+                        std::stringstream *error,
+                        const char *label) {
   int term_size = 0;
   int term_type = 0;
   if (ei_get_type(buf, &index, &term_type, &term_size)) {
-    *error << "Could not get job list term type at position " << index << std::endl;
+    *error << "Could not get " << label << " list term type at position " << index << std::endl;
+    return false;
+  }
+  if (!ei_require_index(index, buf_size, error, label)) {
     return false;
   }
   if (term_type != ERL_LIST_EXT && term_type != ERL_NIL_EXT) {
-    *error << "Could not parse jobs list term at " << index << ": not a list" << std::endl;
+    *error << label << " are not packed in a list at position " << index << std::endl;
     return false;
   }
+
   int list_size = 0;
   if (ei_decode_list_header(buf, &index, &list_size)) {
     *error << "Could not decode ei list header at " << index << std::endl;
     return false;
   }
+  if (!ei_require_index(index, buf_size, error, "ei_decode_list_header") ||
+      !ei_require_list_size(list_size, error, label)) {
+    return false;
+  }
   if (list_size == 0) {
-    *error << "Empty jobs array" << std::endl;
-    jobs.clear();
+    out->clear();
     return true;
   }
 
-  jobs.reserve(list_size);
-  for (int i = 0; i < term_size; ++i) {
-    jobs.emplace_back(buf, index);
+  out->reserve(static_cast<size_t>(list_size));
+  for (int i = 0; i < list_size; ++i) {
+    const int before = index;
+    try {
+      out->emplace_back(buf, index);
+    } catch (const std::exception &ex) {
+      *error << "Failed to parse " << label << " element " << i << ": " << ex.what() << std::endl;
+      return false;
+    }
+    if (index <= before) {
+      *error << "Failed to parse " << label << " element " << i << ": index did not advance" << std::endl;
+      return false;
+    }
+    if (!ei_require_index(index, buf_size, error, label)) {
+      return false;
+    }
   }
-  ei_skip_term(buf, &index);  // last element of a list is empty list
-  return true;
+  if (ei_skip_term(buf, &index)) {
+    *error << "Could not skip " << label << " list tail" << std::endl;
+    return false;
+  }
+  return ei_require_index(index, buf_size, error, label);
 }
 
-static inline bool apply_rh_helper(char *buf, int &index, std::vector<RhItem> *rh, std::stringstream *error) {
+}  // namespace
+
+bool ScheduleCommand::apply_jobs(char *buf, uint32_t buf_size, int &index, std::stringstream *error) {
+  return decode_entity_list(buf, buf_size, index, &sched_info_->jobs_vector(), error, "jobs");
+}
+
+static bool apply_rh_helper(char *buf,
+                            uint32_t buf_size,
+                            int &index,
+                            std::vector<RhItem> *rh,
+                            std::stringstream *error) {
   int term_size = 0;
   int term_type = 0;
   if (ei_get_type(buf, &index, &term_type, &term_size)) {
-    *error << "Could not get job list term type at position " << index << std::endl;
+    *error << "Could not get RH term type at position " << index << std::endl;
+    return false;
+  }
+  if (!ei_require_index(index, buf_size, error, "RH")) {
     return false;
   }
 
@@ -211,22 +258,31 @@ static inline bool apply_rh_helper(char *buf, int &index, std::vector<RhItem> *r
       *error << "Could not decode ei list header at " << index << std::endl;
       return false;
     }
+    if (!ei_require_index(index, buf_size, error, "RH list") || !ei_require_list_size(list_size, error, "RH")) {
+      return false;
+    }
     if (list_size == 0) {
-      *error << "Empty RH list" << std::endl;
       return true;
     }
     for (int i = 0; i < list_size; ++i) {
-      if (!apply_rh_helper(buf, index, rh, error)) {
+      if (!apply_rh_helper(buf, buf_size, index, rh, error)) {
         *error << "Could not parse RH list element number " << i << std::endl;
         return false;
       }
     }
-    ei_skip_term(buf, &index);  // last element of a list is empty list
+    if (ei_skip_term(buf, &index)) {
+      *error << "Could not skip RH list tail" << std::endl;
+      return false;
+    }
+    return ei_require_index(index, buf_size, error, "RH list tail");
 
   } else if (term_type == ERL_SMALL_TUPLE_EXT || term_type == ERL_LARGE_TUPLE_EXT) {
     int arity = 0;
     if (ei_decode_tuple_header(buf, &index, &arity)) {
       *error << "Could not decode RH tuple header" << std::endl;
+      return false;
+    }
+    if (!ei_require_index(index, buf_size, error, "RH tuple")) {
       return false;
     }
     if (arity != 2) {
@@ -239,9 +295,12 @@ static inline bool apply_rh_helper(char *buf, int &index, std::vector<RhItem> *r
       *error << "Can't parse RH tuple element" << std::endl;
       return false;
     }
+    if (!ei_require_index(index, buf_size, error, "RH tuple element")) {
+      return false;
+    }
 
     std::vector<RhItem> children;
-    if (!apply_rh_helper(buf, index, &children, error)) {
+    if (!apply_rh_helper(buf, buf_size, index, &children, error)) {
       return false;
     }
     rh->emplace_back(std::get<0>(tpl), std::get<1>(tpl), &children);
@@ -254,145 +313,67 @@ static inline bool apply_rh_helper(char *buf, int &index, std::vector<RhItem> *r
   return true;
 }
 
-bool ScheduleCommand::apply_rh(char *buf, int &index, std::stringstream *error) {
+bool ScheduleCommand::apply_rh(char *buf, uint32_t buf_size, int &index, std::stringstream *error) {
   std::stringstream error_;
   if (error == nullptr) {
     error = &error_;
   }
-  return apply_rh_helper(buf, index, &sched_info_->resource_hierarchy_vector(), error);
+  return apply_rh_helper(buf, buf_size, index, &sched_info_->resource_hierarchy_vector(), error);
 }
 
-bool ScheduleCommand::apply_grid(char *buf, int &index, std::stringstream *) {
+bool ScheduleCommand::apply_grid(char *buf, uint32_t buf_size, int &index, std::stringstream *error) {
+  std::stringstream error_;
+  if (error == nullptr) {
+    error = &error_;
+  }
   int term_size = 0;
   int term_type = 0;
   if (ei_get_type(buf, &index, &term_type, &term_size)) {
-    std::cerr << "Could not get grid term type at position " << index << std::endl;
+    *error << "Could not get grid term type at position " << index << std::endl;
+    return false;
+  }
+  if (!ei_require_index(index, buf_size, error, "grid")) {
     return false;
   }
   if (term_size == 0) {  // expected scenario
     if (ei_skip_term(buf, &index)) {
-      std::cerr << "Could not skip empty SwmGrid term: ";
-      ei_print_term(stderr, buf, &index);
-      std::cerr << std::endl;
+      *error << "Could not skip empty SwmGrid term";
       return false;
     }
-    return true;
+    return ei_require_index(index, buf_size, error, "grid skip");
   }
 
-  sched_info_->set_grid(SwmGrid(buf, index));
-  return true;
-}
-
-bool ScheduleCommand::apply_clusters(char *buf, int &index, std::stringstream *error) {
-  auto &clusters = sched_info_->clusters_vector();
-
-  int term_size = 0;
-  int term_type = 0;
-  if (ei_get_type(buf, &index, &term_type, &term_size)) {
-    *error << "Could not get clusters list term type at position " << index << std::endl;
+  const int before = index;
+  try {
+    sched_info_->set_grid(SwmGrid(buf, index));
+  } catch (const std::exception &ex) {
+    *error << "Failed to parse grid: " << ex.what();
     return false;
   }
-  if (term_type != ERL_LIST_EXT && term_type != ERL_NIL_EXT) {
-    *error << "Clusters are not packed in a list at position " << index << std::endl;
+  if (index <= before || !ei_require_index(index, buf_size, error, "grid")) {
+    *error << "Failed to parse grid: index out of range";
     return false;
-  }
-
-  int list_size = 0;
-  if (ei_decode_list_header(buf, &index, &list_size)) {
-    *error << "Could not decode ei list header at " << index << std::endl;
-    return false;
-  }
-  if (list_size == 0) {
-    *error << "Empty clusters array" << std::endl;
-    clusters.clear();
-    return true;
-  }
-
-  if (list_size) {
-    clusters.reserve(list_size);
-    for (int i = 0; i < list_size; ++i) {
-      clusters.emplace_back(buf, index);
-    }
-    ei_skip_term(buf, &index);  // last element of a list is empty list
   }
   return true;
 }
 
-bool ScheduleCommand::apply_partitions(char *buf, int &index, std::stringstream *error) {
-  auto &parts = sched_info_->parts_vector();
-
-  int term_size = 0;
-  int term_type = 0;
-  if (ei_get_type(buf, &index, &term_type, &term_size)) {
-    *error << "Could not get partitions list term type at position " << index << std::endl;
-    return false;
-  }
-  if (term_type != ERL_LIST_EXT && term_type != ERL_NIL_EXT) {
-    *error << "Partitions are not packed in a list at position " << index << std::endl;
-    return false;
-  }
-
-  int list_size = 0;
-  if (ei_decode_list_header(buf, &index, &list_size)) {
-    *error << "Could not decode ei list header at " << index << std::endl;
-    return false;
-  }
-  if (list_size == 0) {
-    *error << "Empty clusters array" << std::endl;
-    parts.clear();
-    return true;
-  }
-
-  if (list_size) {
-    parts.reserve(list_size);
-    for (int i = 0; i < list_size; ++i) {
-      parts.emplace_back(buf, index);
-    }
-    ei_skip_term(buf, &index);  // last element of a list is empty list
-  }
-  return true;
+bool ScheduleCommand::apply_clusters(char *buf, uint32_t buf_size, int &index, std::stringstream *error) {
+  return decode_entity_list(buf, buf_size, index, &sched_info_->clusters_vector(), error, "clusters");
 }
 
-bool ScheduleCommand::apply_nodes(char *buf, int &index, std::stringstream *error) {
-  auto &nodes = sched_info_->nodes_vector();
+bool ScheduleCommand::apply_partitions(char *buf, uint32_t buf_size, int &index, std::stringstream *error) {
+  return decode_entity_list(buf, buf_size, index, &sched_info_->parts_vector(), error, "partitions");
+}
 
-  int term_size = 0;
-  int term_type = 0;
-  if (ei_get_type(buf, &index, &term_type, &term_size)) {
-    *error << "Could not get nodes list term type at position " << index << std::endl;
-    return false;
-  }
-  if (term_type != ERL_LIST_EXT && term_type != ERL_NIL_EXT) {
-    *error << "Nodes are not packed in a list at position " << index << std::endl;
-    return false;
-  }
-
-  int list_size = 0;
-  if (ei_decode_list_header(buf, &index, &list_size)) {
-    *error << "Could not decode ei list header at " << index << std::endl;
-    return false;
-  }
-  if (list_size == 0) {
-    *error << "Empty clusters array" << std::endl;
-    nodes.clear();
-    return true;
-  }
-
-  if (list_size) {
-    nodes.reserve(list_size);
-    for (int i = 0; i < list_size; ++i) {
-      nodes.emplace_back(buf, index);
-    }
-    ei_skip_term(buf, &index);  // last element of a list is empty list
-  }
-  return true;
+bool ScheduleCommand::apply_nodes(char *buf, uint32_t buf_size, int &index, std::stringstream *error) {
+  return decode_entity_list(buf, buf_size, index, &sched_info_->nodes_vector(), error, "nodes");
 }
 
 //------------------------
 //--- InterruptCommand ---
 //------------------------
 
-bool InterruptCommand::init(const std::vector<std::unique_ptr<char[]>> &, std::stringstream *) {
+bool InterruptCommand::init(const std::vector<ReceiverSlice> &, std::stringstream *) {
   // TODO: read chain id
   chain_ = "42";
   return true;
@@ -402,7 +383,7 @@ bool InterruptCommand::init(const std::vector<std::unique_ptr<char[]>> &, std::s
 //--- MetricsCommand ---
 //----------------------
 
-bool MetricsCommand::init(const std::vector<std::unique_ptr<char[]>> &, std::stringstream *) {
+bool MetricsCommand::init(const std::vector<ReceiverSlice> &, std::stringstream *) {
   // TODO: read chain id
   chain_ = "42";
   return true;
@@ -412,7 +393,7 @@ bool MetricsCommand::init(const std::vector<std::unique_ptr<char[]>> &, std::str
 //--- ExchangeCommand ---
 //-----------------------
 
-bool ExchangeCommand::init(const std::vector<std::unique_ptr<char[]>> &, std::stringstream *) {
+bool ExchangeCommand::init(const std::vector<ReceiverSlice> &, std::stringstream *) {
   // TODO: read chain identifiers
   source_chain_ = "42";
   target_chain_ = "42";

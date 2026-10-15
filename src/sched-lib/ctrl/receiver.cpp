@@ -40,7 +40,7 @@ bool Receiver::finished() {
   return finished_;
 }
 
-bool Receiver::get_data(std::vector<std::unique_ptr<char[]>> *data,
+bool Receiver::get_data(std::vector<ReceiverSlice> *data,
                         CommandType *cmd,
                         SwmUID *uid,
                         std::stringstream *errors) {
@@ -93,12 +93,18 @@ bool Receiver::get_data(std::vector<std::unique_ptr<char[]>> *data,
 
     uint32_t len = 0;
     if (!swm_read_length(input_, &len)) {
-      *errors << "data length is 0 (type=" << static_cast<unsigned>(type) << ")";
+      *errors << "could not read data length (type=" << static_cast<unsigned>(type) << ")";
+      return false;
+    }
+    if (!receiver_slice_len_ok(len)) {
+      *errors << "data length out of range: " << len << " (type=" << static_cast<unsigned>(type)
+              << ", max=" << kMaxReceiverSliceBytes << ")";
       return false;
     }
 
-    (*data)[type].reset(new char[len]);
-    auto ptr = (*data)[type].get();
+    (*data)[type].data.reset(new char[len]);
+    (*data)[type].size = len;
+    auto ptr = (*data)[type].data.get();
     if (!swm_read_exact(input_, ptr, len)) {
       *errors << "couldn't get " << len << " bytes of data type " << static_cast<unsigned>(type);
       return false;
@@ -117,7 +123,7 @@ static inline bool is_good(std::istream *str) {
 }
 
 void Receiver::worker_loop() {
-  std::vector<std::unique_ptr<char[]>> data;
+  std::vector<ReceiverSlice> data;
   CommandType cmd_type;
   SwmUID uid;
   std::stringstream errors;

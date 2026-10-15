@@ -1,6 +1,7 @@
 
 #pragma once
 
+#include "command_bounds_tests.h"
 #include "processor_tests.h"
 #include "receiver_slot_tests.h"
 #include "receiver_tests.h"

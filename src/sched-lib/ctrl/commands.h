@@ -6,6 +6,7 @@
 #include "constants.h"
 #include "defs.h"
 #include "ifaces/compute_unit_interface.h"
+#include "receiver_slots.h"
 #include "scheduling_info.h"
 
 #include <functional>
@@ -26,7 +27,7 @@ class CommandInterface {
 
  protected:
   CommandInterface() {}
-  virtual bool init(const std::vector<std::unique_ptr<char[]> > &data, std::stringstream *errors) = 0;
+  virtual bool init(const std::vector<ReceiverSlice> &data, std::stringstream *errors) = 0;
   friend class Receiver;
 };
 
@@ -37,7 +38,7 @@ class CorruptedCommand : public CommandInterface {
   virtual CommandType type() const { return SWM_COMMAND_CORRUPTED; }
 
  protected:
-  virtual bool init(const std::vector<std::unique_ptr<char[]> > &, std::stringstream *) {
+  virtual bool init(const std::vector<ReceiverSlice> &, std::stringstream *) {
     // Important: for compatibility purposes, always returns true
     return true;
   }
@@ -81,16 +82,16 @@ class ScheduleCommand : public CommandInterface {
   virtual CommandType type() const override { return SWM_COMMAND_SCHEDULE; };
 
  protected:
-  bool init(const std::vector<std::unique_ptr<char[]> > &data, std::stringstream *errors = nullptr) override;
+  bool init(const std::vector<ReceiverSlice> &data, std::stringstream *errors = nullptr) override;
 
  private:
-  bool apply_schedulers(char *buf, int &index, std::stringstream *error = nullptr);
-  bool apply_jobs(char *buf, int &index, std::stringstream *error = nullptr);
-  bool apply_rh(char *buf, int &index, std::stringstream *error = nullptr);
-  bool apply_grid(char *buf, int &index, std::stringstream *error = nullptr);
-  bool apply_clusters(char *buf, int &index, std::stringstream *error = nullptr);
-  bool apply_partitions(char *buf, int &index, std::stringstream *error = nullptr);
-  bool apply_nodes(char *buf, int &index, std::stringstream *error = nullptr);
+  bool apply_schedulers(char *buf, uint32_t buf_size, int &index, std::stringstream *error = nullptr);
+  bool apply_jobs(char *buf, uint32_t buf_size, int &index, std::stringstream *error = nullptr);
+  bool apply_rh(char *buf, uint32_t buf_size, int &index, std::stringstream *error = nullptr);
+  bool apply_grid(char *buf, uint32_t buf_size, int &index, std::stringstream *error = nullptr);
+  bool apply_clusters(char *buf, uint32_t buf_size, int &index, std::stringstream *error = nullptr);
+  bool apply_partitions(char *buf, uint32_t buf_size, int &index, std::stringstream *error = nullptr);
+  bool apply_nodes(char *buf, uint32_t buf_size, int &index, std::stringstream *error = nullptr);
 
   std::shared_ptr<CommandContext> context_;
   std::vector<AlgorithmSpec> schedulers_;
@@ -109,7 +110,7 @@ class InterruptCommand : public CommandInterface {
   virtual CommandType type() const override { return SWM_COMMAND_INTERRUPT; };
 
  protected:
-  bool init(const std::vector<std::unique_ptr<char[]> > &data, std::stringstream *errors = nullptr) override;
+  bool init(const std::vector<ReceiverSlice> &data, std::stringstream *errors = nullptr) override;
 
  private:
   std::shared_ptr<CommandContext> context_;
@@ -127,7 +128,7 @@ class MetricsCommand : public CommandInterface {
   virtual CommandType type() const override { return SWM_COMMAND_METRICS; }
 
  protected:
-  bool init(const std::vector<std::unique_ptr<char[]> > &, std::stringstream *) override;
+  bool init(const std::vector<ReceiverSlice> &, std::stringstream *) override;
 
  private:
   std::shared_ptr<CommandContext> context_;
@@ -149,7 +150,7 @@ class ExchangeCommand : public CommandInterface {
   virtual CommandType type() const override { return SWM_COMMAND_EXCHANGE; };
 
  protected:
-  bool init(const std::vector<std::unique_ptr<char[]> > &data, std::stringstream *errors) override;
+  bool init(const std::vector<ReceiverSlice> &data, std::stringstream *errors) override;
 
  private:
   std::shared_ptr<CommandContext> context_;

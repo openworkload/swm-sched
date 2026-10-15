@@ -4,6 +4,7 @@
 #include "auxl/my_queue.h"
 #include "commands.h"
 #include "defs.h"
+#include "receiver_slots.h"
 
 #include <stdint.h>
 
@@ -21,10 +22,7 @@ class Receiver {
   bool finished();
 
  private:
-  bool get_data(std::vector<std::unique_ptr<char[]>> *data,
-                CommandType *cmd,
-                SwmUID *uid,
-                std::stringstream *errors = nullptr);
+  bool get_data(std::vector<ReceiverSlice> *data, CommandType *cmd, SwmUID *uid, std::stringstream *errors = nullptr);
   void worker_loop();
 
   volatile bool closed_;    // forces the worker thread to stop

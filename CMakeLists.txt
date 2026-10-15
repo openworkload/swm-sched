@@ -172,6 +172,18 @@ if(${GTEST_FOUND})
     add_dependencies(sched-tests plugin-lib)
 endif()
 
+# Optional libFuzzer harness (does not affect default GTest builds)
+option(SWM_ENABLE_FUZZ "Build libFuzzer receiver harness" OFF)
+if(SWM_ENABLE_FUZZ)
+    add_executable(swm-sched-receiver-fuzz
+        ${PROJECT_SOURCE_DIR}/tests/fuzz/receiver_fuzz.cpp)
+    swm_configure_exe(swm-sched-receiver-fuzz swm-sched-receiver-fuzz)
+    target_include_directories(swm-sched-receiver-fuzz PRIVATE ${SCHED_LIB_DIR})
+    target_compile_options(swm-sched-receiver-fuzz PRIVATE -fsanitize=fuzzer,address)
+    target_link_options(swm-sched-receiver-fuzz PRIVATE -fsanitize=fuzzer,address)
+    add_dependencies(swm-sched-receiver-fuzz sched-lib)
+endif()
+
 # Run GitHub Actions unit tests locally via nektos/act
 add_custom_target(act-unittests
     COMMAND ${CMAKE_SOURCE_DIR}/scripts/run-act.sh --job unittests --rm
