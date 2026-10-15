@@ -150,6 +150,15 @@ swm_discover_sources(${PLG_FAIR_SHARING_DIR} PLG_FAIR_SHARING_SRC_H PLG_FAIR_SHA
 add_library(fair-sharing MODULE ${PLG_FAIR_SHARING_SRC_H} ${PLG_FAIR_SHARING_SRC_CPP})
 swm_configure_plugin(fair-sharing swm-sched-fair-sharing)
 
+# Keep plugin output dir non-group/world-writable (umask 002 often leaves 0775).
+foreach(_swm_plg dummy fcfs fair-sharing)
+    add_custom_command(TARGET ${_swm_plg} POST_BUILD
+        COMMAND chmod go-w $<TARGET_FILE_DIR:${_swm_plg}>
+        COMMAND chmod go-w $<TARGET_FILE:${_swm_plg}>
+        COMMENT "Restrict permissions on ${_swm_plg} plugin output"
+    )
+endforeach()
+
 # The main executable target - sched-exe
 swm_discover_sources(${SCHED_EXE_DIR} SCHED_EXE_SRC_H SCHED_EXE_SRC_CPP)
 add_executable(sched-exe ${SCHED_EXE_SRC_CPP} ${SCHED_EXE_SRC_H})

@@ -4,6 +4,7 @@
 #include "auxl/directory.h"
 #include "auxl/file.h"
 #include "auxl/lib_funcs.h"
+#include "auxl/plugin_trust.h"
 
 #include <algorithm>
 
@@ -34,11 +35,19 @@ bool AlgorithmFactory::load_plugins(const std::string &path, std::stringstream *
     return false;
   }
 
-  // Loading all plugins. Failed to load one - just printing error to error-stream.
+  std::stringstream dir_errors;
+  const std::string trusted_dir = util::directory_full_path(path);
+  if (!util::plugin_directory_trusted(trusted_dir, &dir_errors)) {
+    *errors << "untrusted plugin directory: " << dir_errors.str();
+    return false;
+  }
+
+  // Loading allowlisted, trusted plugins. Failed to load one - log and skip.
   for (size_t i = 0; i < files.size(); i++) {
     void *lib = nullptr;
     try {
-      if ((lib = util::load_library(files[i])) != nullptr) {
+      std::stringstream trust_errors;
+      if ((lib = util::load_trusted_plugin_library(files[i], &trust_errors)) != nullptr) {
         void *cc_ptr = util::get_library_function(lib, util::LibBinding::create_context_name());
         void *rc_ptr = util::get_library_function(lib, util::LibBinding::release_context_name());
         void *construct_tt_ptr = util::get_library_function(lib, util::LibBinding::construct_timetable_name());
@@ -65,7 +74,7 @@ bool AlgorithmFactory::load_plugins(const std::string &path, std::stringstream *
         lib_bindings_.push_back(binding);
         alg_ptrs_.push_back(binding->get_algorithm_descriptor());
       } else {
-        std::cerr << "Failed to load library " << files[i].c_str() << std::endl;
+        std::cerr << "Skipped untrusted or unloadable plugin " << files[i] << ": " << trust_errors.str() << std::endl;
       }
     } catch (std::exception &err) {
       std::cerr << "Failed to load plugin " << files[i].c_str() << ", details: " << err.what() << std::endl;

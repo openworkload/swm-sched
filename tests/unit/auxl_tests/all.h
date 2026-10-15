@@ -7,4 +7,5 @@
 #include "lib_funcs_tests.h"
 #include "metrics_tests.h"
 #include "my_queue_tests.h"
+#include "plugin_trust_tests.h"
 #include "time_counter_tests.h"

@@ -205,6 +205,12 @@
 },
 {
   "directory": "/home/taras/projects/swm-sched",
+  "command": "/usr/bin/c++  -I/home/taras/projects/swm-sched/deps/swm-core/c_src/lib -I/home/taras/projects/swm-sched/src/sched-lib -isystem /usr/erlang/usr/include -std=gnu++17 -fPIC -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -o CMakeFiles/sched-lib.dir/src/sched-lib/auxl/plugin_trust.cpp.o -c /home/taras/projects/swm-sched/src/sched-lib/auxl/plugin_trust.cpp",
+  "file": "/home/taras/projects/swm-sched/src/sched-lib/auxl/plugin_trust.cpp",
+  "output": "CMakeFiles/sched-lib.dir/src/sched-lib/auxl/plugin_trust.cpp.o"
+},
+{
+  "directory": "/home/taras/projects/swm-sched",
   "command": "/usr/bin/c++  -I/home/taras/projects/swm-sched/deps/swm-core/c_src/lib -I/home/taras/projects/swm-sched/src/sched-lib -isystem /usr/erlang/usr/include -std=gnu++17 -fPIC -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -o CMakeFiles/sched-lib.dir/src/sched-lib/auxl/time_counter.cpp.o -c /home/taras/projects/swm-sched/src/sched-lib/auxl/time_counter.cpp",
   "file": "/home/taras/projects/swm-sched/src/sched-lib/auxl/time_counter.cpp",
   "output": "CMakeFiles/sched-lib.dir/src/sched-lib/auxl/time_counter.cpp.o"
