@@ -35,10 +35,10 @@ class CorruptedCommand : public CommandInterface {
  public:
   CorruptedCommand(const std::shared_ptr<CommandContext> &context) : context_(context) {}
   virtual const std::shared_ptr<CommandContext> &context() const override { return context_; }
-  virtual CommandType type() const { return SWM_COMMAND_CORRUPTED; }
+  virtual CommandType type() const override { return SWM_COMMAND_CORRUPTED; }
 
  protected:
-  virtual bool init(const std::vector<ReceiverSlice> &, std::stringstream *) {
+  virtual bool init(const std::vector<ReceiverSlice> &, std::stringstream *) override {
     // Important: for compatibility purposes, always returns true
     return true;
   }
