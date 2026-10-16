@@ -18,7 +18,7 @@ class AlgorithmMetrics {
   }
 
  private:
-  const int SCHEDULED_JOBS_ID = 1;
+  const uint32_t SCHEDULED_JOBS_ID = 1;
   util::Metrics metrics_;
 };
 
