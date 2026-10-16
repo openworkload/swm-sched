@@ -31,7 +31,11 @@ bool plugin_file_trusted_fd(int fd, const std::string &path_for_errors, std::str
 bool plugin_file_path_trusted(const std::string &path, std::stringstream *errors = nullptr);
 
 // Allowlist + trusted open + dlopen("/proc/self/fd/N"). Returns nullptr on reject/failure.
-void *load_trusted_plugin_library(const std::string &path, std::stringstream *errors = nullptr);
+// On success, *kept_fd holds the open descriptor that must stay open until after dlclose
+// (closing early reuses /proc/self/fd/N names and conflates distinct plugins).
+void *load_trusted_plugin_library(const std::string &path,
+                                  std::stringstream *errors = nullptr,
+                                  int *kept_fd = nullptr);
 
 }  // namespace util
 }  // namespace swm

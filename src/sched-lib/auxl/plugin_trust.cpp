@@ -137,11 +137,16 @@ bool plugin_file_path_trusted(const std::string &path, std::stringstream *errors
 #endif
 }
 
-void *load_trusted_plugin_library(const std::string &path, std::stringstream *errors) {
+void *load_trusted_plugin_library(const std::string &path, std::stringstream *errors, int *kept_fd) {
 #if defined(WIN32)
+  (void)kept_fd;
   append_error(errors, "trusted plugin load is not supported on Windows");
   return nullptr;
 #else
+  if (kept_fd != nullptr) {
+    *kept_fd = -1;
+  }
+
   const std::string base = plugin_basename(path);
   if (!plugin_basename_allowed(base)) {
     append_error(errors, std::string("plugin basename not allowlisted: \"") + base + "\"");
@@ -159,12 +164,20 @@ void *load_trusted_plugin_library(const std::string &path, std::stringstream *er
     return nullptr;
   }
 
+  // Keep fd open for the lifetime of the dlopen handle. glibc keys loaded objects by
+  // the path string; closing and reusing /proc/self/fd/N returns the first plugin again.
   const std::string fd_path = std::string("/proc/self/fd/") + std::to_string(fd);
   void *lib = load_library(fd_path);
-  close(fd);
   if (lib == nullptr) {
     append_error(errors, std::string("dlopen failed for trusted plugin \"") + path + "\": " + get_library_error());
+    close(fd);
+    return nullptr;
   }
+  if (kept_fd != nullptr) {
+    *kept_fd = fd;
+  }
+  // If the caller omitted kept_fd, leave fd open for process lifetime rather than
+  // closing early and aliasing subsequent /proc/self/fd/N dlopen paths.
   return lib;
 #endif
 }

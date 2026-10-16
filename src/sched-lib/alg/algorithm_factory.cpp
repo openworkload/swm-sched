@@ -8,6 +8,10 @@
 
 #include <algorithm>
 
+#if !defined(WIN32)
+#include <unistd.h>
+#endif
+
 namespace swm {
 
 bool AlgorithmFactory::load_plugins(const std::string &path, std::stringstream *errors) {
@@ -45,9 +49,10 @@ bool AlgorithmFactory::load_plugins(const std::string &path, std::stringstream *
   // Loading allowlisted, trusted plugins. Failed to load one - log and skip.
   for (size_t i = 0; i < files.size(); i++) {
     void *lib = nullptr;
+    int plugin_fd = -1;
     try {
       std::stringstream trust_errors;
-      if ((lib = util::load_trusted_plugin_library(files[i], &trust_errors)) != nullptr) {
+      if ((lib = util::load_trusted_plugin_library(files[i], &trust_errors, &plugin_fd)) != nullptr) {
         void *cc_ptr = util::get_library_function(lib, util::LibBinding::create_context_name());
         void *rc_ptr = util::get_library_function(lib, util::LibBinding::release_context_name());
         void *construct_tt_ptr = util::get_library_function(lib, util::LibBinding::construct_timetable_name());
@@ -66,13 +71,20 @@ bool AlgorithmFactory::load_plugins(const std::string &path, std::stringstream *
           throw std::runtime_error("plugin's descriptor is equal to nullptr");
         }
 
-        auto free_func = [lib]() -> std::string {
-          return util::free_library(lib) ? std::string() : util::get_library_error();
+        auto free_func = [lib, plugin_fd]() -> std::string {
+          const bool ok = util::free_library(lib);
+#if !defined(WIN32)
+          if (plugin_fd >= 0) {
+            ::close(plugin_fd);
+          }
+#endif
+          return ok ? std::string() : util::get_library_error();
         };
         auto binding = std::shared_ptr<util::LibBinding>(new util::LibBinding(
             util::file_full_path(files[i]), free_func, desc, cc_ptr, rc_ptr, construct_tt_ptr, improve_tt_ptr, cu_ptr));
         lib_bindings_.push_back(binding);
         alg_ptrs_.push_back(binding->get_algorithm_descriptor());
+        plugin_fd = -1;  // ownership transferred to free_func
       } else {
         std::cerr << "Skipped untrusted or unloadable plugin " << files[i] << ": " << trust_errors.str() << std::endl;
       }
@@ -81,6 +93,11 @@ bool AlgorithmFactory::load_plugins(const std::string &path, std::stringstream *
       if (!util::free_library(lib)) {
         std::cerr << "Failed to unload library " << files[i].c_str() << std::endl;
       }
+#if !defined(WIN32)
+      if (plugin_fd >= 0) {
+        ::close(plugin_fd);
+      }
+#endif
     }
   }
 

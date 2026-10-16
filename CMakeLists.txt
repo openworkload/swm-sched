@@ -152,6 +152,12 @@ endmacro(swm_configure_plugin target_name out_name)
 swm_discover_sources(${WM_DIR} WM_SRC_H WM_SRC_CPP)
 add_library(wm-lib STATIC ${WM_SRC_H} ${WM_SRC_CPP})
 swm_configure_lib(wm-lib wm)
+# swm-core entity sources are shared upstream; do not fail sched builds on their
+# Clang-only or sign-conversion diagnostics (especially fuzz + -Werror).
+target_compile_options(wm-lib PRIVATE -Wno-error=sign-conversion -Wno-error=conversion)
+if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+    target_compile_options(wm-lib PRIVATE -Wno-delete-non-abstract-non-virtual-dtor)
+endif()
 
 
 # Library with all scheduling routines

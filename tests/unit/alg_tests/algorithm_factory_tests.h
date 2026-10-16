@@ -44,8 +44,9 @@ TEST(alg, algorithm_factory_default_algorithms_found) {
   swm::AlgorithmFactory factory;
   ASSERT_TRUE(factory.load_plugins(find_plugin_dir()));
   const auto &algs = factory.known_algorithms();
-  std::vector<std::string> ids = {"swm-fcfs"};
-  auto pred = [&algs](std::string &id) {
+  // Distinct family ids proves /proc/self/fd/N handles are not aliased across plugins.
+  std::vector<std::string> ids = {"swm-fcfs", "swm-dummy", "swm-fair-sharing"};
+  auto pred = [&algs](const std::string &id) {
     for (const auto &alg : algs)
       if (id == alg->family_id()) {
         return true;

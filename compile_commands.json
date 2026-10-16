@@ -1,151 +1,151 @@
 [
 {
   "directory": "/home/taras/projects/swm-sched",
-  "command": "/usr/bin/c++  -isystem /usr/erlang/usr/include -O2 -g -DNDEBUG -std=gnu++17 -fPIC -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -fstack-protector-strong -D_FORTIFY_SOURCE=2 -fstack-clash-protection -fcf-protection=full -o CMakeFiles/wm-lib.dir/deps/swm-core/c_src/lib/wm_account.cpp.o -c /home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_account.cpp",
+  "command": "/usr/bin/c++  -isystem /usr/erlang/usr/include -O2 -g -DNDEBUG -std=gnu++17 -fPIC -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -fstack-protector-strong -D_FORTIFY_SOURCE=2 -fstack-clash-protection -fcf-protection=full -Wno-error=sign-conversion -Wno-error=conversion -o CMakeFiles/wm-lib.dir/deps/swm-core/c_src/lib/wm_account.cpp.o -c /home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_account.cpp",
   "file": "/home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_account.cpp",
   "output": "CMakeFiles/wm-lib.dir/deps/swm-core/c_src/lib/wm_account.cpp.o"
 },
 {
   "directory": "/home/taras/projects/swm-sched",
-  "command": "/usr/bin/c++  -isystem /usr/erlang/usr/include -O2 -g -DNDEBUG -std=gnu++17 -fPIC -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -fstack-protector-strong -D_FORTIFY_SOURCE=2 -fstack-clash-protection -fcf-protection=full -o CMakeFiles/wm-lib.dir/deps/swm-core/c_src/lib/wm_boot_info.cpp.o -c /home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_boot_info.cpp",
+  "command": "/usr/bin/c++  -isystem /usr/erlang/usr/include -O2 -g -DNDEBUG -std=gnu++17 -fPIC -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -fstack-protector-strong -D_FORTIFY_SOURCE=2 -fstack-clash-protection -fcf-protection=full -Wno-error=sign-conversion -Wno-error=conversion -o CMakeFiles/wm-lib.dir/deps/swm-core/c_src/lib/wm_boot_info.cpp.o -c /home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_boot_info.cpp",
   "file": "/home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_boot_info.cpp",
   "output": "CMakeFiles/wm-lib.dir/deps/swm-core/c_src/lib/wm_boot_info.cpp.o"
 },
 {
   "directory": "/home/taras/projects/swm-sched",
-  "command": "/usr/bin/c++  -isystem /usr/erlang/usr/include -O2 -g -DNDEBUG -std=gnu++17 -fPIC -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -fstack-protector-strong -D_FORTIFY_SOURCE=2 -fstack-clash-protection -fcf-protection=full -o CMakeFiles/wm-lib.dir/deps/swm-core/c_src/lib/wm_cluster.cpp.o -c /home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_cluster.cpp",
+  "command": "/usr/bin/c++  -isystem /usr/erlang/usr/include -O2 -g -DNDEBUG -std=gnu++17 -fPIC -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -fstack-protector-strong -D_FORTIFY_SOURCE=2 -fstack-clash-protection -fcf-protection=full -Wno-error=sign-conversion -Wno-error=conversion -o CMakeFiles/wm-lib.dir/deps/swm-core/c_src/lib/wm_cluster.cpp.o -c /home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_cluster.cpp",
   "file": "/home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_cluster.cpp",
   "output": "CMakeFiles/wm-lib.dir/deps/swm-core/c_src/lib/wm_cluster.cpp.o"
 },
 {
   "directory": "/home/taras/projects/swm-sched",
-  "command": "/usr/bin/c++  -isystem /usr/erlang/usr/include -O2 -g -DNDEBUG -std=gnu++17 -fPIC -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -fstack-protector-strong -D_FORTIFY_SOURCE=2 -fstack-clash-protection -fcf-protection=full -o CMakeFiles/wm-lib.dir/deps/swm-core/c_src/lib/wm_entity_utils.cpp.o -c /home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_entity_utils.cpp",
+  "command": "/usr/bin/c++  -isystem /usr/erlang/usr/include -O2 -g -DNDEBUG -std=gnu++17 -fPIC -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -fstack-protector-strong -D_FORTIFY_SOURCE=2 -fstack-clash-protection -fcf-protection=full -Wno-error=sign-conversion -Wno-error=conversion -o CMakeFiles/wm-lib.dir/deps/swm-core/c_src/lib/wm_entity_utils.cpp.o -c /home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_entity_utils.cpp",
   "file": "/home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_entity_utils.cpp",
   "output": "CMakeFiles/wm-lib.dir/deps/swm-core/c_src/lib/wm_entity_utils.cpp.o"
 },
 {
   "directory": "/home/taras/projects/swm-sched",
-  "command": "/usr/bin/c++  -isystem /usr/erlang/usr/include -O2 -g -DNDEBUG -std=gnu++17 -fPIC -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -fstack-protector-strong -D_FORTIFY_SOURCE=2 -fstack-clash-protection -fcf-protection=full -o CMakeFiles/wm-lib.dir/deps/swm-core/c_src/lib/wm_executable.cpp.o -c /home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_executable.cpp",
+  "command": "/usr/bin/c++  -isystem /usr/erlang/usr/include -O2 -g -DNDEBUG -std=gnu++17 -fPIC -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -fstack-protector-strong -D_FORTIFY_SOURCE=2 -fstack-clash-protection -fcf-protection=full -Wno-error=sign-conversion -Wno-error=conversion -o CMakeFiles/wm-lib.dir/deps/swm-core/c_src/lib/wm_executable.cpp.o -c /home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_executable.cpp",
   "file": "/home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_executable.cpp",
   "output": "CMakeFiles/wm-lib.dir/deps/swm-core/c_src/lib/wm_executable.cpp.o"
 },
 {
   "directory": "/home/taras/projects/swm-sched",
-  "command": "/usr/bin/c++  -isystem /usr/erlang/usr/include -O2 -g -DNDEBUG -std=gnu++17 -fPIC -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -fstack-protector-strong -D_FORTIFY_SOURCE=2 -fstack-clash-protection -fcf-protection=full -o CMakeFiles/wm-lib.dir/deps/swm-core/c_src/lib/wm_global.cpp.o -c /home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_global.cpp",
+  "command": "/usr/bin/c++  -isystem /usr/erlang/usr/include -O2 -g -DNDEBUG -std=gnu++17 -fPIC -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -fstack-protector-strong -D_FORTIFY_SOURCE=2 -fstack-clash-protection -fcf-protection=full -Wno-error=sign-conversion -Wno-error=conversion -o CMakeFiles/wm-lib.dir/deps/swm-core/c_src/lib/wm_global.cpp.o -c /home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_global.cpp",
   "file": "/home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_global.cpp",
   "output": "CMakeFiles/wm-lib.dir/deps/swm-core/c_src/lib/wm_global.cpp.o"
 },
 {
   "directory": "/home/taras/projects/swm-sched",
-  "command": "/usr/bin/c++  -isystem /usr/erlang/usr/include -O2 -g -DNDEBUG -std=gnu++17 -fPIC -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -fstack-protector-strong -D_FORTIFY_SOURCE=2 -fstack-clash-protection -fcf-protection=full -o CMakeFiles/wm-lib.dir/deps/swm-core/c_src/lib/wm_grid.cpp.o -c /home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_grid.cpp",
+  "command": "/usr/bin/c++  -isystem /usr/erlang/usr/include -O2 -g -DNDEBUG -std=gnu++17 -fPIC -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -fstack-protector-strong -D_FORTIFY_SOURCE=2 -fstack-clash-protection -fcf-protection=full -Wno-error=sign-conversion -Wno-error=conversion -o CMakeFiles/wm-lib.dir/deps/swm-core/c_src/lib/wm_grid.cpp.o -c /home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_grid.cpp",
   "file": "/home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_grid.cpp",
   "output": "CMakeFiles/wm-lib.dir/deps/swm-core/c_src/lib/wm_grid.cpp.o"
 },
 {
   "directory": "/home/taras/projects/swm-sched",
-  "command": "/usr/bin/c++  -isystem /usr/erlang/usr/include -O2 -g -DNDEBUG -std=gnu++17 -fPIC -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -fstack-protector-strong -D_FORTIFY_SOURCE=2 -fstack-clash-protection -fcf-protection=full -o CMakeFiles/wm-lib.dir/deps/swm-core/c_src/lib/wm_hook.cpp.o -c /home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_hook.cpp",
+  "command": "/usr/bin/c++  -isystem /usr/erlang/usr/include -O2 -g -DNDEBUG -std=gnu++17 -fPIC -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -fstack-protector-strong -D_FORTIFY_SOURCE=2 -fstack-clash-protection -fcf-protection=full -Wno-error=sign-conversion -Wno-error=conversion -o CMakeFiles/wm-lib.dir/deps/swm-core/c_src/lib/wm_hook.cpp.o -c /home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_hook.cpp",
   "file": "/home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_hook.cpp",
   "output": "CMakeFiles/wm-lib.dir/deps/swm-core/c_src/lib/wm_hook.cpp.o"
 },
 {
   "directory": "/home/taras/projects/swm-sched",
-  "command": "/usr/bin/c++  -isystem /usr/erlang/usr/include -O2 -g -DNDEBUG -std=gnu++17 -fPIC -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -fstack-protector-strong -D_FORTIFY_SOURCE=2 -fstack-clash-protection -fcf-protection=full -o CMakeFiles/wm-lib.dir/deps/swm-core/c_src/lib/wm_image.cpp.o -c /home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_image.cpp",
+  "command": "/usr/bin/c++  -isystem /usr/erlang/usr/include -O2 -g -DNDEBUG -std=gnu++17 -fPIC -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -fstack-protector-strong -D_FORTIFY_SOURCE=2 -fstack-clash-protection -fcf-protection=full -Wno-error=sign-conversion -Wno-error=conversion -o CMakeFiles/wm-lib.dir/deps/swm-core/c_src/lib/wm_image.cpp.o -c /home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_image.cpp",
   "file": "/home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_image.cpp",
   "output": "CMakeFiles/wm-lib.dir/deps/swm-core/c_src/lib/wm_image.cpp.o"
 },
 {
   "directory": "/home/taras/projects/swm-sched",
-  "command": "/usr/bin/c++  -isystem /usr/erlang/usr/include -O2 -g -DNDEBUG -std=gnu++17 -fPIC -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -fstack-protector-strong -D_FORTIFY_SOURCE=2 -fstack-clash-protection -fcf-protection=full -o CMakeFiles/wm-lib.dir/deps/swm-core/c_src/lib/wm_io.cpp.o -c /home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_io.cpp",
+  "command": "/usr/bin/c++  -isystem /usr/erlang/usr/include -O2 -g -DNDEBUG -std=gnu++17 -fPIC -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -fstack-protector-strong -D_FORTIFY_SOURCE=2 -fstack-clash-protection -fcf-protection=full -Wno-error=sign-conversion -Wno-error=conversion -o CMakeFiles/wm-lib.dir/deps/swm-core/c_src/lib/wm_io.cpp.o -c /home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_io.cpp",
   "file": "/home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_io.cpp",
   "output": "CMakeFiles/wm-lib.dir/deps/swm-core/c_src/lib/wm_io.cpp.o"
 },
 {
   "directory": "/home/taras/projects/swm-sched",
-  "command": "/usr/bin/c++  -isystem /usr/erlang/usr/include -O2 -g -DNDEBUG -std=gnu++17 -fPIC -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -fstack-protector-strong -D_FORTIFY_SOURCE=2 -fstack-clash-protection -fcf-protection=full -o CMakeFiles/wm-lib.dir/deps/swm-core/c_src/lib/wm_job.cpp.o -c /home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_job.cpp",
+  "command": "/usr/bin/c++  -isystem /usr/erlang/usr/include -O2 -g -DNDEBUG -std=gnu++17 -fPIC -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -fstack-protector-strong -D_FORTIFY_SOURCE=2 -fstack-clash-protection -fcf-protection=full -Wno-error=sign-conversion -Wno-error=conversion -o CMakeFiles/wm-lib.dir/deps/swm-core/c_src/lib/wm_job.cpp.o -c /home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_job.cpp",
   "file": "/home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_job.cpp",
   "output": "CMakeFiles/wm-lib.dir/deps/swm-core/c_src/lib/wm_job.cpp.o"
 },
 {
   "directory": "/home/taras/projects/swm-sched",
-  "command": "/usr/bin/c++  -isystem /usr/erlang/usr/include -O2 -g -DNDEBUG -std=gnu++17 -fPIC -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -fstack-protector-strong -D_FORTIFY_SOURCE=2 -fstack-clash-protection -fcf-protection=full -o CMakeFiles/wm-lib.dir/deps/swm-core/c_src/lib/wm_metric.cpp.o -c /home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_metric.cpp",
+  "command": "/usr/bin/c++  -isystem /usr/erlang/usr/include -O2 -g -DNDEBUG -std=gnu++17 -fPIC -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -fstack-protector-strong -D_FORTIFY_SOURCE=2 -fstack-clash-protection -fcf-protection=full -Wno-error=sign-conversion -Wno-error=conversion -o CMakeFiles/wm-lib.dir/deps/swm-core/c_src/lib/wm_metric.cpp.o -c /home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_metric.cpp",
   "file": "/home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_metric.cpp",
   "output": "CMakeFiles/wm-lib.dir/deps/swm-core/c_src/lib/wm_metric.cpp.o"
 },
 {
   "directory": "/home/taras/projects/swm-sched",
-  "command": "/usr/bin/c++  -isystem /usr/erlang/usr/include -O2 -g -DNDEBUG -std=gnu++17 -fPIC -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -fstack-protector-strong -D_FORTIFY_SOURCE=2 -fstack-clash-protection -fcf-protection=full -o CMakeFiles/wm-lib.dir/deps/swm-core/c_src/lib/wm_node.cpp.o -c /home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_node.cpp",
+  "command": "/usr/bin/c++  -isystem /usr/erlang/usr/include -O2 -g -DNDEBUG -std=gnu++17 -fPIC -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -fstack-protector-strong -D_FORTIFY_SOURCE=2 -fstack-clash-protection -fcf-protection=full -Wno-error=sign-conversion -Wno-error=conversion -o CMakeFiles/wm-lib.dir/deps/swm-core/c_src/lib/wm_node.cpp.o -c /home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_node.cpp",
   "file": "/home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_node.cpp",
   "output": "CMakeFiles/wm-lib.dir/deps/swm-core/c_src/lib/wm_node.cpp.o"
 },
 {
   "directory": "/home/taras/projects/swm-sched",
-  "command": "/usr/bin/c++  -isystem /usr/erlang/usr/include -O2 -g -DNDEBUG -std=gnu++17 -fPIC -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -fstack-protector-strong -D_FORTIFY_SOURCE=2 -fstack-clash-protection -fcf-protection=full -o CMakeFiles/wm-lib.dir/deps/swm-core/c_src/lib/wm_partition.cpp.o -c /home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_partition.cpp",
+  "command": "/usr/bin/c++  -isystem /usr/erlang/usr/include -O2 -g -DNDEBUG -std=gnu++17 -fPIC -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -fstack-protector-strong -D_FORTIFY_SOURCE=2 -fstack-clash-protection -fcf-protection=full -Wno-error=sign-conversion -Wno-error=conversion -o CMakeFiles/wm-lib.dir/deps/swm-core/c_src/lib/wm_partition.cpp.o -c /home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_partition.cpp",
   "file": "/home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_partition.cpp",
   "output": "CMakeFiles/wm-lib.dir/deps/swm-core/c_src/lib/wm_partition.cpp.o"
 },
 {
   "directory": "/home/taras/projects/swm-sched",
-  "command": "/usr/bin/c++  -isystem /usr/erlang/usr/include -O2 -g -DNDEBUG -std=gnu++17 -fPIC -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -fstack-protector-strong -D_FORTIFY_SOURCE=2 -fstack-clash-protection -fcf-protection=full -o CMakeFiles/wm-lib.dir/deps/swm-core/c_src/lib/wm_process.cpp.o -c /home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_process.cpp",
+  "command": "/usr/bin/c++  -isystem /usr/erlang/usr/include -O2 -g -DNDEBUG -std=gnu++17 -fPIC -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -fstack-protector-strong -D_FORTIFY_SOURCE=2 -fstack-clash-protection -fcf-protection=full -Wno-error=sign-conversion -Wno-error=conversion -o CMakeFiles/wm-lib.dir/deps/swm-core/c_src/lib/wm_process.cpp.o -c /home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_process.cpp",
   "file": "/home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_process.cpp",
   "output": "CMakeFiles/wm-lib.dir/deps/swm-core/c_src/lib/wm_process.cpp.o"
 },
 {
   "directory": "/home/taras/projects/swm-sched",
-  "command": "/usr/bin/c++  -isystem /usr/erlang/usr/include -O2 -g -DNDEBUG -std=gnu++17 -fPIC -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -fstack-protector-strong -D_FORTIFY_SOURCE=2 -fstack-clash-protection -fcf-protection=full -o CMakeFiles/wm-lib.dir/deps/swm-core/c_src/lib/wm_queue.cpp.o -c /home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_queue.cpp",
+  "command": "/usr/bin/c++  -isystem /usr/erlang/usr/include -O2 -g -DNDEBUG -std=gnu++17 -fPIC -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -fstack-protector-strong -D_FORTIFY_SOURCE=2 -fstack-clash-protection -fcf-protection=full -Wno-error=sign-conversion -Wno-error=conversion -o CMakeFiles/wm-lib.dir/deps/swm-core/c_src/lib/wm_queue.cpp.o -c /home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_queue.cpp",
   "file": "/home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_queue.cpp",
   "output": "CMakeFiles/wm-lib.dir/deps/swm-core/c_src/lib/wm_queue.cpp.o"
 },
 {
   "directory": "/home/taras/projects/swm-sched",
-  "command": "/usr/bin/c++  -isystem /usr/erlang/usr/include -O2 -g -DNDEBUG -std=gnu++17 -fPIC -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -fstack-protector-strong -D_FORTIFY_SOURCE=2 -fstack-clash-protection -fcf-protection=full -o CMakeFiles/wm-lib.dir/deps/swm-core/c_src/lib/wm_relocation.cpp.o -c /home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_relocation.cpp",
+  "command": "/usr/bin/c++  -isystem /usr/erlang/usr/include -O2 -g -DNDEBUG -std=gnu++17 -fPIC -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -fstack-protector-strong -D_FORTIFY_SOURCE=2 -fstack-clash-protection -fcf-protection=full -Wno-error=sign-conversion -Wno-error=conversion -o CMakeFiles/wm-lib.dir/deps/swm-core/c_src/lib/wm_relocation.cpp.o -c /home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_relocation.cpp",
   "file": "/home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_relocation.cpp",
   "output": "CMakeFiles/wm-lib.dir/deps/swm-core/c_src/lib/wm_relocation.cpp.o"
 },
 {
   "directory": "/home/taras/projects/swm-sched",
-  "command": "/usr/bin/c++  -isystem /usr/erlang/usr/include -O2 -g -DNDEBUG -std=gnu++17 -fPIC -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -fstack-protector-strong -D_FORTIFY_SOURCE=2 -fstack-clash-protection -fcf-protection=full -o CMakeFiles/wm-lib.dir/deps/swm-core/c_src/lib/wm_remote.cpp.o -c /home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_remote.cpp",
+  "command": "/usr/bin/c++  -isystem /usr/erlang/usr/include -O2 -g -DNDEBUG -std=gnu++17 -fPIC -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -fstack-protector-strong -D_FORTIFY_SOURCE=2 -fstack-clash-protection -fcf-protection=full -Wno-error=sign-conversion -Wno-error=conversion -o CMakeFiles/wm-lib.dir/deps/swm-core/c_src/lib/wm_remote.cpp.o -c /home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_remote.cpp",
   "file": "/home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_remote.cpp",
   "output": "CMakeFiles/wm-lib.dir/deps/swm-core/c_src/lib/wm_remote.cpp.o"
 },
 {
   "directory": "/home/taras/projects/swm-sched",
-  "command": "/usr/bin/c++  -isystem /usr/erlang/usr/include -O2 -g -DNDEBUG -std=gnu++17 -fPIC -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -fstack-protector-strong -D_FORTIFY_SOURCE=2 -fstack-clash-protection -fcf-protection=full -o CMakeFiles/wm-lib.dir/deps/swm-core/c_src/lib/wm_resource.cpp.o -c /home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_resource.cpp",
+  "command": "/usr/bin/c++  -isystem /usr/erlang/usr/include -O2 -g -DNDEBUG -std=gnu++17 -fPIC -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -fstack-protector-strong -D_FORTIFY_SOURCE=2 -fstack-clash-protection -fcf-protection=full -Wno-error=sign-conversion -Wno-error=conversion -o CMakeFiles/wm-lib.dir/deps/swm-core/c_src/lib/wm_resource.cpp.o -c /home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_resource.cpp",
   "file": "/home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_resource.cpp",
   "output": "CMakeFiles/wm-lib.dir/deps/swm-core/c_src/lib/wm_resource.cpp.o"
 },
 {
   "directory": "/home/taras/projects/swm-sched",
-  "command": "/usr/bin/c++  -isystem /usr/erlang/usr/include -O2 -g -DNDEBUG -std=gnu++17 -fPIC -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -fstack-protector-strong -D_FORTIFY_SOURCE=2 -fstack-clash-protection -fcf-protection=full -o CMakeFiles/wm-lib.dir/deps/swm-core/c_src/lib/wm_role.cpp.o -c /home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_role.cpp",
+  "command": "/usr/bin/c++  -isystem /usr/erlang/usr/include -O2 -g -DNDEBUG -std=gnu++17 -fPIC -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -fstack-protector-strong -D_FORTIFY_SOURCE=2 -fstack-clash-protection -fcf-protection=full -Wno-error=sign-conversion -Wno-error=conversion -o CMakeFiles/wm-lib.dir/deps/swm-core/c_src/lib/wm_role.cpp.o -c /home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_role.cpp",
   "file": "/home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_role.cpp",
   "output": "CMakeFiles/wm-lib.dir/deps/swm-core/c_src/lib/wm_role.cpp.o"
 },
 {
   "directory": "/home/taras/projects/swm-sched",
-  "command": "/usr/bin/c++  -isystem /usr/erlang/usr/include -O2 -g -DNDEBUG -std=gnu++17 -fPIC -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -fstack-protector-strong -D_FORTIFY_SOURCE=2 -fstack-clash-protection -fcf-protection=full -o CMakeFiles/wm-lib.dir/deps/swm-core/c_src/lib/wm_safe_file.cpp.o -c /home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_safe_file.cpp",
+  "command": "/usr/bin/c++  -isystem /usr/erlang/usr/include -O2 -g -DNDEBUG -std=gnu++17 -fPIC -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -fstack-protector-strong -D_FORTIFY_SOURCE=2 -fstack-clash-protection -fcf-protection=full -Wno-error=sign-conversion -Wno-error=conversion -o CMakeFiles/wm-lib.dir/deps/swm-core/c_src/lib/wm_safe_file.cpp.o -c /home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_safe_file.cpp",
   "file": "/home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_safe_file.cpp",
   "output": "CMakeFiles/wm-lib.dir/deps/swm-core/c_src/lib/wm_safe_file.cpp.o"
 },
 {
   "directory": "/home/taras/projects/swm-sched",
-  "command": "/usr/bin/c++  -isystem /usr/erlang/usr/include -O2 -g -DNDEBUG -std=gnu++17 -fPIC -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -fstack-protector-strong -D_FORTIFY_SOURCE=2 -fstack-clash-protection -fcf-protection=full -o CMakeFiles/wm-lib.dir/deps/swm-core/c_src/lib/wm_scheduler.cpp.o -c /home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_scheduler.cpp",
+  "command": "/usr/bin/c++  -isystem /usr/erlang/usr/include -O2 -g -DNDEBUG -std=gnu++17 -fPIC -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -fstack-protector-strong -D_FORTIFY_SOURCE=2 -fstack-clash-protection -fcf-protection=full -Wno-error=sign-conversion -Wno-error=conversion -o CMakeFiles/wm-lib.dir/deps/swm-core/c_src/lib/wm_scheduler.cpp.o -c /home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_scheduler.cpp",
   "file": "/home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_scheduler.cpp",
   "output": "CMakeFiles/wm-lib.dir/deps/swm-core/c_src/lib/wm_scheduler.cpp.o"
 },
 {
   "directory": "/home/taras/projects/swm-sched",
-  "command": "/usr/bin/c++  -isystem /usr/erlang/usr/include -O2 -g -DNDEBUG -std=gnu++17 -fPIC -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -fstack-protector-strong -D_FORTIFY_SOURCE=2 -fstack-clash-protection -fcf-protection=full -o CMakeFiles/wm-lib.dir/deps/swm-core/c_src/lib/wm_scheduler_result.cpp.o -c /home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_scheduler_result.cpp",
+  "command": "/usr/bin/c++  -isystem /usr/erlang/usr/include -O2 -g -DNDEBUG -std=gnu++17 -fPIC -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -fstack-protector-strong -D_FORTIFY_SOURCE=2 -fstack-clash-protection -fcf-protection=full -Wno-error=sign-conversion -Wno-error=conversion -o CMakeFiles/wm-lib.dir/deps/swm-core/c_src/lib/wm_scheduler_result.cpp.o -c /home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_scheduler_result.cpp",
   "file": "/home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_scheduler_result.cpp",
   "output": "CMakeFiles/wm-lib.dir/deps/swm-core/c_src/lib/wm_scheduler_result.cpp.o"
 },
 {
   "directory": "/home/taras/projects/swm-sched",
-  "command": "/usr/bin/c++  -isystem /usr/erlang/usr/include -O2 -g -DNDEBUG -std=gnu++17 -fPIC -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -fstack-protector-strong -D_FORTIFY_SOURCE=2 -fstack-clash-protection -fcf-protection=full -o CMakeFiles/wm-lib.dir/deps/swm-core/c_src/lib/wm_timetable.cpp.o -c /home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_timetable.cpp",
+  "command": "/usr/bin/c++  -isystem /usr/erlang/usr/include -O2 -g -DNDEBUG -std=gnu++17 -fPIC -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -fstack-protector-strong -D_FORTIFY_SOURCE=2 -fstack-clash-protection -fcf-protection=full -Wno-error=sign-conversion -Wno-error=conversion -o CMakeFiles/wm-lib.dir/deps/swm-core/c_src/lib/wm_timetable.cpp.o -c /home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_timetable.cpp",
   "file": "/home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_timetable.cpp",
   "output": "CMakeFiles/wm-lib.dir/deps/swm-core/c_src/lib/wm_timetable.cpp.o"
 },
 {
   "directory": "/home/taras/projects/swm-sched",
-  "command": "/usr/bin/c++  -isystem /usr/erlang/usr/include -O2 -g -DNDEBUG -std=gnu++17 -fPIC -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -fstack-protector-strong -D_FORTIFY_SOURCE=2 -fstack-clash-protection -fcf-protection=full -o CMakeFiles/wm-lib.dir/deps/swm-core/c_src/lib/wm_user.cpp.o -c /home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_user.cpp",
+  "command": "/usr/bin/c++  -isystem /usr/erlang/usr/include -O2 -g -DNDEBUG -std=gnu++17 -fPIC -Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic -fstack-protector-strong -D_FORTIFY_SOURCE=2 -fstack-clash-protection -fcf-protection=full -Wno-error=sign-conversion -Wno-error=conversion -o CMakeFiles/wm-lib.dir/deps/swm-core/c_src/lib/wm_user.cpp.o -c /home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_user.cpp",
   "file": "/home/taras/projects/swm-sched/deps/swm-core/c_src/lib/wm_user.cpp",
   "output": "CMakeFiles/wm-lib.dir/deps/swm-core/c_src/lib/wm_user.cpp.o"
 },
