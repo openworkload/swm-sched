@@ -65,11 +65,22 @@ If `GTEST_ROOT` points at an installed GTest, CMake enables the unit tests autom
 ```
 
 `build.sh` links `deps/swm-core` to `../swm-core` when needed, then runs `cmake` and `make`.
-Defaults (`_KERL_ACTIVE_DIR=/usr/erlang`, `GTEST_ROOT=/usr/local/GTest`) match the `skyport-dev` container; override them in the environment for other setups.
+Defaults (`_KERL_ACTIVE_DIR=/usr/erlang`, `GTEST_ROOT=/usr/local/GTest`,
+`CMAKE_BUILD_TYPE=RelWithDebInfo`) match the `skyport-dev` container; override
+them in the environment for other setups.
+
+Build hardening flags, plugin trust rules, and fuzz instructions are in
+[HOWTO/SECURITY.md](HOWTO/SECURITY.md).
 
 ### Run unit tests
 ```bash
 ./bin/swm-sched-tests
+```
+
+### Fuzz smoke (optional, Clang + libFuzzer)
+```bash
+cmake . -DSWM_ENABLE_FUZZ=ON -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_COMPILER=clang
+make fuzz-smoke
 ```
 
 ### Format C++ sources

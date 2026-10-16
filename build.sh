@@ -18,5 +18,6 @@ fi
 export _KERL_ACTIVE_DIR="${_KERL_ACTIVE_DIR:-/usr/erlang}"
 export GTEST_ROOT="${GTEST_ROOT:-/usr/local/GTest}"
 
-cmake . -G "Unix Makefiles"
+cmake . -G "Unix Makefiles" \
+  -DCMAKE_BUILD_TYPE="${CMAKE_BUILD_TYPE:-RelWithDebInfo}"
 make

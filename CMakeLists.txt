@@ -7,6 +7,12 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+# FORTIFY and related hardening need optimization; default when unset.
+if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
+    message(STATUS "CMAKE_BUILD_TYPE unset; defaulting to RelWithDebInfo")
+    set(CMAKE_BUILD_TYPE "RelWithDebInfo" CACHE STRING "Build type" FORCE)
+endif()
+
 set(TESTS_DIR              ${PROJECT_SOURCE_DIR}/tests/unit)
 set(WM_DIR                 ${PROJECT_SOURCE_DIR}/deps/swm-core/c_src/lib)
 set(SCHED_LIB_DIR          ${PROJECT_SOURCE_DIR}/src/sched-lib)
@@ -38,9 +44,37 @@ set_target_properties(ei PROPERTIES IMPORTED_LOCATION $ENV{_KERL_ACTIVE_DIR}/usr
 
 ##################### Some macros to minimaze copy-paste #####################
 
+macro(swm_set_warning_flags target_name)
+    target_compile_options(${target_name} PRIVATE
+        -Werror
+        -Wno-deprecated-declarations
+        -Wall
+        -Wextra
+        -Wconversion
+        -pedantic)
+endmacro(swm_set_warning_flags target_name)
+
+# Explicit ELF hardening (do not rely on distro GCC defaults alone).
+macro(swm_set_hardening_flags target_name)
+    target_compile_options(${target_name} PRIVATE
+        -fstack-protector-strong
+        -D_FORTIFY_SOURCE=2
+        -fstack-clash-protection)
+    if(CMAKE_SYSTEM_PROCESSOR MATCHES "^(x86_64|AMD64)$")
+        target_compile_options(${target_name} PRIVATE -fcf-protection=full)
+    endif()
+    target_link_options(${target_name} PRIVATE -Wl,-z,relro,-z,now)
+endmacro(swm_set_hardening_flags target_name)
+
+# PIE + exported dynamic symbols for executables only (not MODULE plugins).
+macro(swm_set_exe_link_flags target_name)
+    target_compile_options(${target_name} PRIVATE -fPIE)
+    target_link_options(${target_name} PRIVATE -pie -rdynamic)
+endmacro(swm_set_exe_link_flags target_name)
+
 macro(swm_set_gcc_flags target_name)
-    set_target_properties(${target_name} PROPERTIES COMPILE_FLAGS "-Werror -Wno-deprecated-declarations -Wall -Wextra -Wconversion -pedantic")
-    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -rdynamic")
+    swm_set_warning_flags(${target_name})
+    swm_set_hardening_flags(${target_name})
 endmacro(swm_set_gcc_flags target_name)
 
 macro(swm_discover_sources src_dir h_files cpp_files)
@@ -75,6 +109,7 @@ endmacro(swm_configure_assembly target_name out_name)
 
 macro(swm_configure_exe target_name out_name)
     swm_configure_assembly(${target_name} ${out_name})
+    swm_set_exe_link_flags(${target_name})
 
     # Beware - it's a magic lib order!
     target_link_libraries(${target_name} ei)
@@ -89,6 +124,7 @@ endmacro(swm_configure_exe target_name out_name)
 
 macro(swm_configure_test target_name out_name test_headers)
     swm_configure_assembly(${target_name} ${out_name})
+    swm_set_exe_link_flags(${target_name})
     target_include_directories(${target_name} SYSTEM PUBLIC ${GTEST_INCLUDE_DIRS})
     target_link_libraries(${target_name} ${GTEST_BOTH_LIBRARIES})
     target_link_libraries(${target_name} sched-lib)
@@ -191,6 +227,14 @@ if(SWM_ENABLE_FUZZ)
     target_compile_options(swm-sched-receiver-fuzz PRIVATE -fsanitize=fuzzer,address)
     target_link_options(swm-sched-receiver-fuzz PRIVATE -fsanitize=fuzzer,address)
     add_dependencies(swm-sched-receiver-fuzz sched-lib)
+
+    add_custom_target(fuzz-smoke
+        COMMAND $<TARGET_FILE:swm-sched-receiver-fuzz> -max_total_time=60 -rss_limit_mb=2048
+        DEPENDS swm-sched-receiver-fuzz
+        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+        USES_TERMINAL
+        COMMENT "libFuzzer receiver smoke (60s)"
+    )
 endif()
 
 # Run GitHub Actions unit tests locally via nektos/act
