@@ -237,7 +237,16 @@ if(SWM_ENABLE_FUZZ)
     )
 endif()
 
-# Run GitHub Actions unit tests locally via nektos/act
+# Run GitHub Actions locally via nektos/act (use inside skyport-dev after cmake .).
+# make act ARGS='--job unittests --rm'
+# On the host without cmake, use ./scripts/run-act.sh instead (starts skyport-dev).
+# Command-line ARGS is exported into the recipe environment; $$ARGS -> $ARGS for the shell.
+add_custom_target(act
+    COMMAND ${CMAKE_SOURCE_DIR}/scripts/run-act.sh $$ARGS
+    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+    USES_TERMINAL
+    COMMENT "Running act (ARGS='--job unittests --rm')"
+)
 add_custom_target(act-unittests
     COMMAND ${CMAKE_SOURCE_DIR}/scripts/run-act.sh --job unittests --rm
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}

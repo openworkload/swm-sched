@@ -94,16 +94,25 @@ make format-check   # fail if any file differs from .clang-format
 Or without CMake: `./scripts/format-cpp.sh` / `./scripts/format-cpp.sh check`.
 
 ### Run github actions
+[`scripts/run-act.sh`](scripts/run-act.sh) runs [nektos/act](https://github.com/nektos/act)
+against the host **Podman** socket. From the host it starts `skyport-dev` if
+needed (sibling `../swm-core` `run-in-dev-container.sh`, same stack as
+`make cr`), then runs act inside that container. Nested CI containers still
+use the bind-mounted host Podman API.
+
 ```bash
-make act-unittests
+# Host (no local cmake): script starts/enters skyport-dev
+./scripts/run-act.sh --job unittests --rm
+./scripts/run-act.sh --job fuzz_smoke --rm
+
+# Inside skyport-dev only (CMake Makefile needs cmake on PATH)
+make act ARGS='--job unittests --rm'
 ```
 
-This runs [`scripts/run-act.sh`](scripts/run-act.sh) → `act --job unittests`
-against the host **Podman** Docker-compatible API (not Docker Engine). Requires
-[nektos/act](https://github.com/nektos/act) and a running Podman socket
-(`systemctl --user enable --now podman.socket`).
-Repo [`.actrc`](.actrc) maps `ubuntu-24.04` to `catthehacker/ubuntu:act-24.04`
-(includes Node for `setup-beam` and other actions).
+Requires a Podman socket (`systemctl --user enable --now podman.socket`) and a
+sibling [swm-core](https://github.com/openworkload/swm-core) checkout. Repo
+[`.actrc`](.actrc) maps `ubuntu-24.04` to `catthehacker/ubuntu:act-24.04`
+(includes Node for `setup-beam`).
 
 
 ## Contributing

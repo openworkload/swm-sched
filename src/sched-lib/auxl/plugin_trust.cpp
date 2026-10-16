@@ -100,8 +100,7 @@ bool plugin_file_trusted_fd(int fd, const std::string &path_for_errors, std::str
   }
   struct stat st;
   if (fstat(fd, &st) != 0) {
-    append_error(errors,
-                 std::string("cannot fstat plugin \"") + path_for_errors + "\": " + std::strerror(errno));
+    append_error(errors, std::string("cannot fstat plugin \"") + path_for_errors + "\": " + std::strerror(errno));
     return false;
   }
   if (!S_ISREG(st.st_mode)) {

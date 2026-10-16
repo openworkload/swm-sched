@@ -40,10 +40,7 @@ bool Receiver::finished() {
   return finished_;
 }
 
-bool Receiver::get_data(std::vector<ReceiverSlice> *data,
-                        CommandType *cmd,
-                        SwmUID *uid,
-                        std::stringstream *errors) {
+bool Receiver::get_data(std::vector<ReceiverSlice> *data, CommandType *cmd, SwmUID *uid, std::stringstream *errors) {
   if (data == nullptr || cmd == nullptr || uid == nullptr) {
     throw std::runtime_error("Receiver::get_data(): \"data\", \"cmd\", \"uid\" cannot be equal to nullptr");
   }

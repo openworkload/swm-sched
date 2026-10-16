@@ -2,8 +2,8 @@
 // Build with: cmake -DSWM_ENABLE_FUZZ=ON ...
 // Run: ./bin/swm-sched-receiver-fuzz [corpus_dir]
 
-#include "ctrl/commands.h"
 #include "ctrl/command_context.h"
+#include "ctrl/commands.h"
 #include "ctrl/constants.h"
 #include "ctrl/receiver.h"
 #include "ctrl/receiver_slots.h"

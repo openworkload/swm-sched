@@ -14,8 +14,7 @@ constexpr const char *kAllowedPluginBasenames[] = {
     "swm-sched-fair-sharing.so",
 };
 
-constexpr size_t kAllowedPluginBasenameCount =
-    sizeof(kAllowedPluginBasenames) / sizeof(kAllowedPluginBasenames[0]);
+constexpr size_t kAllowedPluginBasenameCount = sizeof(kAllowedPluginBasenames) / sizeof(kAllowedPluginBasenames[0]);
 
 // Last path component (after final '/').
 std::string plugin_basename(const std::string &path);

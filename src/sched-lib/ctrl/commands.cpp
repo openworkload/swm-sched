@@ -173,12 +173,8 @@ bool ScheduleCommand::apply_schedulers(char *, uint32_t, int &, std::stringstrea
 namespace {
 
 template <typename Entity>
-bool decode_entity_list(char *buf,
-                        uint32_t buf_size,
-                        int &index,
-                        std::vector<Entity> *out,
-                        std::stringstream *error,
-                        const char *label) {
+bool decode_entity_list(
+    char *buf, uint32_t buf_size, int &index, std::vector<Entity> *out, std::stringstream *error, const char *label) {
   int term_size = 0;
   int term_type = 0;
   if (ei_get_type(buf, &index, &term_type, &term_size)) {
@@ -237,11 +233,8 @@ bool ScheduleCommand::apply_jobs(char *buf, uint32_t buf_size, int &index, std::
   return decode_entity_list(buf, buf_size, index, &sched_info_->jobs_vector(), error, "jobs");
 }
 
-static bool apply_rh_helper(char *buf,
-                            uint32_t buf_size,
-                            int &index,
-                            std::vector<RhItem> *rh,
-                            std::stringstream *error) {
+static bool apply_rh_helper(
+    char *buf, uint32_t buf_size, int &index, std::vector<RhItem> *rh, std::stringstream *error) {
   int term_size = 0;
   int term_type = 0;
   if (ei_get_type(buf, &index, &term_type, &term_size)) {

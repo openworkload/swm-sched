@@ -2,8 +2,8 @@
 #pragma once
 
 #include "ctrl.h"
-#include "ctrl/commands.h"
 #include "ctrl/command_context.h"
+#include "ctrl/commands.h"
 #include "ctrl/constants.h"
 #include "ctrl/ei_bounds.h"
 #include "ctrl/receiver_slots.h"
@@ -22,8 +22,8 @@ namespace {
 
 class ScheduleCommandTestAccess : public swm::util::ScheduleCommand {
  public:
-  using swm::util::ScheduleCommand::ScheduleCommand;
   using swm::util::ScheduleCommand::init;
+  using swm::util::ScheduleCommand::ScheduleCommand;
 };
 
 }  // namespace

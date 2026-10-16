@@ -1,17 +1,17 @@
 #pragma once
 
-#include "auxl/plugin_trust.h"
 #include "alg/algorithm_factory.h"
+#include "auxl/plugin_trust.h"
 #include "helpers.h"
 #include "test_defs.h"
 
 #include <gtest/gtest.h>
+#include <sys/stat.h>
+#include <unistd.h>
 
 #include <cstdio>
 #include <fstream>
 #include <string>
-#include <sys/stat.h>
-#include <unistd.h>
 
 namespace {
 
